@@ -28,23 +28,46 @@
   <?php endif ?>
   
   <?php // Join group/class button ?>
-  <?php if (site()->user() and site()->user()->usertype() != 'admin'): ?>
-    <?php if (!$page->isEditableByUser() and !in_array(site()->user()->username(), array_merge($page->requests(),$page->authors()->toArray()))): ?>
-      <div id="button-join" class="button">Join group</div>
-    <?php elseif (in_array(site()->user()->username(), $page->requests())): ?>
-      <div id="button" class="button">Request sent</div>
+  <?php if (site()->page('groups')): ?>
+    <?php if ($page->isChildOf(site()->page('groups'))): ?>
+      <?php if (site()->user() and site()->user()->usertype() != 'admin'): ?>
+        <?php if (!$page->isEditableByUser() and !in_array(site()->user()->username(), array_merge($page->requests(),$page->authors()->toArray()))): ?>
+          <div id="button-join" class="button">Join group</div>
+        <?php elseif (in_array(site()->user()->username(), $page->requests())): ?>
+          <div id="button" class="button">Request sent</div>
+        <?php endif ?>
+      <?php endif ?>
     <?php endif ?>
   <?php endif ?>
     
   <?php // FRONTEND EDITING CONTROLS ?>
   <?php // Need to figure out how to enable admins still, multiple operators, maybe a case statement ?>
   <?php if ($page->isEditableByUser()): ?>
-    <div id="button-edit" class="button flash">Edit</div>
-    <div id="button-delete" class="button red">Delete page</div>
     
+    <div class="button-edit dropdown">
+      <button type="button" class="button" id="button-edit" title="Edit this page">Edit</button>
+      <button type="button" class="button" title="Additional options for this page"></button>
+      <ul class="dropdown-menu">
+        <li data-modal="delete">Delete page</li>
+        <li><s>Change URL</s></li>
+        <li><s>Revision history</s></li>
+      </ul>
+    </div>
+        
     <div id="settings" class="">
       <span class="heading">SETTINGS</span>
       <form method="post" action="savesettings" id="form-settings">
+        
+        <div class="size-full">
+          <?php $class = ($page->color() != '') ? "hasbeenclicked clicked" : "neverclicked"; ?>
+          <select name="color" id="color" class="<?php echo $class ?>">
+            <?php foreach ($site->content()->coloroptions()->split(',') as $color): ?>
+              <?php $selected = ($color == $page->color()) ? "selected " : ""; ?>
+              <?php echo '<option ' . $selected . 'value="' . $color . '">' . ucfirst($color) . '</option>' ?>
+            <?php endforeach ?>
+          </select>
+          <label for="color">Color</label>
+        </div>
         
         <div class="size-full">
           <?php $class = ($page->visibility() != '') ? "hasbeenclicked clicked" : "neverclicked"; ?>
@@ -58,14 +81,12 @@
         </div>
         
         <div class="size-full">
-          <?php $class = ($page->color() != '') ? "hasbeenclicked clicked" : "neverclicked"; ?>
-          <select name="color" id="color" class="<?php echo $class ?>">
-            <?php foreach ($site->content()->coloroptions()->split(',') as $color): ?>
-              <?php $selected = ($color == $page->color()) ? "selected " : ""; ?>
-              <?php echo '<option ' . $selected . 'value="' . $color . '">' . ucfirst($color) . '</option>' ?>
-            <?php endforeach ?>
+          <select name="submissions" id="setting-submissions" class="hasbeenclicked clicked">
+            <option value="public" <?php echo ($page->submissions() == 'public') ? 'selected ' : '' ?>>On, anonymous too</option>
+            <option value="on" <?php echo ($page->submissions() == 'on') ? 'selected ' : '' ?>>On</option>
+            <option value="off" <?php echo (!$page->submissions()) ? 'selected ' : '' ?>>Off</option>
           </select>
-          <label for="color">Color</label>
+          <label for="submissions">Submissions</label>
         </div>
         
         <div class="size-full">
@@ -171,6 +192,7 @@
 
   <?php // MAKERS ?>
   <?php if($page->uid() == 'projects'): ?>
+    <!--
     <div class="filter">
       <span class="heading">Filter</span>
       <form action="">
@@ -180,6 +202,7 @@
         <input type="checkbox" checked="">Multidisciplinary<br>
       </form>
     </div>
+    -->
   <?php endif ?>
   
   <?php // MAKER PROFILES ?>
@@ -242,6 +265,7 @@
 
   <?php // EVENTS SORTING ?>
   <?php if($page->uid() == 'events'): ?>
+  <!--
     <div class="hours">
       <span class="heading">SUBSCRIBE</span>
       <span><a href="https://www.facebook.com/events/1714521768776526/">Google Calendar</a></span>
@@ -272,6 +296,7 @@
       <div class="row"><span><input type="checkbox" name="vehicle" value="robotics-"> Speaker</input></span></div>
       <div class="row"><span><input type="checkbox" name="vehicle" value="all"> Workshop</input></span></div>
     </div>
+  -->
   <?php endif ?>
 
   <?php // LOCATION INFORMATION ?>

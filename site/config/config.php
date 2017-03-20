@@ -214,9 +214,11 @@ c::set('routes', array(
     'action'  => function() {
       $currentpath = str_replace(array('/maker/','/ne/','/login','login','/forgot','forgot'),'',$_SERVER['REQUEST_URI']);
       if($user = site()->user(get('username')) and $user->login(get('password'))) {
-        return go($currentpath);
+        
         // Include a username cookie
-        //cookie::set('username', site()->user()->username(), $expires = 60*24*30, $path = '/', $domain = null, $secure = true);
+        cookie::set('username', site()->user()->username(), $expires = 60*24*30, $path = '/', $domain = null, $secure = true);
+        return go($currentpath);
+        
         //cookie::set('kirby_session_auth', $value, $lifetime = 42000, '/blah', $domain = null);
       } elseif ($user = site()->users()->findBy('email', get('username')) and $user->login(get('password'))){
         return go($currentpath);
@@ -470,14 +472,39 @@ c::set('routes', array(
       
       $related = (kirby()->request()->has('related')) ? get('related') : '';
       
+      if ($related != '') {
+        $visibility = 'public';
+      } else {
+        $visibility = 'private';
+      }
+      
+      /* If this new page is coming from an event page, inherit the event page's visibility setting */
+      $originpage = null;
+      if ($related != '') {
+        $originpage = site()->index()->findBy('uid', $related);
+      }
+      if ($originpage) {
+        if ($originpage->parent() == 'events') {
+          $visibility = $originpage->visibility();
+        }
+      }
+      
+      $color = (site()->user()) ? site()->user()->color() : site()->coloroptions()->split(',')[0];
+      
+      $username = (site()->user()) ? site()->user()->username() : 'anonymous-kangaroo-' . date('YmdHis') . milliseconds();
+      
+      /* If the user is anonymous, give them a cookie with an assigned username */
+      if (!site()->user()) {
+        cookie::set('anonymousID', $username, $expires = 60*24*30, $path = '/', $domain = null, $secure = true);
+      }
       
       try {
         page()->create($newpage, 'page', array(
-          'Title' => 'New ' . $pagetype . ' title',
+          'Title' => '',
           'DateData'  => date('Y-m-d H:i:s') . ', ' . date('Y-m-d H:i:s'),
-          'UserData' => site()->user()->username(),
+          'UserData' => $username,
           'RelData' => $related,
-          'Settings' => 'private, ' . site()->user()->color() . ', comments == off, submissions == off, price == off',
+          'Settings' => $visibility . ', ' . $color . ', comments == off, submissions == off, price == off',
           'Hero' => '',
           'Text' => '',
         ));
@@ -517,6 +544,11 @@ c::set('routes', array(
   		
   		/* UserData */
   		$authors = (isset($_POST['users'])) ? $_POST['users'] : implode(', ', $targetpage->authors());
+  		
+  		if (empty($_POST['users'])) {
+    		$authors = $targetpage->authorsRaw();
+  		}
+  		
   		$oldauthors = '';
   		$subscribers = '';
   		$subscriberEmails = '';
@@ -537,7 +569,7 @@ c::set('routes', array(
   		$color       = (isset($_POST['color'])) ? $_POST['color'] : $targetpage->color();
   		  $commentSetting = ($targetpage->comments()) ? 'on' : 'off';
         $comments       = (isset($_POST['comments'])) ? $_POST['comments'] : $commentSetting;
-  		$submissions = 'off';
+  		$submissions = (isset($_POST['submissions'])) ? $_POST['submissions'] : $targetpage->submissions();
   		$price       = 'off';
   		
   		/* Hero */
@@ -560,9 +592,9 @@ c::set('routes', array(
           $newlocation = kirby()->roots()->content() . '/' . $targetpage->parent()->diruri() . '/' . str::slug($title);
           rename($currentlocation, $newlocation);
           
-          $redirecturl = site()->url() . '/' . $targetpage->parent()->diruri() . '/' . str::slug($title);
+          $changeurl = site()->url() . '/' . $targetpage->parent()->diruri() . '/' . str::slug($title);
           
-          $response = array('redirecturl' => $redirecturl); // redirect to new url
+          $response = array('changeurl' => $changeurl); // redirect to new url
           echo json_encode($response);
         }
         

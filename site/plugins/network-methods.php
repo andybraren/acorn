@@ -137,12 +137,23 @@ page::$methods['authors'] = function($page) {
     if (site()->user($author)) {
       $collection->append($author, site()->user($author));
     }
+    if (strpos($author,'anonymous')) {
+      $collection->append($author, $author);
+    }
   }
   
   return $collection;
   
 };
 
+page::$methods['authorsRaw'] = function($page) {
+  
+  // Create an array of authors
+  $authors = explode('///',$page->content()->userdata())[0];
+  
+  return $authors;
+  
+};
 
 
 
@@ -372,6 +383,18 @@ page::$methods['color'] = function($page) {
   }
 };
 
+
+function dir_contains_children($dir) {
+  $result = false;
+  if($dh = opendir($dir)) {
+    while(!$result && ($file = readdir($dh)) !== false) {
+      $result = $file !== "." && $file !== "..";
+    }
+    closedir($dh);
+  }
+  return $result;
+}
+
 // Comments
 // returns the page's comments
 page::$methods['comments'] = function($page) {
@@ -391,10 +414,18 @@ page::$methods['comments'] = function($page) {
           
           // If the comments folder doesn't exist, create it
           $target_dir = kirby()->roots()->content() . '/' . $page->uri() . '/comments';
+          
           if (!is_dir($target_dir)) {
             mkdir($target_dir, 0775, true);
-          } else {
+            $collection = new Pages();
+            return $collection;
+          }
+          
+          if (dir_contains_children($target_dir)) {
             return $page->find('comments')->children();
+          } else {
+            $collection = new Pages();
+            return $collection;
           }
           
         }
@@ -524,17 +555,38 @@ function userAvatar($username, $size = 256) {
   }
 }
 function groupLogo($groupname, $size = 256) {
-  if ($logo = site()->page('groups/' . $groupname)->images()->findBy('name', 'logo')) {
-    return $logo->crop($size,$size)->url();
-  } else {
-    $number = 1;
-    if     (strlen(site()->page('groups/' . $groupname)->title()) <= 3) { $number = 1; }
-    elseif (strlen(site()->page('groups/' . $groupname)->title()) <= 4) { $number = 2; }
-    elseif (strlen(site()->page('groups/' . $groupname)->title()) <= 6) { $number = 3; }
-    elseif (strlen(site()->page('groups/' . $groupname)->title()) >= 7) { $number = 4; }
-    $defaultlogo = new Asset('/assets/images/avatar-' . $number . '.svg');
-    return $defaultlogo->url();
+  
+  if (site()->page('groups/' . $groupname)) {
+    if ($logo = site()->page('groups/' . $groupname)->images()->findBy('name', 'logo')) {
+      return $logo->crop($size,$size)->url();
+    } else {
+      $number = 1;
+      if     (strlen(site()->page('groups/' . $groupname)->title()) <= 3) { $number = 1; }
+      elseif (strlen(site()->page('groups/' . $groupname)->title()) <= 4) { $number = 2; }
+      elseif (strlen(site()->page('groups/' . $groupname)->title()) <= 6) { $number = 3; }
+      elseif (strlen(site()->page('groups/' . $groupname)->title()) >= 7) { $number = 4; }
+      
+      $defaultlogo = new Asset('/assets/images/avatar-' . $number . '.svg');
+      return $defaultlogo->url();
+    }
   }
+  
+  if (site()->page('courses/' . $groupname)) {
+    if ($logo = site()->page('courses/' . $groupname)->images()->findBy('name', 'logo')) {
+      return $logo->crop($size,$size)->url();
+    } else {
+      $number = 1;
+      if     (strlen(site()->page('courses/' . $groupname)->title()) <= 3) { $number = 1; }
+      elseif (strlen(site()->page('courses/' . $groupname)->title()) <= 4) { $number = 2; }
+      elseif (strlen(site()->page('courses/' . $groupname)->title()) <= 6) { $number = 3; }
+      elseif (strlen(site()->page('courses/' . $groupname)->title()) >= 7) { $number = 4; }
+      
+      $defaultlogo = new Asset('/assets/images/avatar-' . $number . '.svg');
+      return $defaultlogo->url();
+    }
+  }
+  
+
 }
 
 /* User color
@@ -548,9 +600,17 @@ function userColor($username) {
   }
 }
 function groupColor($groupslug) {
-  if (site()->page('groups/' . $groupslug)->color() != "") {
-    return (string)site()->page('groups/' . $groupslug)->color();
-  } else {
+  if (site()->page('groups/' . $groupslug)) {
+    if (site()->page('groups/' . $groupslug)->color() != "") {
+      return (string)site()->page('groups/' . $groupslug)->color();
+    }
+  }
+  if (site()->page('courses/' . $groupslug)) {
+    if (site()->page('courses/' . $groupslug)->color() != "") {
+      return (string)site()->page('courses/' . $groupslug)->color();
+    }
+  }
+  else {
     return (string)site()->coloroptions()->split(',')[0];
   }
 }
@@ -576,11 +636,19 @@ page::$methods['isVisibleToUser'] = function($page) {
 };
 
 page::$methods['isEditableByUser'] = function($page) {
+  /*
   if (!site()->user()) {
     return false;
   } else {
+  */
     return isEditableByUser($page);
+  /*
   }
+  */
+};
+
+page::$methods['isSubmissibleByUser'] = function($page) {
+  return isSubmissibleByUser($page);
 };
 
 pages::$methods['visibleToUser'] = function($pages) {  
@@ -632,7 +700,7 @@ function isEditableByUser($page) {
   if (!site()->user()) { // if not logged in
     $isEditable = false;
   }
-  if (site()->user()) { // if logged in
+  if (site()->user()) { // if logged in but not one of the listed authors
     if (!in_array(site()->user(), $page->authors()->toArray())) {
       $isEditable = false;
     }
@@ -640,10 +708,40 @@ function isEditableByUser($page) {
   if (site()->user() and site()->user()->usertype() and site()->user()->usertype() == 'admin') { // if user is an admin
     $isEditable = true;
   }
+  
+  if (cookie::get('anonymousID')) {
+    /*
+    if (in_array(cookie::get('anonymousID'), $page->authors()->toArray())) {
+      $isEditable = true;
+    }
+    */
+    if (strpos($page->userdata(),cookie::get('anonymousID')) !== false) {
+      $isEditable = true;
+    }
+  }
+  
   return $isEditable;
 }
 
-
+function isSubmissibleByUser($page) {
+  
+  $isSubmissible = false;
+  
+  if (isEditableByUser($page)) {
+    $isSubmissible = true;
+  }
+  
+  if ($page->submissions() == 'on' and site()->user()) {
+    $isSubmissible = true;
+  }
+  
+  if ($page->submissions() == 'public') {
+    $isSubmissible = true;
+  }
+  
+  return $isSubmissible;
+  
+}
 
 
 
@@ -962,7 +1060,17 @@ function hasSubMenu() {
 }
 
 
-
+function submenuItems() {
+  
+  $activeTop = activeMenuItems()[0];
+  $key = array_search($activeTop, array_column(navArray(), 'uid'));
+  if (array_key_exists('sub', navArray()[$key])) {
+    return navArray()[$key]['sub'];
+  } else {
+    return false;
+  }
+  
+}
 
 
 

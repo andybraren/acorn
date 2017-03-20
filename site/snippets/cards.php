@@ -72,6 +72,7 @@ if (!isset($type)) {
   <?php // GRAB CARDS
     
     $items = '';
+    $items = new Collection;
     
     if (isset($type)) {
       if ($type != 'makers') {
@@ -84,7 +85,11 @@ if (!isset($type)) {
           if ($type == 'none') {
             $items = page()->children()->sortBy('datePublished','desc');
           } else {
-            $items = $site->page($type)->children()->sortBy('datePublished','desc');
+            if ($site->page($type)) {
+              if ($site->page($type)->children()) {
+                $items = $site->page($type)->children()->sortBy('datePublished','desc');
+              }
+            }
           }
         }
         if (isset($maker)) {
@@ -111,12 +116,25 @@ if (!isset($type)) {
           }
           $items = $filtered;
         }
+        if (isset($event)) {
+          $filtered = new Pages();
+          foreach ($items as $item) {
+            if ($item->relatedEvents() != null) {
+              foreach ($item->relatedEvents() as $blah) {
+                if ($blah->slug() == $event) {
+                  $filtered->add($item);
+                }
+              }
+            }
+          }
+          $items = $filtered;
+        }
         if (isset($time)) {
           if ($time == 'upcoming') {
             $items = $items->filterBy('StartDate','>=',date('c'))->sortBy('StartDate','desc');
           }
           elseif ($time == 'past') {
-            $items = $items->filterBy('StartDate','<',date('c'))->sortBy('StartDate','desc');
+            $items = $items->filterBy('StartDate','<',date('c'))->sortBy('datePublished','desc');
           }
         }
         $items = $items->visibleToUser();
@@ -131,7 +149,7 @@ if (!isset($type)) {
   <?php endif ?>
   */ ?>
   
-  <?php if ($site->user() and $type != 'makers' or $items != '' and $type != 'makers'): ?>
+  <?php if ($site->user() and $type != 'makers' or $items != '' and $type != 'makers' or $page->isSubmissibleByUser()): ?>
   <div class="cards">
     
     <?php $newhero = new Asset('/assets/images/hero-new.png'); ?>
@@ -157,16 +175,16 @@ if (!isset($type)) {
     <?php endif ?>
     */ ?>
     
-    <?php if ($page->isEditableByUser()): ?>
-      <a href="<?php echo $site->page($type)->url() ?>/new<?php echo ($page->parent() == '' or $page->parent() == 'makers') ? '' : '?related=' . $page->slug() ?>" class="card">
-        <div class="card-hero">
-          <img src="<?php echo $newhero->crop(259,101)->url() ?>">
-        </div>
-                
-        <div class="card-content">
-          <h4>Add new</h4>
-        </div>
-      </a>
+    <?php if (($page->isEditableByUser() or $page->isSubmissibleByUser()) and $site->page($type)): ?>
+        <a href="<?php echo $site->page($type)->url() ?>/new<?php echo ($page->parent() == '' or $page->parent() == 'makers') ? '' : '?related=' . $page->slug() ?>" class="card">
+          <div class="card-hero">
+            <img src="<?php echo $newhero->crop(259,101)->url() ?>">
+          </div>
+                  
+          <div class="card-content">
+            <h4>Add new</h4>
+          </div>
+        </a>
     <?php endif ?>
     
     <?php // New bug card ?>
@@ -223,7 +241,7 @@ if (!isset($type)) {
         
         <?php if($page->uid() != 'books'): ?>
           <div class="card-details">
-            <span><?php echo date('M j Y', strtotime($item->datePublished())) ?></span>
+            <span><?php echo date('M j Y', $item->datePublished()) ?></span>
             <a href="<?php echo $item->url() ?>">Read &rarr;</a>
           </div>
         <?php endif ?>

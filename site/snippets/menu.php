@@ -71,7 +71,9 @@
           <?php elseif ($_SERVER['SERVER_NAME'] == 'tuftsmake.com'): ?>
             <li><a href="&#109;&#97;ilto&#58;and%79&#98;rare%&#54;&#69;&#64;g&#109;a%&#54;9l&#46;&#99;%6&#70;m">Report an issue</a></li>
           <?php else: ?>
-            <li><a href="<?php echo $site->page('about')->url() ?>">About</a></li>
+            <?php if ($site->page('about')): ?>
+              <li><a href="<?php echo $site->page('about')->url() ?>">About</a></li>
+            <?php endif ?>
             <li><a href="https://www.facebook.com/groups/535093299989314">Follow</a></li>
           <?php endif ?>
           

@@ -587,7 +587,7 @@ blockquote {
   padding: 0 8px;
 }
 
-.logo svg {
+.logo svg, .logo img {
   display: block;
   height: 35px;
   max-width: 500px; /* Dumb Safari fix http://stackoverflow.com/questions/24153939/inline-svg-scaling-auto-width */

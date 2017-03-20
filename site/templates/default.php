@@ -43,8 +43,20 @@
     <main class="content">
       <article>
         
+        <?php
+          if (preg_match("/[a-z]/i", $page->content()->title())){
+            $title = $page->content()->title();
+          } else {
+            $title = '';
+          }
+          
+        ?>
+        
         <div class="title" data-editable data-name="title">
-          <h1><?php echo ($page->title() != "") ? $page->title()->html() : "" ?></h1>
+          <h1><?php echo $title ?></h1>
+          <?php
+            //echo $page->authorsRaw();
+          ?>
         </div>
         
         <?php if($page->text() != ''): ?>
@@ -157,6 +169,11 @@
         <?php snippet('cards', array('type' => 'projects')) ?>
       <?php endif ?>
       
+      <?php if($page->parent() == 'events' && $page->isSubmissibleByUser()): ?>
+        <h2>Projects</h2>
+        <?php snippet('cards', array('type' => 'projects', 'event' => $page->uid())) ?>
+      <?php endif ?>
+      
       <?php if($page->uid() == 'forum'): ?>
         <?php snippet('forum') ?>
       <?php endif ?>
@@ -172,9 +189,12 @@
       */ ?>
       
       <?php if($page->uid() == 'events'): ?>
+        <!--
         <h2>Upcoming Events</h2>
         <?php snippet('cards', array('type' => 'events', 'time' => 'upcoming')) ?>
+        
         <h2>Past Events</h2>
+        -->
         <?php snippet('cards', array('type' => 'events', 'time' => 'past')) ?>
         <?php snippet('events') ?>
       <?php endif ?>

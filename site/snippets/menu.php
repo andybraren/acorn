@@ -59,48 +59,6 @@
           
           <li<?php echo $class ?>>
             <a href="<?php echo site()->url() . '/' . $item['uid'] ?>"><?php echo $item['title'] . $subtitle ?></a>
-            <?php if (array_key_exists('sub', $item)): ?>
-              <div class="blah">
-                <div class="container">
-                  <ul>
-                  <?php foreach ($item['sub'] as $subitem): ?>
-                  
-                    <?php $active = ($subitem['uid'] == $activeSub) ? 'active' : '' ?>
-                    <?php
-                      if ($active) {
-                        $exists = (site()->page($subitem['uid'])) ? '' : ' missing';
-                      } else {
-                        $exists = (site()->page($subitem['uid'])) ? '' : 'missing';
-                      }
-                    ?>
-                    <?php $class = ' ' . ($active or $exists) ? ' class="' . $active . $exists . '"' : '' ?>
-                    
-                    <li<?php echo $class ?>>
-                      <a href="<?php echo $subitem['uid'] ?>"><?php echo $subitem['title'] ?></a>
-                    </li>
-                  <?php endforeach ?>
-                  </ul>
-                  
-                  <ul class="menu menu-secondary">
-                    <li>
-                      <a>Expect bugs the week of 2/27</a>
-                    </li>
-                    
-                    <li class="search">
-                      <form class="search-container" action="<?php echo $site->url() . '/search'?>">
-                        <a><?php echo (new Asset('/assets/images/menu-search.svg'))->content() ?></a>
-                        <input id="search-box" type="text" class="search-box" name="s">
-                        <input type="submit" id="search-submit">
-                      </form>
-                    </li>
-                    
-                    <li>
-                      <a id="settings-reading"><?php echo (new Asset('/assets/images/menu-font.svg'))->content() ?></a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            <?php endif ?>
           </li>
   
   <?php if ($count == $number): ?>
@@ -129,16 +87,73 @@
                 <?php echo esc($user->firstName()) ?>
               </a>
             <?php else: ?>
-              <a id="button-login" class="login">Log in</a>
+              <a id="button-login" class="login" data-modal="login">Log in</a>
             <?php endif ?>
           </li>
+          
+          
+          
         </ul>
       
       </div>
     </nav>
+    
   <?php endif ?>
   
   <?php $count++; ?>
+  
 <?php endforeach ?>
+
+
+<?php if (hasSubMenu()): ?>
+  
+  <nav id="subnavigation" role="navigation">
+    <div class="container">
+      
+      <ul class="menu">
+        
+        <?php if(preg_match_all('/(?<!#)#{2,3}([^#].*)\n/', $page->text(), $matches)): // Grabs H2's and H3's ?>
+          <li id="toggle-toc">
+            <a><?php echo (new Asset('/assets/images/menu-toc.svg'))->content() ?></a>
+          </li>
+        <?php endif ?>
+        
+        <?php foreach (submenuItems() as $item): ?>
+          <?php
+            $url = ($site->page($item['uid'])) ? $site->url() . '/' . $item['uid'] : '';
+            $classarray = array();
+              if (!site()->page($item['uid'])) $classarray[] = 'missing';
+              if ($item['uid'] == $activeSub)  $classarray[] = 'active';
+            $class = (!empty($classarray)) ? ' class="' . implode(' ', $classarray) . '"' : '';
+          ?>
+          <li<?php echo $class ?>>
+            <a href="<?php echo $url ?>"><?php echo $item['title'] ?></a>
+          </li>
+        <?php endforeach ?>
+        
+      </ul>
+      
+      <ul class="menu menu-secondary">
+        <li class="search">
+          <form class="search-container" action="<?php echo $site->url() . '/search'?>">
+            <a><?php echo (new Asset('/assets/images/menu-search.svg'))->content() ?></a>
+            <input id="search-box" type="text" class="search-box" name="s">
+            <input type="submit" id="search-submit">
+          </form>
+        </li>
+        
+        <li>
+          <a id="settings-reading"><?php echo (new Asset('/assets/images/menu-font.svg'))->content() ?></a>
+        </li>
+      </ul>
+      
+    </div>
+  </nav>
+<?php endif ?>
+
+
+
+
+
 
 

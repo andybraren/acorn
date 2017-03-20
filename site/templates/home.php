@@ -28,7 +28,7 @@
               <a href="<?php echo page('projects')->url() ?>">
                 <h2>Browse projects</h2>
                 
-                <?php if ($image = page('projects')->children()->filterBy('visibility','public')->sortBy('created','desc')->limit(1)->heroImage()): ?>
+                <?php if ($image = page('projects')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()->heroImage()): ?>
                   <img style="height:100px;" src="<?php echo $image->crop(270,100)->url() ?>"></img>
                 <?php endif ?>
                 
@@ -43,7 +43,7 @@
               <a href="<?php echo page('handbooks')->url() ?>">
                 <h2>Read handbooks</h2>
                 
-                  <?php if ($image = page('handbooks')->children()->filterBy('visibility','public')->sortBy('created','desc')->limit(1)->images()->findBy('name','hero')->first()): ?>
+                  <?php if ($image = page('handbooks')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()->heroImage()): ?>
                     <img style="height:100px;" src="<?php echo $image->crop(270,100)->url() ?>"></img>
                   <?php endif ?>
                 
@@ -58,7 +58,7 @@
               <a href="<?php echo page('events')->url() ?>">
                 <h2>Attend an event</h2>
                 
-                <?php if ($image = page('events')->children()->filterBy('visibility','public')->sortBy('created','desc')->limit(1)->images()->findBy('name','hero')->first()): ?>
+                <?php if ($image = page('events')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()->heroImage()): ?>
                   <img style="height:100px;" src="<?php echo $image->crop(270,100)->url() ?>"></img>
                 <?php endif ?>
                 
@@ -73,7 +73,7 @@
               <a href="<?php echo page('spaces')->url() ?>">
                 <h2>Visit a space</h2>
                 
-                  <?php if ($image = page('spaces')->children()->filterBy('visibility','public')->sortBy('created','desc')->limit(1)->images()->findBy('name','hero')->first()): ?>                
+                  <?php if ($image = page('spaces')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()->heroImage()): ?>                
                     <img style="height:100px;" src="<?php echo $image->crop(270,100)->url() ?>"></img>
                   <?php endif ?>
                 

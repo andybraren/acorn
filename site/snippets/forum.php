@@ -1,5 +1,9 @@
 <?php
-  $items = page()->children()->sortBy('dateCreated','desc');
+  //$items = page()->children()->sortBy('dateCreated','desc');
+  //$items = page()->children()->sortBy('dateCreated','desc')->limit(3);
+  //$items = page()->children()->slice(0,10)->sortBy('dateCreated','asc');
+  //$items = page()->children()->limit(2)->sortBy('dateCreated','asc');
+  $items = page()->children()->sortBy('dateCreated','asc')->paginate(10);
 ?>
 
 <div class="discussion">
@@ -55,5 +59,19 @@
   </div>
     
 <?php endforeach ?>
+
+<?php if($items->pagination()->hasPages()): ?>
+<nav class="pagination">
+
+  <?php if($items->pagination()->hasNextPage()): ?>
+  <a class="next" href="<?php echo $items->pagination()->nextPageURL() ?>">&lsaquo; older posts</a>
+  <?php endif ?>
+
+  <?php if($items->pagination()->hasPrevPage()): ?>
+  <a class="prev" href="<?php echo $items->pagination()->prevPageURL() ?>">newer posts &rsaquo;</a>
+  <?php endif ?>
+
+</nav>
+<?php endif ?>
 
 </div>

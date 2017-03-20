@@ -405,7 +405,7 @@
                     <img src="<?php echo groupLogo($item->slug(), 40) ?>" width="40" height="40" class="<?php echo groupColor($item->slug()) ?>">
                   <?php endif ?>
                   
-                  <?php if ($type == 'events' or $type == 'projects'): ?>
+                  <?php if (($type == 'events' or $type == 'projects') and $item->heroImage()): ?>
                     <img src="<?php echo $item->heroImage()->crop(40,40)->url() ?>" width="40" height="40" class="<?php echo $item->color() ?>">
                   <?php endif ?>
                   
@@ -419,7 +419,7 @@
                     <?php else: ?>
                       <span><?php echo $item->title() ?></span>
                       <?php if ($type == 'events'): ?>
-                        <span><?php echo date('F j, Y', strtotime($item->dateStart())) ?></span>
+                        <span><?php echo date('F j, Y', $item->datePublished()) ?></span>
                       <?php endif ?>
                     <?php endif ?>
                     

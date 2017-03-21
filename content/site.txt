@@ -1,0 +1,87 @@
+Title: Tufts Maker Network
+----
+Description: All of Tufts' making-related spaces, events, clubs, projects, and resources.
+----
+Copyright: © 2014-(date: Year)
+----
+ColorOptions: red, blue, green, purple, orange, silver, gold
+----
+VisibilityOptions: public, unlisted, groups, private
+----
+UserTypes: user, admin
+----
+GroupTypes: club, course
+----
+AffiliationOptions: Undergraduate, Graduate (Masters), Graduate (PhD), Faculty, Staff, Community member, None
+----
+DepartmentOptions: Anthropology ## Art and Art History ## Biology ## Biomedical Engineering ## Center for Engineering Education and Outreach ## Chemical and Biological Engineering ## Chemistry ## Child Study and Human Development ## Civil and Environmental Engineering ## Classics ## Computer Science ## Drama and Dance ## Earth and Ocean Sciences ## Economics ## Education ## Electrical and Computer Engineering ## Engineering Management ## English, German, Russian, and Asian Languages/Literature ## History ## Human Factors ## Mathematics ## Mechanical Engineering ## Music ## Occupational Therapy ## Philosophy ## Physical Education ## Physics and Astronomy ## Political Science ## Psychology ## Religion ## Romance Languages ## Sociology ## Urban and Environmental Policy and Planning
+----
+MajorOptions: Anthropology ## Art and Art History ## Biology ## Biomedical Engineering ## Center for Engineering Education and Outreach ## Chemical and Biological Engineering ## Chemistry ## Child Study and Human Development ## Civil and Environmental Engineering ## Classics ## Computer Science ## Drama and Dance ## Earth and Ocean Sciences ## Economics ## Education ## Electrical and Computer Engineering ## Engineering Management ## English, German, Russian, and Asian Languages/Literature ## History ## Human Factors ## Mathematics ## Mechanical Engineering ## Music ## Occupational Therapy ## Philosophy ## Physical Education ## Physics and Astronomy ## Political Science ## Psychology ## Religion ## Romance Languages ## Sociology ## Urban and Environmental Policy and Planning
+----
+GoogleAnalytics: #########
+----
+StripeAPIKeys: ########, 
+----
+APIKeys: #########, ########
+----
+MenuPrimary:
+
+- title: Learn
+  uid: learn
+  sub:
+    - title: Courses
+      uid: courses
+    - title: Handbooks
+      uid: handbooks
+    - title: Books
+      uid: books
+- title: Make
+  uid: make
+  sub:
+    - title: Ideas
+      uid: ideas
+    - title: Projects
+      uid: projects
+    - title: Challenges
+      uid: challenges
+    - title: Materials
+      uid: materials
+- title: Connect
+  uid: connect
+  sub:
+    - title: Articles
+      uid: articles
+    - title: Makers
+      uid: makers
+    - title: Groups
+      uid: groups
+- title: Spaces
+  uid: spaces
+- title: Equipment
+  uid: equipment
+- title: Events
+  uid: events
+  subtitle: alpha
+- title: Forum
+  uid: forum
+  subtitle: alpha
+
+----
+MenuSecondary:
+
+- title: Docs
+  uid: docs
+  subtitle: v0.15
+- title: Follow
+  url: https://www.facebook.com/groups/535093299989314
+- title: Contact
+  url: mailto:andy@acorn.blog
+
+
+
+
+
+
+
+
+

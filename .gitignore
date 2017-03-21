@@ -18,7 +18,7 @@ Icon
 # Content
 # ---------------
 
-/content/*
+
 
 # Unlicensed components
 # ---------------
@@ -48,4 +48,3 @@ Icon
 # ---------------
 
 /site/config/private.php
-/content/site.txt

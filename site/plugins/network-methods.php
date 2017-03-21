@@ -888,6 +888,16 @@ function milliseconds() {
   return $milliseconds;
 }
 
+
+
+
+
+
+
+
+
+
+/*
 function navArray() {
   $nav = array(
     array(
@@ -968,10 +978,34 @@ function navArray() {
   );
   return $nav;
 }
+*/
+
+function navArrayYAML() {
+  return yaml(site()->MenuPrimary());
+}
+
+function navSecondaryArray() {
+  $nav = array(
+    array(
+      'title' => 'Docs',
+      'uid' => 'docs',
+      'subtitle' => 'v0.2',
+    ),
+    array(
+      'title' => 'Follow',
+      'url' => 'https://www.facebook.com/groups/535093299989314',
+    ),
+    array(
+      'title' => 'Contact',
+      'url' => 'mailto:andy@acorn.blog',
+    ),
+  );
+  return $nav;
+}
 
 
 function activeItem() {
-  foreach (navArray() as $item) {
+  foreach (navArrayYAML() as $item) {
     
     // return top-level item
     if (site()->page($item['uid'])) {
@@ -1001,7 +1035,7 @@ function activeMenuItems() {
   
   $uid = explode('/', $_SERVER['REQUEST_URI'])[1]; // works even on error pages
   
-  foreach (navArray() as $item) {
+  foreach (navArrayYAML() as $item) {
     
     // return top-level item
     if (site()->page($item['uid'])) {
@@ -1048,13 +1082,16 @@ function hasSubMenu() {
   
   $activeTop = activeMenuItems()[0];
   
-  // http://stackoverflow.com/questions/7694843/using-array-search-for-multi-dimensional-array
-  $key = array_search($activeTop, array_column(navArray(), 'uid'));
-  
-  if (array_key_exists('sub', navArray()[$key])) {
-    return true;
-  } else {
-    return false;
+  if ($activeTop != '') {
+    
+    // http://stackoverflow.com/questions/7694843/using-array-search-for-multi-dimensional-array
+    $key = array_search($activeTop, array_column(navArrayYAML(), 'uid'));
+    
+    if (array_key_exists('sub', navArrayYAML()[$key])) {
+      return true;
+    } else {
+      return false;
+    }
   }
   
 }
@@ -1063,9 +1100,9 @@ function hasSubMenu() {
 function submenuItems() {
   
   $activeTop = activeMenuItems()[0];
-  $key = array_search($activeTop, array_column(navArray(), 'uid'));
-  if (array_key_exists('sub', navArray()[$key])) {
-    return navArray()[$key]['sub'];
+  $key = array_search($activeTop, array_column(navArrayYAML(), 'uid'));
+  if (array_key_exists('sub', navArrayYAML()[$key])) {
+    return navArrayYAML()[$key]['sub'];
   } else {
     return false;
   }

@@ -184,8 +184,18 @@ data::$adapters['kd']['encode'] = function($data) {
 
 c::set('routes', array(
   
-  // On non-public pages, display the standard error page if the visitor isn't logged in and/or hasn't been given permission
-  // https://forum.getkirby.com/t/return-error-page-if-field-value-is-something/3894
+
+  
+	// https://getkirby.com/docs/developer-guide/advanced/routing#omitting-the-blog-folder-in-urls
+  // Redirect all requests to /users/ directory to example.com/username
+  array(
+    'pattern' => 'users/(:any)',
+    'method' => 'GET',
+    'action'  => function($uid) {
+      go(site()->url() . '/' . $uid);
+    }
+  ),
+  
   
   // ROBOTS.TXT FILE
   array(
@@ -193,7 +203,7 @@ c::set('routes', array(
     'action'  => function() {
       echo '<pre style="word-wrap: break-word; white-space: pre-wrap;">';
       if($_SERVER['SERVER_NAME'] != 'drewbaren.com' and $_SERVER['SERVER_NAME'] != 'tuftsmake.com' and $_SERVER['SERVER_NAME'] != 'makernetwork.org') {
-        echo 'User-agent: *<br>Disallow: /thumbs/<br>Disallow: /makers<br>Disallow: /drafts/<br>Sitemap: ' . site()->url() . '/sitemap';
+        echo 'User-agent: *<br>Disallow: /thumbs/<br>Disallow: /users<br>Disallow: /drafts/<br>Sitemap: ' . site()->url() . '/sitemap';
         foreach (site()->index()->filterBy('visibility','unlisted') as $hiddenpage) {
           echo '<br>Disallow: /' . $hiddenpage->uri();
         }
@@ -287,7 +297,7 @@ c::set('routes', array(
     			// create the new maker profile page
     			try {
     				$firstandlast = get('firstname') . " " . get('lastname');
-    			  $newPage = page('makers')->children()->create(get('username'), 'maker', array(
+    			  $newPage = page('users')->children()->create(get('username'), 'maker', array(
     			    'title' => $firstandlast,
     			    'created' => date('Y-m-d H:i:s'),
     			    'modified' => date('Y-m-d H:i:s'),
@@ -334,7 +344,7 @@ c::set('routes', array(
     			// log the user in and redirect them to their new profile page
           try {
             $user->login(get('password'));
-            go('/makers/' . get('username'));
+            go('/users/' . get('username'));
           } catch(Exception $e) {
             $error = true;
           }
@@ -575,6 +585,12 @@ c::set('routes', array(
   		/* Hero */
   		$hero = (isset($_POST['hero'])) ? $_POST['hero'] : $targetpage->hero();
   		
+  		/* Menu */
+  		$menuSecondary = $_POST['menusecondary'];
+  		
+  		
+  		
+  		
       try {
         site()->page($targetpage)->update(array(
           'Title'  => $title,
@@ -586,6 +602,10 @@ c::set('routes', array(
           'Text'  => $text,
         ));
         //echo var_dump($_POST);
+        
+        site()->page('site')->update(array(
+          'newstuff'  => $menuSecondary,
+        ));
 
         if ($title != $originaltitle and $targetpage->parent() != 'forum') {
           $currentlocation = kirby()->roots()->content() . '/' . $targetpage->diruri();
@@ -879,44 +899,9 @@ c::set('routes', array(
 	),
 	
 	
-	// https://getkirby.com/docs/developer-guide/advanced/routing#omitting-the-blog-folder-in-urls
-  array(
-    'pattern' => 'makerssssss/(:any)',
-    'action'  => function($uid) {
-      $new = site()->url() . '/' . $uid;
-      go($new);
-      //header::redirect("$new", 301);
-    }
-  ),
-  
-  // Redirect all requests to /users/ directory to example.com/username
-  array(
-    'pattern' => 'makers/(:any)',
-    'method' => 'GET',
-    'action'  => function($uid) {
-      go($uid);
-    }
-  ),
-  
-  array(
-    'pattern' => array('(:any)', '(:any)/(:any)'),
-    'method' => 'GET',
-    'action'  => function($uid) {
-      
-      $path = kirby()->request()->path();
 
-      $page = page($path);
-      
-      if (!$page) $page = page('makers/' . $path);
-      
-      if ($page) {
-        return site()->visit($page);
-      } else {
-        return site()->visit($uid);
-      }
-      
-    }
-  ),
+  
+
   
 
   
@@ -1011,7 +996,7 @@ c::set('routes', array(
 
         // Images uploaded with username data are from Makerboxes, and should go to maker profiles
         if (!empty($_POST['username'])) {
-          $targeturi = '/makers/' . $_POST['username'] . '/gallery';
+          $targeturi = '/users/' . $_POST['username'] . '/gallery';
           $target_dir = kirby()->roots()->content() . $targeturi . '/';
           if (!file_exists($target_dir)) {
             mkdir($target_dir, 0775, true);

@@ -42,7 +42,7 @@ array(
       }
       foreach ($users as $user) {
         $temp['username']   = ($username = $user->username()) ? (string)$username : null;
-        $temp['profileURL'] = ($user->username()) ? (string)site()->url() . '/makers/' . $user->username() : null;
+        $temp['profileURL'] = ($user->username()) ? (string)site()->url() . '/users/' . $user->username() : null;
         //$temp['avatarURL']  = ($avatar = site()->user($user)->avatar()) ? (string)$avatar->crop(40, 40)->url() : null;
         $temp['avatarURL']  = userAvatar($user->username());
         $temp['firstname']  = ($user->firstname()) ? (string)$user->firstname() : null;
@@ -152,6 +152,113 @@ array(
       $data['code']    = '404';
       $data['message'] = $error;
       echo json_encode($data);
+    }
+    
+  }
+),
+
+// API
+// https://getkirby.com/docs/cookbook/json
+array(
+	'pattern' => 'apib',
+	'method'  => 'POST|GET',
+  'action'  => function() {
+    
+    $key = '';
+    $error = '';
+    
+
+  
+  function deviceArray() {
+    $array       = array();
+    $string      = site()->page('site')->content()->devices();
+    $cleanstring = str_replace(array(', ','== '), array(',','=='), $string);
+    $toparray    = explode(',', $cleanstring);
+    foreach($toparray as $x) {
+      $x = explode('==', $x);
+      $array[] = $x;
+    }
+    return $array;
+  }
+  
+  print_r(deviceArray());
+  
+  $apikeys     = a::extract(deviceArray(), 0);
+  $ipaddresses = a::extract(deviceArray(), 1);
+  $devicenames = a::extract(deviceArray(), 2);
+  
+  print_r($apikeys);
+  print_r($ipaddresses);
+  print_r($devicenames);
+  
+  
+  echo "NEW";
+  
+  print_r(site()->page('site')->content()->YAMLdevices()->yaml());
+  
+  foreach (site()->page('site')->content()->YAMLdevices()->toStructure() as $item) {
+    echo $item->name();
+  }
+  
+  
+  
+    
+    //$array = str::split(explode('==',site()->page('site')->content()->devices())[0],',');
+    //print_r($array);
+    
+    if (get('key')) {
+      if (in_array(get('key'), deviceArray())) {
+        $key = 'valid';
+      } else {
+        $key = 'invalid';
+      }
+    } else {
+      $key = 'public';
+    }
+    
+    //echo get('key');
+    
+    //echo $key;
+    
+    //echo file_get_contents('php://input');
+    
+    $ip = (isset($_POST['ip'])) ? $_POST['ip'] : 'no';
+    
+    try {
+      site()->page('site')->update(array(
+        'SentIP'  => $ip,
+      ));
+      //echo 'success';
+    } catch(Exception $e) {
+      //echo 'error: ' . $targetpage->slug() . '<br>';
+    }
+    
+  }
+),
+
+
+
+
+
+
+
+
+
+array(
+  'pattern' => array('(:any)', '(:any)/(:any)'),
+  'method' => 'GET',
+  'action'  => function($uid) {
+    
+    $path = kirby()->request()->path();
+
+    $page = page($path);
+    
+    if (!$page) $page = page('users/' . $path);
+    
+    if ($page) {
+      return site()->visit($page);
+    } else {
+      return site()->visit($uid);
     }
     
   }

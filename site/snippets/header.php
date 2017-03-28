@@ -110,7 +110,7 @@
 <?php
   if ($page->color() != '') {
     $color = $page->color();
-  } elseif ($page->parent() == 'makers' and $user = $site->user($page->slug()) and $user->color() != '') {
+  } elseif ($page->parent() == 'users' and $user = $site->user($page->slug()) and $user->color() != '') {
     $color = $user->color();
   } else {
     $color = $site->coloroptions()->split(',')[0];

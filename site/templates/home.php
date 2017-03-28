@@ -125,7 +125,7 @@
           </div>
           
           <div class="cards-makers size-half">
-            <?php snippet('cards', array('type' => 'makers')) ?>
+            <?php snippet('cards', array('type' => 'users')) ?>
           </div>
           
         </div>

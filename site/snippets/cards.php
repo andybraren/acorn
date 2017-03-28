@@ -8,25 +8,25 @@ if (!isset($type)) {
 }
 ?>
 
-<?php if ($type == "makers"): ?>
+<?php if ($type == "users"): ?>
 
   <?php if ($page->isHomePage()): ?>
     <?php $counter = 0 ?>
     <?php foreach($site->users()->sortBy('registrationdate', 'desc') as $user): ?>
       <?php if($avatar = $user->avatar() and $counter < 20): ?>
-        <a href="<?php echo $site->url() . "/makers/" . $user ?>">
+        <a href="<?php echo $site->url() . "/users/" . $user ?>">
             <img src="<?php echo $avatar->crop(108,108)->url() ?>"></img>
         </a>
         <?php $counter++ ?>
       <?php endif ?>
     <?php endforeach ?>
   
-  <?php elseif ($type == 'makers' and isset($group)): ?>
+  <?php elseif ($type == 'users' and isset($group)): ?>
     <div class="cards-makers">
       <h2>Members</h2>
       <?php foreach ($site->users()->sortBy('registrationdate', 'desc') as $user): ?>
         <?php if ($user->groups() and in_array($group, str::split($user->groups(),','))): ?>
-          <a href="<?php echo $site->url() . "/makers/" . $user ?>">
+          <a href="<?php echo $site->url() . "/users/" . $user ?>">
             <img src="<?php echo userAvatar($user, 108) ?>" class="<?php echo userColor($user) ?>">
             <div><span><?php echo $user->firstname() . ' ' . $user->lastname() ?></span></div>
           </a>
@@ -51,7 +51,7 @@ if (!isset($type)) {
         $filters = trim(preg_replace('/\s+/',' ',$filters));
       ?>
       
-        <a class="<?php echo userColor($user) ?>" data-filters="<?php echo $filters ?>" href="<?php echo $site->url() . "/makers/" . $user ?>">
+        <a class="<?php echo userColor($user) ?>" data-filters="<?php echo $filters ?>" href="<?php echo $site->url() . "/users/" . $user ?>">
           <img src="<?php echo userAvatar($user, 108) ?>" class="<?php echo userColor($user) ?>">
           <?php /* <div><span><?php echo $user->firstname() . ' ' . $user->lastname() ?></span></div> */ ?>
           <span><?php echo $user->firstname() . ' ' . $user->lastname() ?></span>
@@ -75,7 +75,7 @@ if (!isset($type)) {
     $items = new Collection;
     
     if (isset($type)) {
-      if ($type != 'makers') {
+      if ($type != 'users') {
         if (isset($type)) { // Collect all items of the given type
           //$items = $site->page($type)->children()->sortBy('created','desc');
           //$items = $site->page($type)->children()->sortBy('datedata','desc');
@@ -137,6 +137,7 @@ if (!isset($type)) {
             $items = $items->filterBy('StartDate','<',date('c'))->sortBy('datePublished','desc');
           }
         }
+        $items = $items->filterBy('datePublished','!=','');
         $items = $items->visibleToUser();
       }
     }
@@ -149,7 +150,7 @@ if (!isset($type)) {
   <?php endif ?>
   */ ?>
   
-  <?php if ($site->user() and $type != 'makers' or $items != '' and $type != 'makers' or $page->isSubmissibleByUser()): ?>
+  <?php if ($site->user() and $type != 'users' or $items != '' and $type != 'users' or $page->isSubmissibleByUser()): ?>
   <div class="cards">
     
     <?php $newhero = new Asset('/assets/images/hero-new.png'); ?>
@@ -159,7 +160,7 @@ if (!isset($type)) {
     <?php // New project card ?>
     <?php /*
     <?php if ($type == "projects" and $user = $site->user()): ?>
-      <?php if($user = $site->user() and str::contains($page->makers(), $user) or $user = $site->user() and str::contains($page->slug(), $user) or $user = $site->user() and $user->usertype() == 'admin'): ?>
+      <?php if($user = $site->user() and str::contains($page->users(), $user) or $user = $site->user() and str::contains($page->slug(), $user) or $user = $site->user() and $user->usertype() == 'admin'): ?>
 
         <a href="<?php echo $site->page('projects')->url() ?>/new" class="card">
           <div class="card-hero">
@@ -176,7 +177,7 @@ if (!isset($type)) {
     */ ?>
     
     <?php if (($page->isEditableByUser() or $page->isSubmissibleByUser()) and $site->page($type)): ?>
-        <a href="<?php echo $site->page($type)->url() ?>/new<?php echo ($page->parent() == '' or $page->parent() == 'makers') ? '' : '?related=' . $page->slug() ?>" class="card">
+        <a href="<?php echo $site->page($type)->url() ?>/new<?php echo ($page->parent() == '' or $page->parent() == 'users') ? '' : '?related=' . $page->slug() ?>" class="card">
           <div class="card-hero">
             <img src="<?php echo $newhero->crop(259,101)->url() ?>">
           </div>

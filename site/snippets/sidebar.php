@@ -50,10 +50,12 @@
       <ul class="dropdown-menu">
         <li data-modal="delete">Delete page</li>
         <li><s>Change URL</s></li>
+        <li><s>Schedule post</s></li>
+        <li><s>Save revision</s></li>
         <li><s>Revision history</s></li>
       </ul>
     </div>
-        
+    
     <div id="settings" class="">
       <span class="heading">SETTINGS</span>
       <form method="post" action="savesettings" id="form-settings">

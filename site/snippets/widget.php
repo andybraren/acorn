@@ -7,37 +7,39 @@
   
   <?php $divechoed = false; ?>
   
-  <?php foreach($site->page($type)->children() as $relatedpage): ?>
-    <?php if (in_array($relatedpage->slug(), $page->related())): ?>    
-      <?php if (!$divechoed): ?>
-        <div class="widget">
-          <?php
-            switch ($type) {
-              case 'spaces':    $title = 'SPACES'; break;
-              case 'handbooks': $title = 'HANDBOOKS'; break;
-            }
-          ?>
-          <span class="heading"><?php echo $title ?></span>
-          <?php $divechoed = true ?>
-      <?php endif ?>
-          <a href="<?php echo $relatedpage->url() ?>">
-            <?php if ($type == 'spaces' and $page->parent() == 'equipment'): ?>
-              <div class="row silver indicator">
-                <!--<img src="<?php echo $relatedpage->images()->first()->crop(40)->url() ?>" width="40" height="40">-->
-                <div class="column">
-                  <span><?php echo $relatedpage->title() ?></span>
-                  <!--<span class="indicator"># of # Available</span>-->
-                  <span class="indicator"># of # Available</span>
+  <?php if ($site->page($type)): ?>
+    <?php foreach($site->page($type)->children() as $relatedpage): ?>
+      <?php if (in_array($relatedpage->slug(), $page->related())): ?>    
+        <?php if (!$divechoed): ?>
+          <div class="widget">
+            <?php
+              switch ($type) {
+                case 'spaces':    $title = 'SPACES'; break;
+                case 'handbooks': $title = 'HANDBOOKS'; break;
+              }
+            ?>
+            <span class="heading"><?php echo $title ?></span>
+            <?php $divechoed = true ?>
+        <?php endif ?>
+            <a href="<?php echo $relatedpage->url() ?>">
+              <?php if ($type == 'spaces' and $page->parent() == 'equipment'): ?>
+                <div class="row silver indicator">
+                  <!--<img src="<?php echo $relatedpage->images()->first()->crop(40)->url() ?>" width="40" height="40">-->
+                  <div class="column">
+                    <span><?php echo $relatedpage->title() ?></span>
+                    <!--<span class="indicator"># of # Available</span>-->
+                    <span class="indicator"># of # Available</span>
+                  </div>
                 </div>
-              </div>
-            <?php else: ?>
-              <div class="row">
-                <span><?php echo $relatedpage->title() ?></span>
-              </div>
-            <?php endif ?>
-          </a>
-    <?php endif ?>
-  <?php endforeach ?>
+              <?php else: ?>
+                <div class="row">
+                  <span><?php echo $relatedpage->title() ?></span>
+                </div>
+              <?php endif ?>
+            </a>
+      <?php endif ?>
+    <?php endforeach ?>
+  <?php endif ?>
     
   <?php if ($divechoed == true): ?>
     </div>
@@ -57,29 +59,31 @@
   
   <?php $divechoed = false; ?>
   
-  <?php foreach($site->page('equipment')->children() as $equipmentpage): ?>
-    <?php if ($equipmentpage->related() != null and in_array(page()->slug(), $equipmentpage->related())): ?>
-    
-      <?php if (!$divechoed): ?>
-        <div class="widget">
-          <span class="heading">EQUIPMENT</span>
-          <?php $divechoed = true ?>
-      <?php endif ?>
-          <a href="<?php echo $equipmentpage->url() ?>">
-            <div class="row silver indicator">
-              <img src="<?php echo $equipmentpage->images()->first()->crop(40)->url() ?>" width="40" height="40">
-              <div class="column">
-                <span><?php echo $equipmentpage->title() ?></span>
-                <?php if ($page->parent() == 'spaces'): ?>
-                  <span class="indicator">Status: unknown</span>
-                <?php else: ?>
-                  <span class="indicator"># of # Available</span>
-                <?php endif ?>
+  <?php if ($site->page('equipment')): ?>
+    <?php foreach($site->page('equipment')->children() as $equipmentpage): ?>
+      <?php if ($equipmentpage->related() != null and in_array(page()->slug(), $equipmentpage->related())): ?>
+      
+        <?php if (!$divechoed): ?>
+          <div class="widget">
+            <span class="heading">EQUIPMENT</span>
+            <?php $divechoed = true ?>
+        <?php endif ?>
+            <a href="<?php echo $equipmentpage->url() ?>">
+              <div class="row silver indicator">
+                <img src="<?php echo $equipmentpage->images()->first()->crop(40)->url() ?>" width="40" height="40">
+                <div class="column">
+                  <span><?php echo $equipmentpage->title() ?></span>
+                  <?php if ($page->parent() == 'spaces'): ?>
+                    <span class="indicator">Status: unknown</span>
+                  <?php else: ?>
+                    <span class="indicator"># of # Available</span>
+                  <?php endif ?>
+                </div>
               </div>
-            </div>
-          </a>
-    <?php endif ?>
-  <?php endforeach ?>
+            </a>
+      <?php endif ?>
+    <?php endforeach ?>
+  <?php endif ?>
     
   <?php if ($divechoed == true): ?>
     </div>
@@ -381,8 +385,6 @@
               
               <?php
               if ($type == 'authors') {
-                $url = site()->page('makers/' . $item->username())->url();
-                $url = site()->users($item)->userURL();
                 $url = userURL($item);
               } else {
                 $url = $item->url();

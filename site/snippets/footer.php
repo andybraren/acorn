@@ -23,6 +23,7 @@
 
   <?php // Load all of the editing-related resources if they're a logged-in maker with the right permissions ?>
   <?php if($page->isEditableByUser() or $page->comments() or $page->submissions() == 'public'): ?>
+    <?php echo js('assets/js/editing/packery.min.js') ?>
     <?php echo js('assets/js/editing/to-markdown.js') ?>
     <?php echo css('assets/js/contenttools/content-tools.min.css') ?>
     <?php echo js('assets/js/contenttools/content-tools.js') ?>

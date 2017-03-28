@@ -1,0 +1,397 @@
+Title: Acorn Platform Documentation
+----
+Datedata: 2016-11-03 12:00:00, 2016-11-03 12:00:00 == abraren, 2016-11-03 12:00:00, 2016-11-03 15:00:00, 2016-11-03 16:00:00
+----
+Userdata: abraren ~ Creator
+----
+Reldata: 
+----
+Settings: public, blue, comments == off, submissions == off, price == off, equipmentstatus == available
+----
+Hero: 
+----
+Text: 
+
+The Maker Network is a website platform that helps communities collect, organize, and connect all of their making-related spaces, events, groups, projects, and resources. It includes many of the features that new community makerspaces need, and integrates directly with Brian O'Connell's [RFID Network](https://github.com/JumbosMakerNetwork/RFID_Network) to make managing a makerspace easier.
+
+This platform is actively being developed by Andy Braren (hi!), and has a sizable roadmap ahead. Your feedback and/or code contributions are appreciated.
+
+<!--If you're a library, school, or community member that would like to adapt this site for your own makerspace - go for it. Unfortunately I can't commit to offering a lot of support, but feel free to shoot an email.-->
+
+(callout: warning text: The Maker Network platform is still a work in progress with many known bugs. The documentation below, along with almost everything about the way it works, is subject to change.)
+
+## Background
+
+This platform began as a simple [WordPress](https://wordpress.org/) website for one of Tufts University's earliest makerspaces, Jumbo's Maker Studio, in mid-2014. As our needs, spaces, and makerspace-related research projects grew, so did the site. Eventually it became clear that WordPress was holding the site back, so an entirely new [Kirby](https://getkirby.com/)-based site was built from scratch and structured in such a way that it could be customized and extended easily. That brings us to today.
+
+You can see the Network being used in 3 places:
+
+1. [maker.tufts.edu](https://maker.tufts.edu/) is the intended home of the Maker Network at Tufts University. It is search-indexable by Google and others, and is hosted on Tufts' servers.
+2. [makernetwork.org](https://makernetwork.org/) is a constantly-changing "beta" site that Andy uses for development. You will frequently encounter broken pages and weird issues here. The server it runs on is owned by Andy.
+3. [tuftsmake.com](https://tuftsmake.com/projects) is a slightly stripped-down but "stable" site that is being tested by students within the Mechanical Engineering department. This site is also hosted on Andy's server to provide quicker tech support and fixes.
+
+For more information on the Network's feature set, the history of the project, or the many design decisions made during its development, check out the [Maker Network project page](https://makernetwork.org/projects/maker-network).
+
+(link: https://makernetwork.org/projects/maker-network)
+
+
+
+
+
+
+
+
+
+
+If you've never used Kirby before, I highly recommend looking at the following:
+
+- [Kirby's (excellent) documentation](https://getkirby.com/docs)
+- [Kirby's (also excellent) forum](https://forum.getkirby.com/)
+
+If you're trying to develop something new, Kirby's [Cheat Sheet](https://getkirby.com/docs/cheatsheet) will help you figure out which methods to use in order to manipulate content, pages, and field data. I almost always have it handy while developing.
+
+
+
+
+
+## Installation
+
+Since the site doesn't use an SQL database, installation is as straightforward as copying all of the files to a web server's public directory and visiting site's URL in a web browser. Eventually an initial setup wizard will help the first user create an "admin" account, upload a logo, configure default settings, add their Google Analytics tracking code, and more. Until then, a code-savvy developer needs to keep reading.
+
+Visit the [Network GitHub repository](https://github.com/andybraren/network\) to view the codebase. Some plugins and external components haven't been added to the repository yet, so certain parts of the site will break.
+
+### Requirements
+
+In addition to [Kirby's requirements](https://getkirby.com/docs/installation/download) (Apache, PHP, and mbstring), your server's Apache settings may also need to be tweaked. [Extending the session duration](https://forum.getkirby.com/t/prolong-login-time/4401) (so that users aren't logged out too frequently) and boosting PHP's allotted RAM are recommended.
+
+## Site structure
+
+### assets
+
+(image: folder-assets.png size: medium)
+
+The assets folder contains all of the supplementary CSS/JS code, fonts, and images that are used throughout the site (like the logo). It also contains an `avatars` folder with the unmodified profile photos of every user.
+
+### content
+
+(image: folder-content.png size: medium)
+
+This is where all of the public pages that make up the site live. The `about` folder contains everything that generates the [about page](https://makernetwork.org/about), `projects` for the [projects page](https://makernetwork.org/projects), `handbooks` for [handbooks](https://makernetwork.org/handbooks), and so on. The name of the folder determines its public-facing URL.
+
+Inside each folder is a ".txt" file that contains all of the information necessary to generate the page. The name of the file is typically used to determine which template is used to process its contents, but in the Network's case the names are arbitrary for now (templates are determined by the file's location instead).
+
+### kirby
+
+This is where Kirby's system files are stored. Kirby updates can be applied simply by replacing this folder with the new one.
+
+### site
+
+(image: folder-site.png size: medium)
+
+As a developer, this is where you'll be working most of the time. All of the PHP that makes the site work is contained within this folder.
+
+`accounts` contains each user's preferences and information.
+
+`cache` is where Kirby stores the HTML files it generates if caching is turned on. Eventually I'll turn this on to make the entire site even faster, but at the moment it breaks the ability to show logged-in users different information.
+
+`config` is where Kirby's settings and server settings can be tweaked (like turning caching on/off).
+
+`plugins` contains a few useful community-made additions, along with the code that runs the Network's API and custom functions/methods that I've written.
+
+`snippets` are small, reusable parts of the site that would be repetitive to include in every single page template. Code files for the main navigation, footer, and content cards are found here.
+
+`tags` are like WordPress shortcodes that take something simple (like a YouTube URL) and run logic to replace it with something fancy (like the HTML for an embedded YouTube player). Image tags like `image: hello.jpg` are what create the responsive images in the main content area of every project page, for example.
+
+`templates` determine the HTML that's generated for a ".txt" file, based on its name. The home directory's "home.txt" file is processed by the `home.php` template, for example. All others are processed by the `default.php` template I've created.
+
+### thumbs
+
+This is where Kirby stores all of the resized images that our templates, snippets, and tags ask for. For the most part this directory takes care of itself, but can become bloated over time with thumbnails for images that are no longer being used. I have plans to make cleanup of this folder more automatic without resorting to server daemons that have to be configured.
+
+### index.php, license.md, and readme.md
+
+The index file loads up Kirby when the site is called upon, just like WordPress. You can add logic to this file if something needs to be processed before Kirby gets loaded, but that's best to avoid.
+
+The readme file contains some information about the platform and a link to this documentation. The license file contains Kirby's terms of use. Kirby requires you to [buy a license](https://getkirby.com/buy) for each individual site that you build (each unique hostname).
+
+## Storing and retrieving data
+
+### Site data
+
+All site-related information (the name of the site, Google Analytics ID, API keys, color scheme, etc.) is located within `/content/site.txt`.
+
+    Title: Tufts Maker Network
+    ----
+    Description: All of Tufts' making-related spaces, events, groups, projects, and resources.
+    ----
+    Copyright: © 2014-(date: Year)
+    ----
+    ColorOptions: blue, red, green, purple, orange, silver, gold
+    ----
+    VisibilityOptions: public, unlisted, groups, private
+    ----
+    UserTypes: user, admin
+    ----
+    GroupTypes: (TBD)
+    ----
+    AffiliationOptions: Undergraduate, Graduate (Masters) , Graduate (PhD), Faculty, Staff, Community member, None
+    ----
+    DepartmentOptions: (TBD)
+    ----
+    MajorOptions: Biology, Chemistry, English, Psychology
+    ----
+    GoogleAnalytics: UA-########-1
+    ----
+    APIKeys: ###############, ###############
+
+(callout: notice text: Please note that some of these fields will likely be removed from site.txt and placed elsewhere. Again, this is all actively being developed.)
+
+The color and visibility fields determine the choices that users have when choosing a page's color scheme or visibility setting. Deleting "purple" from this list of options will prevent users from making purple pages, for example. Deleting "public" will prevent users from being able to make pages that can be viewed by anyone without an account.
+
+UserTypes, of which there are only two at the moment, determine a user's access level. Admins can see and edit every page within the site. Basic users can only edit pages in which they're listed as an author/writer. In the future an "editor" type might be added, allowing teachers to edit or add to their student's work, or privately assign them grades that only the two of them can see.
+
+AffiliationOptions, DepartmentOptions, and MajorOptions determine the options that are available within the signup form.
+
+The Google Analytics ID for the site is also stored here, along with any API keys from the RFID system.
+
+### Page data
+
+Recall that within each page's folder is a .txt file that contains all of the information used by the page. Typically each "field" within that file (delineated by `----`) specifies just one piece of information, as shown in [Kirby's example](https://getkirby.com/docs/content/adding-content#text-files):
+
+    Title: About us
+    ----
+    Intro: This is some intro text
+    ----
+    Text: This is the text for the about page
+
+Given that 29+ possible bits of information need to be contained within the Network's .txt files, however, I decided to combine related fields and use a set of [custom page methods](https://getkirby.com/docs/developer-guide/objects/page) to make storing & retrieving page information easier and more compact.
+
+Below is every possible field within a Network .txt file.
+
+    Title: The page title
+    ----
+    DateData: 2016-01-12 13:59:00, 2016-01-12 13:59:45 == abraren, 2016-01-12 13:59:30, 2016-01-25 10:00:00, 2016-01-25 11:00:00
+              date created         date modified (and by whom)     date published       event start date     event end date
+    ----
+    UserData: abraren ~ Web Guy, crogers ~ Advisor /// drewbaren ~ Old Web Guy, jschmoe99 ~ Old advisor /// abraren, jschmoe /// subscriber@gmail.com, another@junkmail.biz /// imregistered, metoo24, measwell /// iattended, metoo24, measwell /// canijointhisgroup95, metoo24
+              active authors                           inactive/retired authors                             subscribed users     email subscribers                              event registrants                   event attendees                  membership requests
+    ----
+    RelData: tufts-make, ultimaker-2 /// Twitter == https://twitter.com && Facebook == https://facebook.com /// biology, creative, copper /// abraren, drewbaren /// jschmoe99, ilikeeverything
+             related "internal" pages    "external" links                                                       subjects / tags / materials   "likes"            /// "votes"
+    ----
+    Settings: public, red, comments == off, submissions == off, price == off
+    ----
+    Hero: cute-puppies-omg.jpg
+    ----
+    Location: Eaton Hall, Medford MA 02155
+    ----
+    Hours: 12:00 04:00 09:00 04:00 09:00 04:00 09:00 04:00 09:00 04:00 09:00 18:00 10:00 17:00 ~ The hours above are subject to [Tufts' calendar](https://it.tufts.edu/qs-eatonhours)
+    ----
+    Text: This is the text that will be displayed within the page.
+
+#### Retrieving page data
+
+Consider the below to be an extension of [Kirby's Cheat Sheet](https://getkirby.com/docs/cheatsheet). You can use these methods to `echo` or manipulate the information stored within each page's .txt file.
+
+##### DateData
+
+`$page->dateCreated()` - the date a page was first created
+`$page->dateModified()` - the most recent date the page was modified
+`$page->modifiedBy()` - the username who last modified the page
+`$page->datePublished()` - the date the page was first made non-private
+`$page->dateStart()` - the start day and time of an event
+`$page->dateEnd()` - the end day and time of an event
+
+##### UserData
+
+`$page->authors()` - returns an array of active author usernames (with roles separated by ~)
+`$page->oldauthors()` - returns an array of old/retired author usernames (with roles separated by ~)
+`$page->subscribers()` - returns an array of subscribed usernames
+`$page->subscriberEmails()` - returns an array of subscribed (non-user) email addresses
+`$page->registrants()` - returns an array of event registrants
+`$page->attendees()` - returns an array of event attendees
+`$page->requests()` - returns an array of usernames who've asked to join an event/group
+
+##### RelData
+
+`$page->related()` - returns an array of all related "internal" pages
+`$page->relatedGroups()` - returns an array of related "group" pages only
+`$page->relatedProjects()` - returns an array of related "project" pages only
+`$page->relatedEvents()` - returns a collection of related "project" pages only
+`$page->links()` - returns an array of titled external links
+`$page->tags()` - returns an array of tags
+`$page->likes()` - returns an array of usernames who "liked" the page
+`$page->votes()` - returns an array of usernames who voted for the page
+
+##### Settings
+
+`$page->visibility()` - returns the page's visibility
+`$page->color()` - returns the page's color
+`$page->isVisibleToUser()` - (T/F) whether the page is visible to the visitor
+`$page->isEditableByUser()` - (T/F) whether the logged-in user has permission to edit the page
+`$page->comments()` - (coming) returns an array of the page's comments (if the setting is turned on)
+`$page->submissions()` - (coming) returns an array of the page's submissions (if the setting is turned on)
+`$page->price()` - returns the event/page's price
+`$page->status()` - (coming) returns the equipment/page's current maintenance status
+
+##### Hero
+
+`$page->heroImage()` - returns the first hero image (or first image) of a page
+`$page->heroImages()` - returns a collection of the page's hero images
+
+##### Permissions
+
+`$page->isVisibleToUser()` - true or false, whether the page should be shown to the visitor
+`$page->isEditableByUser()` - true or false, whether the logged-in user has permission to edit the page
+
+### Group data
+
+`$site->page('groups/tufts-make')->groupLogo()` - Returns the group's logo url or a default one
+`$site->page('groups/tufts-make')->groupColor()` - Returns the group's color
+
+### User data
+
+    Sample file: jschmo.php
+    -----
+    username: jschmo
+    firstname: Joe
+    lastname: Schmo
+    email: jschmo@gmail.com
+        tuftsemail: joe.schmo@tufts.edu
+    password: [Encrypted password here]
+    datedata: 2015-05-06 15:00:00, 2015-07-23 11:57:59 == jschmo
+              date registered      date last modified
+    language: en
+    usertype: admin
+    registrationdate: 2015-05-06 15:00:00
+    usegravatar: false
+    color: red
+    affiliation: Graduate (Masters)
+    department: Mechanical Engineering
+    major: Human Factors
+    classyear: 2015
+    birthyear: 1993
+    groups: tufts-make, me-184-robotics
+    purchases: gift-basket == 2016-10-23 13:00:00, membership == 2016-10-26 13:51:57 - 2017-10-26 13:51:57
+               item name      purchase date/time                                       expiration date/time
+
+`$site->user('jschmo')->dateRegistered()` - returns whether the user has paid for an item
+`$site->user('jschmo')->dateModified()` - returns the date of the most recent modification
+`$site->user('jschmo')->modifiedBy()` - returns the most recent modifier
+
+`$site->user('jschmo')->purchased($page->slug())` - returns whether the user has paid for an item
+`$site->user('jschmo')->purchasedate($page->slug())` - returns the date the user purchased an item
+`$site->user('jschmo')->purchaseexpire($page->slug())` - returns the date the user's purchase will expire
+`$site->user('jschmoe')->userAvatar()` - returns the URL of either the user's uploaded avatar or a default avatar
+`$site->user('jschmoe')->userColor()` - returns the user's favorite color
+
+### Pages data
+
+`$pages->visibleToUser()` - (T/F) whether the logged-in user has permission to edit the page
+
+## Inline editing
+
+(video: https://www.youtube.com/watch?v=Ocx_pznD-VQ caption: A tech preview of inline editing recorded in September 2016)
+
+Like Facebook, Medium, Twitter, and so many other popular web applications, the Network allows users to directly manipulate page content rather than learn how to use a "backend" administrative interface like WordPress.
+
+To do this, the site currently uses a library called [ContentTools](http://getcontenttools.com/). ContentTools is one of many WYSIWYG content editors that utilize the `contentEditable` HTML attribute to allow users to change text directly within the page itself. Once initiated, it latches on to any elements with the `data-editable` attribute and makes them editable using its handy tool palette. It also uses the element's `data-name` attribute to keep track of which region is what.
+
+The code for Contenttools is contained within `/assets/js/contenttools`. The click binding that initiates it is located within `/assets/js/main.js`. The `editor.js` file within the `contenttools` folder contains the many customizations and tweaks I've made to get it working properly with the Network.
+
+When the user clicks the "Save" button, ContentTools packages up every `data-editable` region that has been changed and POSTs the HTML to `../save` so that server-side code located within `/config/config.php` can handle saving the changes to the page's `.txt` file.
+
+ContentTools definitely has its quirks and doesn't work particularly well on mobile, so it will likely be replaced with something lighter and more tightly integrated in the future.
+
+### Choosing a library
+
+There are a ton of JavaScript WYSIWYG editors out there - here's a pretty [comprehensive list](https://github.com/cheeaun/mooeditable/wiki/Javascript-WYSIWYG-editors). Choosing one has been difficult.
+
+Currently the Network uses ContentTools, but soon I'll be attempting to switch to using Quill instead, which is what [telegra.ph](http://telegra.ph/) uses to great effect.
+
+## API
+
+The Network has a public JSON API that can be used by other applications to gather public information about makers and groups within the Maker community. Eventually, equipment pages and spaces will be included in this API as well.
+
+### Users API
+
+    GET /api?users=all
+    GET /api?users=abraren
+
+This will return a JSON array containing the public information available for all users, or just one.
+
+### Groups API
+
+    GET /api?groups=all
+    GET /api?groups=tufts-make
+
+This will return a JSON array containing the public information available for all groups, or just one.
+
+## Q&A
+
+### You didn't explain how "X" works.
+
+That's likely. This documentation, like the site itself, is a work in progress. Let me know what feature/component you'd like an explanation for and I'll prioritize writing that section next.
+
+### Who will continue to develop this platform in the future?
+
+Probably Andy, hopefully with some additional help from other Tufts students.
+
+### Why not create a WordPress theme/plugin instead?
+
+Here are the top four reasons:
+
+**Speed.** It’s barely a contest compared to WordPress, whether out of the box or with a caching plugin. I’ve built ~8 WordPress sites for clients over the years, but even with caching plugins and many hours of tuning I’ve never reached the load times I can get with Kirby. I have plans to make it even faster in the future.
+
+**No database required.** I’ll discuss this a bit more below, but the flat-file nature of Kirby makes it far easier to install, back up, update, or duplicate. If the need arises it can be tied to a database, but I haven’t had a performance reason to do so yet. One of my largest clients uses Kirby to deliver 800+ pages of content to hundreds of thousands of visitors each month without any trouble.
+
+**Complete control.** Kirby isn’t as beginner-friendly as WordPress (fewer out-of-the-box themes and plugins), but that’s somewhat of a blessing in disguise. By controlling everything about how the site looks and works, things like inline editing or the RFID system are going to continue to work for years to come, without being broken by a rogue plugin update.
+
+**Documentation and support.** There are a few other flat-file alternatives to Kirby (Statamatic, others) but none that I’ve seen come close in terms of documentation and support. Every question I’ve asked in Kirby's forum has been answered within a day, and although PHP has its issues, there are a ton of resources for beginning developers to refer to online. Kirby’s Cheat Sheet also makes developing new things way more straightforward than WordPress’ Codex.
+
+### How large can the site become without slowing down?
+
+So far I haven't found a limit. Kirby's creator [has used it](https://forum.getkirby.com/t/server-response-time/279) for multi-thousand-page websites with 4GB+ of files, and others have tested it with over [10,000 pages](https://forum.getkirby.com/t/performance-for-10000-pages-by-tags-with-pagination/1244). As of November 2016, makernetwork.org is around 6GB in size and still speedy without caching turned on. I also know of a Kirby-based blog with thousands of articles and more than 10,000 page views per day, and it runs far more efficiently than WordPress ever did.
+
+So long as the server it's running on is SSD-based and effort is put into keeping the code and folder structure simple, I don't anticipate problems with bloat or slowdown.
+
+### Is there an underlying relational database for the site?
+
+Out of the box, Kirby uses .txt files to store information in a YAML-esque format, as described above. It can, however, connect to a MySQL or SQLite database (or PostegreSQL) if the application requires it.
+
+So far I’ve been able to avoid using a relational database with maker.tufts.edu. I’ve been burned by WordPress databases in the past, and I enjoy being able to quickly back up, restore, and install new instances of the site simply by dragging and dropping a folder. I suspect students/teachers/librarians who spin up their own Network on a new server will appreciate that as well.
+
+## Roadmap
+
+There's a ton of stuff left to develop. I'm using a Workflowy list to document and keep track of releases, and will eventually move that to this page.
+
+Future development
+- automatic in-makerspace documentation
+- Project documentation apps
+- Inter-makerspace telepresence
+
+## Release History
+
+### v3.0 - October 4th, 2016
+
+A giant update. Page visibility settings, group pages, event pages, inline editing, and more.
+
+### v2.3 - May 1st, 2016
+
+Site-wide login and signup modals, image uploading
+
+### v2.2 - April 1st, 2016
+
+Colors, lazy-loading images and videos, table of contents
+
+### v2.1 - January 6th, 2016
+
+RFID connection, password reset, space pages
+
+### v2.0 - October 1st, 2015
+
+Switch to Kirby
+
+### v1.0 - September 1st, 2015
+
+This is the initial version of the site, based on WordPress.

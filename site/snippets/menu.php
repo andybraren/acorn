@@ -13,7 +13,7 @@
     
     <ul class="menu">
       
-      <? ///// LOGO ///// ?>
+      <?php ///// LOGO ///// ?>
       <?php
         $logo     = site()->page('site')->images()->findBy('name', 'logo');
         $logoIcon = site()->page('site')->images()->findBy('name', 'logo-icon');
@@ -54,7 +54,7 @@
         <li><a href="<?php echo url() ?>">Home</a></li>
       <?php endif ?>
       
-      <? ///// PRIMARY MENU ITEMS ///// ?>
+      <?php ///// PRIMARY MENU ITEMS ///// ?>
       <?php foreach (yaml(site()->MenuPrimary()) as $item): ?>
       
         <?php
@@ -74,18 +74,38 @@
             $classes[] = 'missing';
           }
           
+          // add subnav class
+          if (array_key_exists('sub', $item) /*and $item['uid'] != $activeTop*/) {
+            $subnav = true;
+            $classes[] = 'hassubnav';
+          }
+          
           // combine classes
-          $class = ($active or $missing) ? ' class="' . implode(' ', $classes) . '"' : '';
+          $class = ($active or $missing or $subnav) ? ' class="' . implode(' ', $classes) . '"' : '';
           
           // check subtitle
           $subtitle = (array_key_exists('subtitle', $item)) ? '<div class="subtitle">' . $item['subtitle'] . '</div>' : '';
         ?>
         
         <li<?php echo $class ?>>
-          <a href="<?php echo site()->url() . '/' . $item['uid'] ?>"><?php echo $item['title'] . $subtitle ?></a>
+          <a href="<?php echo site()->url() . '/' . $item['uid'] ?>"><?php echo $item['title']?></a><?php echo $subtitle ?>
+          
+          <?php if (array_key_exists('sub', $item) /*and $item['uid'] != $activeTop*/): ?>
+            <ul class="subnodes">
+              <?php foreach ($item['sub'] as $subitem): ?>
+                <?php
+                  $href = (array_key_exists('uid', $subitem)) ? ' href="' . site()->url() . '/' . $subitem['uid'] . '"' : '';
+                ?>
+                <li>
+                  <a<?php echo $href?>><?php echo $subitem['title']?></a>
+                </li>
+              <?php endforeach ?>
+            </ul>
+          <?php endif ?>
         </li>
       <?php endforeach ?>
       
+      <div class="backdrop"></div>
     </ul>
     
     <ul class="menu menu-secondary">
@@ -104,7 +124,7 @@
           $url = ($url) ? ' href="' . $url . '"' : '';
         ?>
         <li>
-          <a<?php echo $url ?>><?php echo $title . $subtitle ?></a>
+          <a<?php echo $url ?>><?php echo $title ?></a><?php echo $subtitle ?>
         </li>
       <?php endforeach ?>
                 
@@ -127,7 +147,6 @@
   </div>
 </nav>
 
-
 <?php if (hasSubMenu()): ?>
   
   <nav id="subnavigation" role="navigation">
@@ -143,14 +162,22 @@
         
         <?php foreach (submenuItems() as $item): ?>
           <?php
-            $url = ($site->page($item['uid'])) ? 'href="' . $site->url() . '/' . $item['uid'] . '"' : '';
-            $classarray = array();
-              if (!site()->page($item['uid'])) $classarray[] = 'missing';
-              if ($item['uid'] == $activeSub)  $classarray[] = 'active';
-            $class = (!empty($classarray)) ? ' class="' . implode(' ', $classarray) . '"' : '';
+            
+            $class = '';
+            $url = '';
+            
+            if (array_key_exists('uid', $item)) {
+              $url = ($site->page($item['uid'])) ? ' href="' . $site->url() . '/' . $item['uid'] . '"' : '';
+              $classarray = array();
+                if (!site()->page($item['uid'])) $classarray[] = 'missing';
+                if ($item['uid'] == $activeSub)  $classarray[] = 'active';
+              $class = (!empty($classarray)) ? ' class="' . implode(' ', $classarray) . '"' : '';
+            } else {
+              $class = ' class="missing"';
+            }
           ?>
           <li<?php echo $class ?>>
-            <a <?php echo $url ?>><?php echo $item['title'] ?></a>
+            <a<?php echo $url ?>><?php echo $item['title'] ?></a>
           </li>
         <?php endforeach ?>
         

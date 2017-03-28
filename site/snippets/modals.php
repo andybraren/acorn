@@ -21,6 +21,41 @@
     
   </div>
   
+  <?php // NAV ITEM EDIT ?>
+  <div id="modal-navitem" class="modal">
+    
+    <div class="modal-title">
+      <h2>Edit nav item</h2>
+      <button type="button" aria-label="close" data-action="close"></button>
+    </div>
+    
+    <div class="modal-content">
+      <form id="navitem">
+        <div>
+          <input type="text" name="title" class="clicked" autofocus>
+          <label for="title">Title</label>
+        </div>
+        
+        <div>
+          <input type="text" name="url" class="clicked">
+          <label for="url">URL</label>
+        </div>
+        
+        <div>
+          <input type="text" name="subtitle" class="clicked">
+          <label for="subtitle">Subtitle</label>
+        </div>
+      </form>
+    </div>
+    
+    <div class="modal-options">
+      <button type="button" data-action="close" class="button fullwidth silver">Cancel</button>
+      <button type="button" data-action="deletenav" class="button fullwidth red">Delete</button>
+      <button type="button" data-action="updatenav" class="button fullwidth green">Apply</button>
+    </div>
+    
+  </div>
+  
   <?php // LOG IN ?>
   <div id="modal-login" class="modal">
     

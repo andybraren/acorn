@@ -452,7 +452,7 @@ if (deleteButtons) {
   }
 }
 
-function openModal(modalname) {
+function openModal(modalname, target) {
   
   // Set variables
   var container = document.querySelector('#modals');
@@ -471,6 +471,47 @@ function openModal(modalname) {
         closeModal(modals[i]);
       }
     }
+  }
+  
+  // Replace modal content (if needed, like for Nav Items)
+  if (modal.id == 'modal-navitem') {
+    modal.querySelector('form').reset();
+    modal.querySelector('[name="title"]').value = target.innerText;
+    modal.querySelector('[name="url"]').value   = target.getAttribute('data-href');
+    if (target.nextElementSibling) {
+      modal.querySelector('[name="subtitle"]').value = target.nextElementSibling.innerHTML;
+    }
+  }
+  // Update nav item
+  var button = modal.querySelector('[data-action="updatenav"]');
+  if (button) {
+    
+    function updateItem() {
+      target.innerText = modal.querySelector('[name="title"]').value;
+      target.setAttribute('data-href', modal.querySelector('[name="url"]').value);
+      if (target.nextElementSibling) {
+        target.nextElementSibling.innerHTML = modal.querySelector('[name="subtitle"]').value;
+      }
+      if (!target.nextElementSibling && modal.querySelector('[name="subtitle"]').value != '') {
+        html = '<div class="subtitle">' + modal.querySelector('[name="subtitle"]').value + '</div>';
+        target.insertAdjacentHTML('afterend', html);
+      }
+      closeModal(modal);
+      button.removeEventListener('click', updateItem);
+    }
+    
+    button.addEventListener('click', updateItem, false);
+    
+    // add sync between subnavigation and active mainnavigation nodes
+    
+  }
+  // Delete nav item
+  var button2 = modal.querySelector('[data-action="deletenav"]');
+  if (button2) {
+    button2.addEventListener('click', function() {
+      target.parentNode.removeChild(target);
+      closeModal(modal);
+    }, false);
   }
   
   // Show the modal
@@ -516,8 +557,8 @@ function enableModalButtons() {
   var openButtons = document.querySelectorAll('[data-modal]');
   if (openButtons) {
     for (var i = 0; i < openButtons.length; i++) {
-      openButtons[i].addEventListener('click', function() {
-        openModal(this.dataset.modal);
+      openButtons[i].addEventListener('click', function(event) {
+        openModal(this.dataset.modal, event.target);
       }, false);
     }
   }
@@ -951,13 +992,74 @@ function checkEmptyWidgets() {
     }
     
   }
-    
+  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+turnOn = false;
 
 function toggleItems() { // Enable dragula and toggle each item's href to data-href
   
   dragula([document.getElementById('authors')]);
   dragula([document.getElementById('groups')]);
+  
+  dragula([document.getElementsByClassName('menu')[0]]);
+  dragula([document.getElementsByClassName('menu')[1]]);
+  dragula([document.getElementsByClassName('menu')[2]]);
+  
+  dragula([document.getElementsByClassName('subnodes')[0]]);
+  
+  /*
+  var elem = document.querySelectorAll('.menu')[1];
+  var pckry = new Packery( elem, {
+    itemSelector: 'li',
+    gutter: 10
+  });
+  */
+  
+  // Toggles the value of turnOn between true (initial) to false
+  turnOn = !turnOn;
+      
+  // Disable menu item hrefs and make them open the navitem modal instead 
+  var navItems = document.querySelectorAll('.menu a');
+  for (var i = 0; i < navItems.length; i++) {
+    if (turnOn) {
+      
+      if (navItems[i].getAttribute('href')) {
+        navItems[i].setAttribute('data-href', navItems[i].href);
+        navItems[i].removeAttribute('href');
+      }
+      navItems[i].setAttribute('data-modal', 'navitem');
+      
+    } else {
+      
+      if (navItems[i].getAttribute('data-href') != '') {
+        navItems[i].setAttribute('href', navItems[i].getAttribute('data-href'));
+        navItems[i].removeAttribute('data-href');
+      }
+      navItems[i].removeAttribute('data-modal');
+      
+    }
+  }
+  
+  // Enable the new modal buttons within the menu items
+  if (turnOn) {
+    enableModalButtons();
+  } else {
+    
+  }
+  
+  
   
   /*
   var widgets = document.getElementsByClassName('widget');
@@ -1190,6 +1292,49 @@ function savePage() {
     data.append('text', toMarkdown(text.innerHTML, { converters: kirbytagtweaks }));      
   }
   
+  /* Navigation */
+  var nav = document.querySelectorAll('.menu')[0];
+  if (nav != null) {
+    
+    var arr = [];
+    var items = nav.querySelectorAll('li');
+    for (var i = 0; i < items.length; i++) {
+      
+      var element = items[i].querySelector('a');
+      var obj = {};
+      
+      obj['title'] = element.innerText;
+      obj['href'] = element.href.split('/').pop();
+      
+      if (element.nextElementSibling) {
+        obj['subtitle'] = element.nextElementSibling.innerText;
+      }
+      
+      // if active and submenu is present, create those
+      if (items[i].classList) {
+        if (items[i].classList.contains('active')) {
+          if (document.querySelector('#subnavigation')) {
+            var subNavItems = document.querySelector('#subnavigation').querySelectorAll('.menu')[0].querySelectorAll('a');
+            var arr2 = [];
+            
+            for (var e = 0; e < subNavItems.length; e++) {
+              var obj2 = {};
+              obj2['title'] = subNavItems[e].innerText;
+              if (subNavItems[e].href) {
+                obj2['href']  = subNavItems[e].href.split('/').pop();
+              }
+              arr2.push(obj2);
+            }
+            obj['sub'] = arr2;
+          }
+        }
+      }
+      
+      arr.push(obj);
+    }
+    data.append('menusecondary', JSON.stringify(arr));
+  }
+  
   data.append('page', window.location.pathname);
     
   var request = new XMLHttpRequest();
@@ -1198,7 +1343,6 @@ function savePage() {
   request.send(data);
   
 }
-
 
 
 
@@ -1858,22 +2002,26 @@ $('.menu-button').on('click', function(event) {
 
 
 
+// Set the default coordinates of the toolbox to be directly right of the text box
+function positionToolbox() {
+  var rect = document.getElementsByClassName('text')[0].getBoundingClientRect();
+  var coordinates = Math.round(rect.right + 30) + ',' + Math.round(rect.top);
+  localStorage.setItem('ct-toolbox-position', coordinates);
+}
 
-
-/* Open the editor immediately if the page is a new page */
+// Automatically open the editor immediately if the page is a new page
 function checkIfNewPage() {
   var slug = window.location.href.split('/').pop();
-  if (!slug.match(/[a-z]/i)) {
-    //openEdit();
+  if (slug && !slug.match(/[a-z]/i)) {
+    openEdit();
     
     history.replaceState({}, document.title, window.location.href.split('#')[0]);
     
   }
 }
 
-history.replaceState({}, document.title, window.location.href);
-
 window.addEventListener('load', function(event) {
+  positionToolbox();
   checkIfNewPage();
 });
 

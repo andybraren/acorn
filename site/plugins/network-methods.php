@@ -708,6 +708,9 @@ function isEditableByUser($page) {
   if (site()->user() and site()->user()->usertype() and site()->user()->usertype() == 'admin') { // if user is an admin
     $isEditable = true;
   }
+  if ($page->uid() == 'error') {
+    $isEditable = false;
+  }
   
   if (cookie::get('anonymousID')) {
     /*
@@ -1055,19 +1058,21 @@ function activeMenuItems() {
       $hassub = true;
       foreach ($item['sub'] as $subitem) {
         
-        // valid pages
-        if (site()->page($subitem['uid'])) {
-          if (site()->page($subitem['uid'])->isOpen()) {
-            //return $subitem['uid'];
+        if (array_key_exists('uid', $subitem)) {
+          // valid pages
+          if (site()->page($subitem['uid'])) {
+            if (site()->page($subitem['uid'])->isOpen()) {
+              //return $subitem['uid'];
+              $sub = $subitem['uid'];
+              $top = $item['uid'];
+            }
+          }
+          
+          // invalid or missing pages
+          elseif ($uid == $subitem['uid']) {
             $sub = $subitem['uid'];
             $top = $item['uid'];
           }
-        }
-        
-        // invalid or missing pages
-        elseif ($uid == $subitem['uid']) {
-          $sub = $subitem['uid'];
-          $top = $item['uid'];
         }
         
       }

@@ -12,10 +12,7 @@ function wait(milliseconds) {
   }
 }
 
-// Set the default coordinates of the toolbox to be directly right of the text box
-var rect = document.getElementsByClassName('text')[0].getBoundingClientRect();
-var coordinates = Math.round(rect.right + 30) + ',' + Math.round(rect.top - 50);
-localStorage.setItem('ct-toolbox-position', coordinates);
+
 
 // Initialize the editor
 editor = ContentTools.EditorApp.get();

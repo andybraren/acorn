@@ -550,7 +550,15 @@ c::set('routes', array(
   		/* DateData */
   		$dateCreated = date('Y-m-d H:i:s', $targetpage->dateCreated());
   		$dateModified  = date('Y-m-d H:i:s');
-  		//$modifiedBy = site()->user(get('username'));
+  		//$modifiedBy = site()->user(get('username'));  		
+  		if (!$targetpage->datePublished() or isset($_POST['visibility'])) {
+    		if ($_POST['visibility'] == 'public' or $_POST['visibility'] == 'groups') {
+      		$datePublished = date('Y-m-d H:i:s');
+    		}
+  		} else {
+    		$datePublished = null;
+  		}
+  		$datedata = implode(', ', array_filter(array($dateCreated, $dateModified, $datePublished)));
   		
   		/* UserData */
   		$authors = (isset($_POST['users'])) ? $_POST['users'] : implode(', ', $targetpage->authors());
@@ -558,29 +566,28 @@ c::set('routes', array(
   		if (empty($_POST['users'])) {
     		$authors = $targetpage->authorsRaw();
   		}
-  		
   		$oldauthors = '';
   		$subscribers = '';
   		$subscriberEmails = '';
   		$registrants = '';
   		$attendees = '';
-  		
-  		// Existing requests
-  		$requests = (isset($_POST['requests'])) ? $_POST['requests'] : implode(', ', $targetpage->requests());
+  		  $requests = (isset($_POST['requests'])) ? $_POST['requests'] : implode(', ', $targetpage->requests());
   		  $requests = (isset($_POST['join'])) ? implode(', ', array_merge($targetpage->requests(), array($_POST['join']))) : $requests;
+  		$userdata = implode(' ///', array_filter(array($authors, $oldauthors, $subscribers, $subscriberEmails, $registrants, $attendees, $requests)));
   		
   		/* RelData */
   		$relatedProjects = (isset($_POST['projects'])) ? $_POST['projects'] : $targetpage->relatedProjects();
   		$relatedGroups   = (isset($_POST['groups'])) ? $_POST['groups'] : $targetpage->relatedGroups();
   		$relatedEvents   = (isset($_POST['events'])) ? $_POST['events'] : $targetpage->relatedEvents();
+  		$reldata         = implode(', ', array_filter(array($relatedProjects, $relatedGroups, $relatedEvents)));
   		
   		/* Settings */
   		$visibility  = (isset($_POST['visibility'])) ? $_POST['visibility'] : $targetpage->visibility();
   		$color       = (isset($_POST['color'])) ? $_POST['color'] : $targetpage->color();
-  		  $commentSetting = ($targetpage->comments()) ? 'on' : 'off';
-        $comments       = (isset($_POST['comments'])) ? $_POST['comments'] : $commentSetting;
-  		$submissions = (isset($_POST['submissions'])) ? $_POST['submissions'] : $targetpage->submissions();
-  		$price       = 'off';
+      $comments    = 'comments == '    . ((isset($_POST['comments']))    ? $_POST['comments']    : ($targetpage->comments()) ? 'on' : 'off');
+  		$submissions = 'submissions == ' . ((isset($_POST['submissions'])) ? $_POST['submissions'] : $targetpage->submissions());
+  		$price       = 'price == ' . 'off';
+  		$settings    = implode(', ', array_filter(array($visibility, $color, $comments, $submissions, $price)));
   		
   		/* Hero */
   		$hero = (isset($_POST['hero'])) ? $_POST['hero'] : $targetpage->hero();
@@ -590,14 +597,13 @@ c::set('routes', array(
   		
   		
   		
-  		
       try {
         site()->page($targetpage)->update(array(
-          'Title'  => $title,
-          'DateData' => $dateCreated . ', ' . $dateModified,
-          'UserData' => $authors . ' /// ' . $oldauthors . ' /// ' . $subscribers . ' /// ' . $subscriberEmails . ' /// ' . $registrants . ' /// ' . $attendees . ' /// ' . $requests,
-          'RelData' => $relatedProjects . ', ' . $relatedGroups . ', ' . $relatedEvents,
-          'Settings' => $visibility . ', ' . $color . ', comments == ' . $comments . ', submissions == ' . $submissions . ', price == ' . $price,
+          'Title'    => $title,
+          'DateData' => $datedata,
+          'UserData' => $userdata,
+          'RelData' => $reldata,
+          'Settings' => $settings,
           'Hero' => $hero,
           'Text'  => $text,
         ));

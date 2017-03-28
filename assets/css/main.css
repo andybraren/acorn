@@ -29,7 +29,7 @@ footer, header, hgroup, main, nav, section, summary {
 
 @font-face {
   font-family: dyslexic;
-  src: url(https://makernetwork.org/assets/fonts/OpenDyslexic3-Regular.ttf);
+  src: url(https://dev.acorn.blog/assets/fonts/OpenDyslexic3-Regular.ttf);
 }
 
 body.dyslexic {
@@ -3188,6 +3188,16 @@ h1.ce-element--empty:after {
   border-radius: 0px;
 }
 
+#upload-form {
+  display: none;
+}
+.honey {
+  display: none;
+}
+#button-forgot {
+  cursor: pointer;
+}
+
 /* WebSocket / myRIO
 -------------------------------------------------- */
 
@@ -5208,3 +5218,48 @@ figure.guggenheim__figure {
 /* DRAGULA
 -------------------------------------------------- */
 .gu-mirror{position:fixed!important;margin:0!important;z-index:9999!important;opacity:.8;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";filter:alpha(opacity=80)}.gu-hide{display:none!important}.gu-unselectable{-webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;user-select:none!important}.gu-transit{opacity:.2;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";filter:alpha(opacity=20)}
+
+
+/* Site-specific things */
+figure a:not([href*="makernetwork\.org"]):hover {
+  opacity: initial;
+  transition: initial;
+}
+figure a:not([href*="makernetwork\.org"]):before {
+  opacity: 0;
+  content: '\021F1';
+  transform: scaleX(-1);
+  color: white;
+  font-size: 5rem;
+  z-index: 1;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  transition: all 0.3s ease;
+}
+figure:hover a:not([href*="makernetwork\.org"]):before {
+  opacity: 1;
+  top: 5px;
+  right: 5px;
+  transition: all 0.3s ease;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

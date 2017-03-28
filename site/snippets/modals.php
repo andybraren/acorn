@@ -237,7 +237,7 @@
         </div>
 
         <form action="<?php echo $page->url() . '/login' ?>" method="post">
-          <div style="display:none">
+          <div class="honey">
             <input name="utf8" type="hidden" value="✓">
             <input name="authenticity_token" type="hidden" value="ejnK+ZsHkfh/wG7YeI8LTLsUSARt/cC9jDAn5jRibN0=">
           </div>
@@ -251,7 +251,7 @@
             <label for="password">Password</label>
           </div>
           
-          <span id="button-forgot" style="cursor: pointer;">I forgot my password</span>
+          <span id="button-forgot">I forgot my password</span>
           
           <?php if (param('login') == 'failed'): ?>
             <div class="red highlight card-join">

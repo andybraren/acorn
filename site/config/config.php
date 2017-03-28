@@ -94,6 +94,12 @@ if (site()->user()) {
 c::set('cache.ignore', array('sitemap','flush','error','connect','projects/*'));
 
 
+/* Need to somehow send the ga ID to the user's browser */
+c::set('googleAnalyticsID', '209846');
+cookie::set('ga', c::get('cache.ignore'), $expires = 60*24*30, $path = '/', $domain = null, $secure = true);
+
+
+
 /* Turn on GD Lib's image orientation detection. This fixed iOS image rotation issues.
   - https://getkirby.com/docs/developer-guide/configuration/thumbnails
 */

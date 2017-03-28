@@ -40,42 +40,6 @@
   <?php // Necessary for sticky TOC until better supported ?>
   <?php echo js('assets/js/stickyfill/stickyfill.min.js', true) ?>
   <?php echo js('assets/js/main.js', true) ?>
-
-  <?php // Theme Checker ?>
-	<script>
-    document.addEventListener('DOMContentLoaded', function(event) {
-      if (localStorage.getItem('theme') != null) {
-        document.body.classList.add(localStorage.getItem('theme'));
-      }
-    });
-  </script>
-  
-  <style>
-    figure a:not([href*="makernetwork\.org"]):hover {
-      opacity: initial;
-      transition: initial;
-    }
-    figure a:not([href*="makernetwork\.org"]):before {
-      opacity: 0;
-      content: '\021F1';
-      transform: scaleX(-1);
-      color: white;
-      font-size: 5rem;
-      z-index: 1;
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      transition: all 0.3s ease;
-    }
-    figure:hover a:not([href*="makernetwork\.org"]):before {
-      opacity: 1;
-      top: 5px;
-      right: 5px;
-      transition: all 0.3s ease;
-    }
-    
-    
-  </style>
   
   <?php // Hotjar Tracking Code ?>
   <?php if ($hotjarid = array_search($_SERVER['SERVER_NAME'], array('209846' => 'drewbaren.com', '286199' => 'tuftsmake.com', '232998' => 'maker.tufts.edu'))): ?>
@@ -92,6 +56,7 @@
   <?php endif ?>
   
   <?php // Google Analytics Tracking Code ?>
+  <?php /*
   <?php if($_SERVER['SERVER_NAME'] != 'makernetwork.org'): ?>
     <?php if ($analyticsID = array_search($_SERVER['SERVER_NAME'], array('209846' => 'drewbaren.com', 'UA-43696470-1' => 'tuftsmake.com', 'UA-55995707-1' => 'maker.tufts.edu'))): ?>
       <script>
@@ -104,6 +69,7 @@
       </script>
     <?php endif ?>
   <?php endif ?>
+  */?>
 
 </head>
 

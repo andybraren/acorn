@@ -95,8 +95,9 @@
               <?php foreach ($item['sub'] as $subitem): ?>
                 <?php
                   $href = (array_key_exists('uid', $subitem)) ? ' href="' . site()->url() . '/' . $subitem['uid'] . '"' : '';
+                  $class = (site()->page($subitem['uid'])) ? '' : ' class="missing"';
                 ?>
-                <li>
+                <li<?php echo $class?>>
                   <a<?php echo $href?>><?php echo $subitem['title']?></a>
                 </li>
               <?php endforeach ?>

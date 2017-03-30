@@ -239,7 +239,20 @@ array(
 
 
 
-
+array(
+  'pattern' => array('(:num)'),
+  'method' => 'GET',
+  'action'  => function($uid) {
+    
+    $path = kirby()->request()->path();
+    $page = page($path);
+           
+    if (!$page) $page = page('posts/' . $path);
+    
+    return ($page) ? site()->visit($page) : site()->visit($uid);
+    
+  }
+),
 
 
 
@@ -252,6 +265,9 @@ array(
     $path = kirby()->request()->path();
 
     $page = page($path);
+    
+    
+    
     
     if (!$page) $page = page('users/' . $path);
     

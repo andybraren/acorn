@@ -202,6 +202,13 @@ c::set('routes', array(
     }
   ),
   
+  array(
+    'pattern' => 'posts/(:any)',
+    'method' => 'GET',
+    'action'  => function($uid) {
+      go(site()->url() . '/' . $uid);
+    }
+  ),
   
   // ROBOTS.TXT FILE
   array(
@@ -547,8 +554,18 @@ c::set('routes', array(
 		'method' => 'POST',
 		'action'  => function() {
   		
+  		// Formatting
+  		// ----------
+  		// $_POST['page'] = /directory/slug
+  		
   		$targetpage = site()->page($_POST['page']);
-  		$originaltitle = $targetpage->title();
+  		
+  		// Account for custom routes
+  		if (!$targetpage) $targetpage = page('posts' . $_POST['page']);
+  		if (!$targetpage) $targetpage = page('users' . $_POST['page']);
+  		
+  		//$originaltitle = $targetpage->title();
+  		$originaltitle = ($targetpage->title()) ? $targetpage->title() : '';
   		
   		$title = (isset($_POST['title'])) ? $_POST['title'] : $targetpage->title();
   		$text  = (isset($_POST['text'])) ? $_POST['text'] : $targetpage->text();

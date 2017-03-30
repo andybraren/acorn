@@ -243,6 +243,24 @@ page::$methods['related'] = function($page) {
   }
 };
 
+// Related "internal" pages
+// returns a collection of all related "internal" pages
+page::$methods['relatedPosts'] = function($page) {
+  
+  $collection = new Pages();
+  
+  if ($page->related()) {
+    foreach ($page->related() as $item) {
+      if ($result = site()->page('posts/' . $item)) {
+        $collection->add($result);
+      }
+    }
+  }
+  
+  return $collection;
+  
+};
+
 // Related Projects
 // returns a collection of related "project" pages only
 page::$methods['relatedProjects'] = function($page) {

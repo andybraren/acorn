@@ -248,6 +248,10 @@
         <?php snippet('cards', array('type' => 'challenges')) ?>
       <?php endif ?>
       
+      <?php if($page->uid() == 'posts'): ?>
+        <?php snippet('cards', array('type' => 'posts')) ?>
+      <?php endif ?>
+      
       <?php if($page->parent() == 'events' && $page->hasChildren()): ?>
         <?php snippet('cards', array('type' => 'projects')) ?>
       <?php endif ?>
@@ -257,6 +261,11 @@
         <?php snippet('cards', array('type' => 'projects', 'event' => $page->uid())) ?>
       <?php endif ?>
       
+      <?php if($page->parent() == 'projects'): ?>
+        <h2>Updates</h2>
+        <?php snippet('cards', array('type' => 'posts', 'relatedto' => $page->uid())) ?>
+      <?php endif ?>
+            
       <?php if($page->uid() == 'forum'): ?>
         <?php snippet('forum') ?>
       <?php endif ?>

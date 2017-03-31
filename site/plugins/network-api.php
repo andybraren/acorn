@@ -263,13 +263,11 @@ array(
   'action'  => function($uid) {
     
     $path = kirby()->request()->path();
-
+    
     $page = page($path);
     
-    
-    
-    
     if (!$page) $page = page('users/' . $path);
+    if (!$page) $page = page('posts/' . $path);
     
     if ($page) {
       return site()->visit($page);

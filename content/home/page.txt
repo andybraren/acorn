@@ -1,0 +1,9 @@
+Title: Tufts Maker Network
+----
+Color: 
+----
+Text: 
+
+The Maker Network connects and collects all of the making-related spaces, events, clubs, projects and resources that are available to the Tufts community into one place on the web. Its purpose is to encourage students to [learn by making](http://maker.tufts.edu/about), in whatever way they prefer.
+
+Students of any major or background are welcome to join the network and help build Tufts' interdisciplinary maker culture. Becoming a maker allows students to utilize Tufts' makerspaces, participate in events, and easily capture and share the things that they make and learn from.

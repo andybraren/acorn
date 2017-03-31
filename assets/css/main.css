@@ -29,7 +29,7 @@ footer, header, hgroup, main, nav, section, summary {
 
 @font-face {
   font-family: dyslexic;
-  src: url(https://dev.acorn.blog/assets/fonts/OpenDyslexic3-Regular.ttf);
+  src: url('../fonts/OpenDyslexic3-Regular.ttf');
 }
 
 body.dyslexic {
@@ -833,6 +833,13 @@ nav {
   cursor: auto;
 }
 
+li {
+  word-wrap: break-word;
+}
+li a {
+  word-break: break-all !important;
+}
+
 .subnav .menu li ul {
   transition: opacity .2s, visibility .2s;
 }
@@ -1034,7 +1041,8 @@ z-index: 10;
 
 #hero-add {
   display: none;
-  height: 10vh;
+  /*height: 10vh;*/
+  height: 4rem;
   background-color: #ececec;
   cursor: pointer;
 }
@@ -1056,6 +1064,17 @@ z-index: 10;
 
 
 
+#hero.div {
+  margin-bottom: 4rem;
+}
+
+.editing #hero {
+  margin-bottom: initial;
+}
+
+h1:empty {
+  margin-bottom: initial;
+}
 
 
 
@@ -5221,6 +5240,7 @@ figure.guggenheim__figure {
 
 
 /* Site-specific things */
+/*
 figure a:not([href*="makernetwork\.org"]):hover {
   opacity: initial;
   transition: initial;
@@ -5243,7 +5263,7 @@ figure:hover a:not([href*="makernetwork\.org"]):before {
   right: 5px;
   transition: all 0.3s ease;
 }
-
+*/
 
 
 

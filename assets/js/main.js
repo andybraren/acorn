@@ -2022,7 +2022,7 @@ function positionToolbox() {
 function checkIfNewPage() {
   var slug = window.location.href.split('/').pop();
   if (slug && !slug.match(/[a-z]/i)) {
-    openEdit();
+    //openEdit();
     
     history.replaceState({}, document.title, window.location.href.split('#')[0]);
     

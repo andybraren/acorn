@@ -38,7 +38,6 @@
   -->
   
   <?php // Necessary for sticky TOC until better supported ?>
-  <?php echo js('assets/js/stickyfill/stickyfill.min.js', true) ?>
   <?php echo js('assets/js/main.js', true) ?>
   
   <?php // Hotjar Tracking Code ?>

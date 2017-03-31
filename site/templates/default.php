@@ -137,9 +137,6 @@
         
         <div class="title" data-editable data-name="title">
           <h1><?php echo $title ?></h1>
-          <?php
-            //echo $page->authorsRaw();
-          ?>
         </div>
         
         <?php if($page->text() != ''): ?>

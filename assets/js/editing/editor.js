@@ -712,12 +712,14 @@ function imageUploader(dialog) {
         // Build the form data to post to the server
         formData = new FormData();
         formData.append('image', file);
+        
+        formData.append('page', window.location.pathname);
 
         // Make the request
         xhr = new XMLHttpRequest();
         xhr.upload.addEventListener('progress', xhrProgress);
         xhr.addEventListener('readystatechange', xhrComplete);
-        xhr.open('POST', window.location.href  + '/uploadold', true);
+        xhr.open('POST', window.location.href  + '/upload', true);
         xhr.send(formData);
     });
 

@@ -1,6 +1,8 @@
 <?php
 
-require_once __DIR__ . DS . 'private.php'; // load private information
+if (file_exists(__DIR__ . DS . 'private.php')) {
+  require_once __DIR__ . DS . 'private.php'; // load private information
+}
 
 //--------------------------------------------------
 // Stripe Configuration
@@ -196,14 +198,6 @@ c::set('routes', array(
   // Redirect all requests to /users/ directory to example.com/username
   array(
     'pattern' => 'users/(:any)',
-    'method' => 'GET',
-    'action'  => function($uid) {
-      go(site()->url() . '/' . $uid);
-    }
-  ),
-  
-  array(
-    'pattern' => 'posts/(:any)',
     'method' => 'GET',
     'action'  => function($uid) {
       go(site()->url() . '/' . $uid);
@@ -573,10 +567,12 @@ c::set('routes', array(
   		/* DateData */
   		$dateCreated = date('Y-m-d H:i:s', $targetpage->dateCreated());
   		$dateModified  = date('Y-m-d H:i:s');
-  		//$modifiedBy = site()->user(get('username'));  		
+  		//$modifiedBy = site()->user(get('username'));
   		if (!$targetpage->datePublished() or isset($_POST['visibility'])) {
     		if ($_POST['visibility'] == 'public' or $_POST['visibility'] == 'groups') {
       		$datePublished = date('Y-m-d H:i:s');
+    		} else {
+      		$datePublished = null;
     		}
   		} else {
     		$datePublished = null;
@@ -607,7 +603,7 @@ c::set('routes', array(
   		/* Settings */
   		$visibility  = (isset($_POST['visibility'])) ? $_POST['visibility'] : $targetpage->visibility();
   		$color       = (isset($_POST['color'])) ? $_POST['color'] : $targetpage->color();
-      $comments    = 'comments == '    . ((isset($_POST['comments']))    ? $_POST['comments']    : ($targetpage->comments()) ? 'on' : 'off');
+      $comments    = 'comments == '    . ((isset($_POST['comments']))    ? $_POST['comments']    : $targetpage->comments());
   		$submissions = 'submissions == ' . ((isset($_POST['submissions'])) ? $_POST['submissions'] : $targetpage->submissions());
   		$price       = 'price == ' . 'off';
   		$settings    = implode(', ', array_filter(array($visibility, $color, $comments, $submissions, $price)));
@@ -642,6 +638,7 @@ c::set('routes', array(
           rename($currentlocation, $newlocation);
           
           $changeurl = site()->url() . '/' . $targetpage->parent()->diruri() . '/' . str::slug($title);
+          $changeurl = str_replace('/posts','',$changeurl);
           
           $response = array('changeurl' => $changeurl); // redirect to new url
           echo json_encode($response);
@@ -715,59 +712,6 @@ c::set('routes', array(
         
         $response = array('redirecturl' => $redirecturl);
         echo json_encode($response);
-        
-      } catch(Exception $e) {
-        echo $e->getMessage();
-      }
-          
-		}
-	),
-	
-	
-  // UPLOAD NEW
-	array(
-		'pattern' => array('upload', '(.+upload)'),
-		'method' => 'POST',
-		'action'  => function() {
-  		
-  		$targetpage = site()->page($_POST['page']);
-  		$files = (isset($_FILES['file']['name'])) ? $_FILES['file']['name'] : '';
-  		
-      $target_dir = kirby()->roots()->content() . '/' . $targetpage->uri() . '/';
-      $filename = pathinfo($_FILES['files']['name'],PATHINFO_FILENAME);
-      
-      $extension = strtolower(pathinfo($_FILES['files']['name'], PATHINFO_EXTENSION));
-      
-      $fileurl = $targetpage->url() . '/' . $filename . '.' . $extension;
-      $fileurl = site()->contentURL() . '/' . $targetpage->uri() . '/' . $filename . '.' . $extension;
-      
-      $target_file = $target_dir . $filename . '.' . $extension;
-
-      // Check for any old files with the same name, of any extension, and delete them
-    	//$oldfiles = glob($target_dir . $filename . '.' . $extension);
-    	$oldfile = $target_dir . $filename . '.' . $extension;
-    	if (file_exists($oldfile)) {
-      	unlink($oldfile);
-    	}
-    	
-    	$type = (isset($_POST['type'])) ? $_POST['type'] : null;
-    	
-      // Save the file in the right place
-      try {
-        
-        if (move_uploaded_file($_FILES['files']['tmp_name'], $target_file)) {
-          if ($type != null) {
-            if ($type == 'hero') {
-              $fileurl = (string)kirbytag(array('image' => $filename . '.' . $extension, 'targetpage' => $_POST['page'], 'type' => 'hero', 'output' => 'url'));
-              site()->page($targetpage)->update(array(
-                'Hero' => $filename . '.' . $extension,
-              ));
-            }
-          }
-        }
-        
-        $response = array('filename' => $filename . '.' . $extension, 'fileurl' => $fileurl, 'extension' => $extension);
-        echo json_encode($response, JSON_UNESCAPED_SLASHES);
         
       } catch(Exception $e) {
         echo $e->getMessage();
@@ -980,8 +924,135 @@ c::set('routes', array(
       
 		}
 	),
+	
+	
+  // UPLOAD NEW
+	array(
+		'pattern' => array('upload', '(.+upload)'),
+		'method' => 'POST',
+		'action'  => function() {
+  		
+  		//var_dump($_FILES);
+  		
+  		$targetpage = page($_POST['page']); // Account for custom routes
+  		if (!$targetpage) $targetpage = page('posts' . $_POST['page']);
+  		if (!$targetpage) $targetpage = page('users' . $_POST['page']);
+  		
+      $target_dir = kirby()->roots()->content() . '/' . $targetpage->uri() . '/';
+  		
+  		$name = key($_FILES); // The name attribute of the input that was uploaded
+  		
+  		
+  		$file_name = pathinfo($_FILES[$name]['name'], PATHINFO_FILENAME);
+  		$file_extension = str_replace('jpeg','jpg',strtolower(pathinfo($_FILES[$name]['name'], PATHINFO_EXTENSION)));
+  		$file = $file_name . '.' . $file_extension;
+      
+  		$file_type = $_FILES[$name]['type'];
+  		$file_size = $_FILES[$name]['size'];
+  		$file_url = str_replace(' ', '%20', site()->contentURL() . '/' . $targetpage->uri() . '/' . $file);
+  		
+  		//$file_extension = end(explode('.', $file));
+  		//$file_extension = substr(strrchr($file,'.'),1);
+  		
+  		// Lowercase extension
+  		$target_file = $target_dir . $file_name . '.' . $file_extension;
+  		
+      
+      if ($file_type == 'image/jpg' or $file_type == 'image/jpeg' or $file_type == 'image/png') {
+        $file_type = 'image';
+      }
+      
+      $uploadOk = 1;
+      
+      // Make sure images are actually images
+      if ($file_type == 'image') {
+        if (getimagesize($_FILES[$name]['tmp_name']) == false) {
+          $uploadOk = 0;
+          $error = "hey";
+        }
+      }
+      
+      // Replace old files with the same name, of any extension
+    	$oldfile = $target_dir . $file;
+    	if (file_exists($oldfile)) {
+      	unlink($oldfile);
+    	}
+    	
+    	$type = (isset($_POST['type'])) ? $_POST['type'] : null;
+    	
+      // Save the file in the right place
+      if ($uploadOk = 1) {
+        try {
+          
+          if (move_uploaded_file($_FILES[$name]['tmp_name'], $target_file)) {
+            
+            // Use GD Lib to detect image orientation and rotate if necessary
+            // - https://forum.getkirby.com/t/wrong-orientation-of-images-portrait-landscape-after-upload/692/19
+            // - https://github.com/getkirby/starterkit/blob/0b4a6e8cf929237621d77adb996e98b08d234004/kirby/toolkit/lib/thumb.php
+            try {
+              $img = new abeautifulsite\SimpleImage($target_file);
+              $img->auto_orient();
+              @$img->save($target_file);
+            } catch(Exception $e) {
+              echo "Error rotating image";
+            }
+            
+            if ($file_type == 'image') {
+              $file_url = (string)kirbytag(array('image' => $file, 'targetpage' => $targetpage, 'output' => 'url'));
+            }
+            
+            if ($type == 'hero') {
+              $file_url = (string)kirbytag(array('image' => $file, 'targetpage' => $targetpage, 'type' => 'hero', 'output' => 'url'));
+              site()->page($targetpage)->update(array(
+                'Hero' => $file,
+              ));
+            }
+            
+          }
+          
+          $response = array('filename' => $file, 'fileurl' => $file_url, 'url' => $file_url, 'extension' => $file_extension, 'size' => $file_size);
+          echo json_encode($response, JSON_UNESCAPED_SLASHES);
+          
+        } catch(Exception $e) {
+          echo $e->getMessage();
+        }
+      } else {
+        return go($originurl . '/error:upload1' . $error);
+      }
+         
+		}
+	),
+  // Insert the saved image for ContentTools
+	array(
+    'pattern' => array('insert-image', '(.+insert-image)'),
+		'method' => 'POST',
+		'action'  => function() {
+      try {
+        $items = list($width, $height) = getimagesize($_POST['url']);
+        
+        if ($items[0] > $_POST['width']) {
+          $newwidth = $_POST['width'];
+          $newheight = ($_POST['width'] / $items[0]) * $items[1];
+        } else {
+          $newwidth = $items[0];
+          $newheight = $items[1];
+        }
+    
+        $arr = array('url' => $_POST['url'], 'width' => $_POST['width'], 'crop' => $_POST['crop'],
+         'alt'=> "Image", 'size' => array($newwidth, $newheight)); // size piece tweaked based on GitHub comments
+    
+        echo json_encode($arr);
+      } catch(Exception $e) {
+        $error = true;
+        echo "Dang, image not inserted. Blame Andy.";
+      }
+    }
+	),
+	
+	
 
   // SAVE AVATAR OR ICON, or possibly ContentTools uploads and eventually videos and other files as well
+  /*
 	array(
     'pattern' => array('uploadold', '(.+uploadold)', 'makerbox'),
 		'method' => 'POST',
@@ -1063,14 +1134,7 @@ c::set('routes', array(
         $target_file = $target_dir . $target_filename . '.' . $extension;
         
         $uploadOk = 1;
-        
-        // Check if the file is actually an image
-        /*
-        if(getimagesize($_FILES[$name]['tmp_name']) == false) {
-          $uploadOk = 0;
-          $error = "hey";
-        }
-        */
+
         
         // Allow certain file formats
         if($extension != 'jpg' && $extension != 'png' && $extension != 'jpeg' && $extension != 'gif' ) {
@@ -1092,10 +1156,10 @@ c::set('routes', array(
           // Save the file in the right place
           if (move_uploaded_file($_FILES[$name]["tmp_name"], $target_file)) {
 
-            /* Use GD Lib to detect image orientation and rotate if necessary
-              - https://forum.getkirby.com/t/wrong-orientation-of-images-portrait-landscape-after-upload/692/19
-              - https://github.com/getkirby/starterkit/blob/0b4a6e8cf929237621d77adb996e98b08d234004/kirby/toolkit/lib/thumb.php
-            */
+            // Use GD Lib to detect image orientation and rotate if necessary
+            //  - https://forum.getkirby.com/t/wrong-orientation-of-images-portrait-landscape-after-upload/692/19
+            //  - https://github.com/getkirby/starterkit/blob/0b4a6e8cf929237621d77adb996e98b08d234004/kirby/toolkit/lib/thumb.php
+            
             try {
               $img = new abeautifulsite\SimpleImage($target_file);
               //echo $target_file;
@@ -1153,7 +1217,8 @@ c::set('routes', array(
         }
         
       } catch(Exception $e) {
-        return go($originurl . '/error:upload3');
+        //return go($originurl . '/error:upload3');
+        echo $e;
       }
     }
 	),
@@ -1195,12 +1260,12 @@ c::set('routes', array(
           $uploadOk = 1;
         }
         // Check file size
-        /*
+        
         if ($_FILES["image"]["size"] > 1500000) {
             echo "Sorry, your file is too large.";
             $uploadOk = 0;
         }
-        */
+        
         // Allow certain file formats
         if($imageFileType != "jpg" && $imageFileType != "JPG" &&
            $imageFileType != "png" && $imageFileType != "PNG" &&
@@ -1216,10 +1281,10 @@ c::set('routes', array(
         } else {
             if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
                 
-                /* Use GD Lib to detect image orientation and rotate if necessary
-                  - https://forum.getkirby.com/t/wrong-orientation-of-images-portrait-landscape-after-upload/692/19
-                  - https://github.com/getkirby/starterkit/blob/0b4a6e8cf929237621d77adb996e98b08d234004/kirby/toolkit/lib/thumb.php
-                */
+                // Use GD Lib to detect image orientation and rotate if necessary
+                //  - https://forum.getkirby.com/t/wrong-orientation-of-images-portrait-landscape-after-upload/692/19
+                //  - https://github.com/getkirby/starterkit/blob/0b4a6e8cf929237621d77adb996e98b08d234004/kirby/toolkit/lib/thumb.php
+                
                 try {
                   $img = new abeautifulsite\SimpleImage($target_file);
                   //echo $target_file;
@@ -1247,32 +1312,7 @@ c::set('routes', array(
       }
     }
 	),
-  // Insert the saved image for ContentTools
-	array(
-    'pattern' => array('insert-image', '(.+insert-image)'),
-		'method' => 'POST',
-		'action'  => function() {
-      try {
-        $items = list($width, $height) = getimagesize($_POST['url']);
-        
-        if ($items[0] > $_POST['width']) {
-          $newwidth = $_POST['width'];
-          $newheight = ($_POST['width'] / $items[0]) * $items[1];
-        } else {
-          $newwidth = $items[0];
-          $newheight = $items[1];
-        }
-    
-        $arr = array('url' => $_POST['url'], 'width' => $_POST['width'], 'crop' => $_POST['crop'],
-         'alt'=> "Image", 'size' => array($newwidth, $newheight)); // size piece tweaked based on GitHub comments
-    
-        echo json_encode($arr);
-      } catch(Exception $e) {
-        $error = true;
-        echo "Dang, image not inserted. Blame Andy.";
-      }
-    }
-	),
+  */
 
 
 
@@ -1435,7 +1475,13 @@ c::set('routes', array(
   ),
 
 
-
+  array(
+    'pattern' => 'posts/(:any)',
+    'method' => 'GET',
+    'action'  => function($uid) {
+      go(site()->url() . '/' . $uid);
+    }
+  ),
 
 
 ));

@@ -115,7 +115,7 @@ if (!isset($type)) {
             }
           }
           $items = $filtered;
-        }
+        }  
         if (isset($event)) {
           $filtered = new Pages();
           foreach ($items as $item) {
@@ -136,6 +136,18 @@ if (!isset($type)) {
           elseif ($time == 'past') {
             $items = $items->filterBy('StartDate','<',date('c'))->sortBy('datePublished','desc');
           }
+        }
+        if (isset($relatedto)) {
+          
+          $uid = $relatedto;
+          
+          $filtered = new Pages();
+          foreach ($items as $item) {
+            if (in_array($uid, $item->related())) {
+              $filtered->add($item);
+            }
+          }
+          $items = $filtered;
         }
         $items = $items->filterBy('datePublished','!=','');
         $items = $items->visibleToUser();

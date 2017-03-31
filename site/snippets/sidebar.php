@@ -106,8 +106,9 @@
     <form method="post" action="uploadnew" id="upload-form" enctype="multipart/form-data">
       <input type="file" accept="image/*" name="avatar" id="avatarToUpload">
       <input type="file" accept="image/*" name="hero" id="heroToUpload">
-      <input type="file" accept="image/*" name="image" id="imageToUpload">
-      <input type="file" accept="" name="file" id="fileToUpload">
+      <input type="file" accept="image/*" name="images" id="imageToUpload">
+      <input type="file" accept="video/*" name="videos" id="videoToUpload">
+      <input type="file" accept="" name="files" id="fileToUpload">
     </form>
     
 <?php /*

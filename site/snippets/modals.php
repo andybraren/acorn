@@ -228,14 +228,15 @@
     <?php endif ?>
   </div>
   
+  <!--
   <div id="modal-login" class="modal<?php if(param('login')) { echo ' visible'; } ?>">
     <div class="modal-container">
       <div class="modal-content">
-          
+        
         <div class="modal-title">
           <h2>Log in</h2>
         </div>
-
+        
         <form action="<?php echo $page->url() . '/login' ?>" method="post">
           <div class="honey">
             <input name="utf8" type="hidden" value="✓">
@@ -246,6 +247,7 @@
             <input type="text" name="username" pattern="^[a-zA-Z0-9]{3,20}$|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,3}$" required autofocus> <?php // Only letters and numbers, between 3 and 20 ?>
             <label for="username">Username (or email)</label>
           </div>
+          
           <div>
             <input type="password" name="password" pattern=".{4,}" required> <?php // At least 4 characters?>
             <label for="password">Password</label>
@@ -267,6 +269,7 @@
       </div>
     </div>
   </div>
+  -->
 
   <div id="modal-forgot" class="modal<?php if(param('forgot')) { echo ' visible'; } ?>">
     <div class="modal-container">

@@ -37,18 +37,46 @@ ini_set('max_execution_time', 60); // ALL 60 seconds = 1 minute
 ini_set('session.gc_maxlifetime', 604800); // 1 week
 // ini_set('session.gc_maxlifetime', 86400); // 1 day
 // ini_set('session.gc_maxlifetime', 3600); // 1 hour
+//ini_set('session.gc_maxlifetime', 10); // 1 hour
 
 // Set session save directory
 ini_set('session.save_path', dirname(dirname(__FILE__)) . '/sessions');
 
 // Enable PHP's garbage collection method, even on Ubuntu/Debian, with a prob/divisor % chance of happening on each session_start()
-ini_set('session.gc_probability', 1);
-ini_set('session.gc_divisor', 100);
+//ini_set('session.gc_probability', 1);
+//ini_set('session.gc_divisor', 100);
 
 // Set the kirby_session_auth cookie lifetime to be a month
 s::$timeout = 60*24*30; // 1 month
 s::$cookie['lifetime'] = 60*24*30; // 1 month
 
+
+//--------------------------------------------------
+// SSL / HTTPS
+// - applies to all pages
+//--------------------------------------------------
+
+/* The problem with setting this within Kirby is that images and assets can still be navigated to directly without the https */
+/* Need to find a way to dynamically set the htaccess file, without impacting its performance */
+
+c::set('ssl', false); // Using htaccess instead
+
+if (c::get('ssl') == true) {
+  
+  $ContentSecurityPolicy = 'Content-Security-Policy: default-src \'none\'; style-src \'self\' \'unsafe-inline\'; font-src \'self\' themes.googleusercontent.com; img-src *; media-src *; object-src \'none\'; script-src \'self\' www.google-analytics.com ajax.googleapis.com; child-src https://player.vimeo.com https://www.youtube.com https://acorn.blog; connect-src \'self\'';
+  
+  header($ContentSecurityPolicy);
+  
+  header('Strict-Transport-Security: max-age=15768000; includeSubDomains');
+  header('X-Content-Type-Options: nosniff');
+  
+  // Block site from being framed with X-Frame-Options and CSP, for IE/Edge, superceded by CSS frame-ancestors
+  header('X-Frame-Options: DENY');
+  
+  // Prevent reflected XSS attacks, for old browsers, superceded by CSP unsafe-inline
+  header('X-XSS-Protection: 1; mode=block');
+  
+}
 
 //--------------------------------------------------
 // Kirby Configuration
@@ -209,7 +237,7 @@ c::set('routes', array(
     'pattern' => 'robots.txt',
     'action'  => function() {
       echo '<pre style="word-wrap: break-word; white-space: pre-wrap;">';
-      if($_SERVER['SERVER_NAME'] != 'drewbaren.com' and $_SERVER['SERVER_NAME'] != 'tuftsmake.com' and $_SERVER['SERVER_NAME'] != 'makernetwork.org') {
+      if($_SERVER['SERVER_NAME'] != 'drewbaren.com' and $_SERVER['SERVER_NAME'] != 'tuftsmake.com' and $_SERVER['SERVER_NAME'] != 'makernetwork.org' and $_SERVER['SERVER_NAME'] != 'dev.acorn.blog') {
         echo 'User-agent: *<br>Disallow: /thumbs/<br>Disallow: /users<br>Disallow: /drafts/<br>Sitemap: ' . site()->url() . '/sitemap';
         foreach (site()->index()->filterBy('visibility','unlisted') as $hiddenpage) {
           echo '<br>Disallow: /' . $hiddenpage->uri();
@@ -263,39 +291,30 @@ c::set('routes', array(
     'action'  => function() {
       
       $site = site();
-
+      
       // redirect logged in users to the homepage
       if($site->user()) go('/');
-    
+      
       // handle the signup form submission
-      if(r::is('post') and get('signup')) {
+      if(r::is('post')) {
         
         // check if the username already exists, and if not, run the signup method
         if(!$site->user(get('username'))) {
           
+          $usertype = (page('users')->hasChildren()) ? 'user' : 'admin';
+          
           // create the new user.php file
         	try {
     			  $user = $site->users()->create(array(
-    			    'username'  => get('username'),
-    				  'firstname' => get('firstname'),
-    			    'lastname'  => get('lastname'),
-    			    'email'     => strtolower(get('email')),
-    			    'tuftsemail'=> strtolower(get('tuftsemail')),
-    			    'password'  => get('password'),
-    			    'resetkey'  => '',
-    			    'resetdate' => '',
-    			    'language'  => 'en',
-    			    'usertype'  => 'user',
-    			    'registrationdate' => date('Y-m-d H:i:s'),
-    			    'usegravatar' => false,
+    			    'username'    => get('username'),
+    				  'firstname'   => get('firstname'),
+    			    'lastname'    => get('lastname'),
+    			    'email'       => strtolower(get('email')),
+    			    'password'    => get('password'),
+    			    'datedata'    => date('Y-m-d H:i:s'),
+    			    'language'    => 'en',
+    			    'usertype'    => $usertype,
     			    'color'       => strtolower(get('color')),
-    			    'school'      => get('school'),
-    			    'affiliation' => get('affiliation'),
-    			    'department'  => get('dept'),
-    			    'major'       => get('major'),
-    			    'classyear'   => get('classyear'),
-    			    'birthyear'   => get('birthyear'),
-    			    'groups'      => 'me-184-robotics',
     			  ));
     			} catch(Exception $e) {
     			  $e->getMessage();
@@ -304,7 +323,7 @@ c::set('routes', array(
     			// create the new maker profile page
     			try {
     				$firstandlast = get('firstname') . " " . get('lastname');
-    			  $newPage = page('users')->children()->create(get('username'), 'maker', array(
+    			  $newPage = page('users')->children()->create(get('username'), 'user', array(
     			    'title' => $firstandlast,
     			    'created' => date('Y-m-d H:i:s'),
     			    'modified' => date('Y-m-d H:i:s'),
@@ -312,41 +331,11 @@ c::set('routes', array(
               'makers' => get('username'),
               'visibility' => 'public',
               'color' => strtolower(get('color')),
-              'hero' => '',
     			    'text'  => '',
     			  ));
     			} catch(Exception $e) {
     			  echo $e->getMessage();
     			}
-          
-          // send user info to the RFID database
-          if($site->url() == "https://maker.tufts.edu") {
-      			try {
-      				$link = pg_Connect(c::get('RFIDcredentials'));
-      				$uname = get('username');
-      				$fname = get('firstname');
-      				$lname = get('lastname');
-      				$email = get('email');
-      				$Temail = get('tuftsemail');
-      				$dept = get('dept');
-      				$C_year = get('classyear');
-      				$byear = get('birthyear');
-      				$Rship = get('affiliation');
-      				
-              $UserAdd = "INSERT INTO users(uid, uname, fname, lname, email, temail, reg_date, exp_date, dept, class, byear) 
-                      VALUES (DEFAULT,'$uname','$fname','$lname','$email','$Temail',DEFAULT,DEFAULT,$dept,$C_year,$byear);";
-      				$NewUser = pg_exec($link, $UserAdd);
-      				
-              // Create admin_log to capture new user creation
-              $ip = $_SERVER['REMOTE_ADDR'];
-              $log_call = "INSERT INTO Admin_log(uid, action, ip) VALUES ($uid,'Created new user through maker.tufts.edu - $uname', '$ip')";
-              $admin_log = pg_exec($link, $log_call);
-      				
-      			} catch(Exception $e) {
-      				echo 'failed to send to Database';
-      			  echo $e->getMessage();
-      			}
-      		}
     			
     			// log the user in and redirect them to their new profile page
           try {
@@ -361,7 +350,7 @@ c::set('routes', array(
           echo "Username is taken";
         }
       } else {
-        $error = false;  
+        $error = false;
       }
     
       return array('error' => $error);

@@ -1,4 +1,4 @@
-Title: Acorn Platform Documentation
+Title: Maker Network Platform Documentation
 ----
 Datedata: 2016-11-03 12:00:00, 2016-11-03 12:00:00 == abraren, 2016-11-03 12:00:00, 2016-11-03 15:00:00, 2016-11-03 16:00:00
 ----
@@ -257,14 +257,12 @@ Consider the below to be an extension of [Kirby's Cheat Sheet](https://getkirby.
     firstname: Joe
     lastname: Schmo
     email: jschmo@gmail.com
-        tuftsemail: joe.schmo@tufts.edu
+    tuftsemail: joe.schmo@tufts.edu
     password: [Encrypted password here]
     datedata: 2015-05-06 15:00:00, 2015-07-23 11:57:59 == jschmo
               date registered      date last modified
     language: en
     usertype: admin
-    registrationdate: 2015-05-06 15:00:00
-    usegravatar: false
     color: red
     affiliation: Graduate (Masters)
     department: Mechanical Engineering

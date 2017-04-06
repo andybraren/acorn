@@ -13,7 +13,7 @@
           <div class="text size-33 card-join highlight">
             <h2>Join the Network</h2>
             <p>Get email updates, register for events, reserve equipment, start new projects and more with one account that ties everything together.</p>
-            <button class="button fullwidth button-signup">Become a Maker</button>
+            <button class="button fullwidth button-signup" data-modal="signup">Create an account</button>
           </div>
         </div>
       </div>

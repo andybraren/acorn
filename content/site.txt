@@ -24,39 +24,6 @@ StripeAPIKeys: ########,
 ----
 APIKeys: 
 ----
-MenuPrimarytink:
-
-- title: Articles
-  uid: articles
-  sub:
-    - title: All
-      uid: all
-    - title: Efficiency
-      uid: efficiency
-    - title: Virtualization
-      uid: virtualization
-    - title: Storage
-      uid: storage
-    - title: Backup
-      uid: backup
-    - title: Superguides
-      uid: superguides
-- title: Videos
-  uid: videos
-  sub:
-    - title: All
-      uid: all
-    - title: Deep Dives
-      uid: deep-dives
-    - title: Interviews
-      uid: interviews
-    - title: Unboxing
-      uid: unboxing
-- title: Podcast
-  uid: podcast
-- title: Forum
-  uid: forum
-----
 MenuPrimary:
 
 - title: Learn
@@ -84,8 +51,6 @@ MenuPrimary:
   sub:
     - title: Articles
       uid: articles
-    - title: Posts
-      uid: posts
     - title: Makers
       uid: makers
     - title: Groups

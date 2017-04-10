@@ -15,8 +15,8 @@
       
       <?php ///// LOGO ///// ?>
       <?php
-        $logo     = site()->page('site')->images()->findBy('name', 'logo');
-        $logoIcon = site()->page('site')->images()->findBy('name', 'logo-icon');
+        $logo     = site()->images()->findBy('name', 'logo');
+        $logoIcon = site()->images()->findBy('name', 'logo-icon');
       ?>
       <?php if ($logo or $logoIcon): ?>
         <a class="logo" href="<?php echo url() ?>">
@@ -128,20 +128,28 @@
           <a<?php echo $url ?>><?php echo $title ?></a><?php echo $subtitle ?>
         </li>
       <?php endforeach ?>
-                
-      <?php if ($site->user()): ?>
-        <li><a href="<?php echo $page->url() . '/logout' ?>">Logout</a></li>
+      
+      <?php if ($user = $site->user()): ?>
+        
+        <div class="dropdown">
+          <button class="button-login"><?php echo esc($user->firstName()) ?></button>
+          
+          <ul class="dropdown-menu">
+            <li><a id="datausername" href="<?php echo $site->url() . '/' . $user->username() ?>" data-username="<?php echo $user->username() ?>">View Profile</a></li>
+            <li><span><s>Change URL</s></span></li>
+            <li><s>Schedule post</s></li>
+            <li><s>Save revision</s></li>
+            <li><a href="<?php echo $page->url() . '/logout' ?>">Logout</a></li>
+          </ul>
+        </div>
+            
+      <?php else: ?>
+        <li class="login">
+          <a id="button-login" class="login" data-modal="login">Log in</a>
+        </li>
       <?php endif ?>
       
-      <li class="login">
-        <?php if($user = $site->user()): ?>
-          <a id="datausername" href="<?php echo $site->url() . "/makers/" . $user->username() ?>" data-username="<?php echo $user->username() ?>">
-            <?php echo esc($user->firstName()) ?>
-          </a>
-        <?php else: ?>
-          <a id="button-login" class="login" data-modal="login">Log in</a>
-        <?php endif ?>
-      </li>
+
       
     </ul>
     

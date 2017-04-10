@@ -1,85 +1,88 @@
-Title: Tufts Maker Network
+Title: Acorn
 ----
-Description: All of Tufts' making-related spaces, events, clubs, projects, and resources.
+Description: Websites built to grow
 ----
 Copyright: © 2014-(date: Year)
 ----
-ColorOptions: red, blue, green, purple, orange, silver, gold
+Coloroptions: red, blue, green, purple, orange, silver, gold
 ----
-VisibilityOptions: public, unlisted, groups, private
+Visibilityoptions: public, unlisted, groups, private
 ----
-UserTypes: user, admin
+Usertypes: user, admin
 ----
-GroupTypes: club, course
+Grouptypes: club, course
 ----
-AffiliationOptions: Undergraduate, Graduate (Masters), Graduate (PhD), Faculty, Staff, Community member, None
+Affiliationoptions: Undergraduate, Graduate (Masters), Graduate (PhD), Faculty, Staff, Community member, None
 ----
-DepartmentOptions: Anthropology ## Art and Art History ## Biology ## Biomedical Engineering ## Center for Engineering Education and Outreach ## Chemical and Biological Engineering ## Chemistry ## Child Study and Human Development ## Civil and Environmental Engineering ## Classics ## Computer Science ## Drama and Dance ## Earth and Ocean Sciences ## Economics ## Education ## Electrical and Computer Engineering ## Engineering Management ## English, German, Russian, and Asian Languages/Literature ## History ## Human Factors ## Mathematics ## Mechanical Engineering ## Music ## Occupational Therapy ## Philosophy ## Physical Education ## Physics and Astronomy ## Political Science ## Psychology ## Religion ## Romance Languages ## Sociology ## Urban and Environmental Policy and Planning
+Departmentoptions: Anthropology ## Art and Art History ## Biology ## Biomedical Engineering ## Center for Engineering Education and Outreach ## Chemical and Biological Engineering ## Chemistry ## Child Study and Human Development ## Civil and Environmental Engineering ## Classics ## Computer Science ## Drama and Dance ## Earth and Ocean Sciences ## Economics ## Education ## Electrical and Computer Engineering ## Engineering Management ## English, German, Russian, and Asian Languages/Literature ## History ## Human Factors ## Mathematics ## Mechanical Engineering ## Music ## Occupational Therapy ## Philosophy ## Physical Education ## Physics and Astronomy ## Political Science ## Psychology ## Religion ## Romance Languages ## Sociology ## Urban and Environmental Policy and Planning
 ----
-MajorOptions: Anthropology ## Art and Art History ## Biology ## Biomedical Engineering ## Center for Engineering Education and Outreach ## Chemical and Biological Engineering ## Chemistry ## Child Study and Human Development ## Civil and Environmental Engineering ## Classics ## Computer Science ## Drama and Dance ## Earth and Ocean Sciences ## Economics ## Education ## Electrical and Computer Engineering ## Engineering Management ## English, German, Russian, and Asian Languages/Literature ## History ## Human Factors ## Mathematics ## Mechanical Engineering ## Music ## Occupational Therapy ## Philosophy ## Physical Education ## Physics and Astronomy ## Political Science ## Psychology ## Religion ## Romance Languages ## Sociology ## Urban and Environmental Policy and Planning
+Majoroptions: Anthropology ## Art and Art History ## Biology ## Biomedical Engineering ## Center for Engineering Education and Outreach ## Chemical and Biological Engineering ## Chemistry ## Child Study and Human Development ## Civil and Environmental Engineering ## Classics ## Computer Science ## Drama and Dance ## Earth and Ocean Sciences ## Economics ## Education ## Electrical and Computer Engineering ## Engineering Management ## English, German, Russian, and Asian Languages/Literature ## History ## Human Factors ## Mathematics ## Mechanical Engineering ## Music ## Occupational Therapy ## Philosophy ## Physical Education ## Physics and Astronomy ## Political Science ## Psychology ## Religion ## Romance Languages ## Sociology ## Urban and Environmental Policy and Planning
 ----
-GoogleAnalytics: #########
+Googleanalytics: #########
 ----
-StripeAPIKeys: ########, 
+Stripeapikeys: ########,
 ----
-APIKeys: 
+Apikeys: 
 ----
-MenuPrimary:
+Menuprimary: 
 
-- title: Learn
-  uid: learn
+- title: Features
+  uid: features
   sub:
-    - title: Courses
-      uid: courses
-    - title: Handbooks
-      uid: handbooks
-    - title: Books
-      uid: books
-- title: Make
-  uid: make
-  sub:
-    - title: Ideas
-      uid: ideas
+    - title: Accounts
+      uid: users
+    - title: Articles
+      uid: articles
+    - title: Posts
+      uid: posts
     - title: Projects
       uid: projects
     - title: Challenges
       uid: challenges
-    - title: Materials
-      uid: materials
-- title: Connect
-  uid: connect
-  sub:
-    - title: Articles
-      uid: articles
-    - title: Makers
-      uid: makers
+    - title: Equipment
+      uid: equipment
     - title: Groups
       uid: groups
-- title: Spaces
+      subtitle: ALPHA
+    - title: Forum
+      uid: forum
+    - title: Events
+      uid: events
+    - title: Commerce
+      uid: store
+- title: Pricing
   uid: spaces
-- title: Equipment
-  uid: equipment
-- title: Events
-  uid: events
-  subtitle: ALPHA
-- title: Forum
-  uid: forum
-  subtitle: ALPHA
-
+- title: "Q&A"
+  uid: questions
 ----
-MenuSecondary:
+Menusecondary: 
 
+- title: About
+  uid: about
 - title: Docs
   uid: docs
-  subtitle: v0.15
+  subtitle: v0.3
+- title: Download
+  url: https://github.com/andybraren/acorn
+  subtitle: v0.3
 - title: Contact
   url: mailto:andy@acorn.blog
+----
+Devices: 
 
-
-
-
-
-
-
-
-
+- 
+  name: Raspberry Pi Zero
+  ip: 10.10.1.123
+  uid: epilog-zing-24-laser-cutter
+  id: 20170330160354131
+  key: 'z9gK$36jEdJ{YLuqvyr}'
+  pkey: Xtt3//tvr32wpAJWW$cA
+  nonce: "18273928394837283748"
+- 
+  name: Raspberry Pi 2
+  ip: 10.10.1.122
+  id: 20170329224303305
+  uid: flashforge-creater-pro
+  key: 'zM7iFm(y{2r4&TaTUsqf'
+  pkey: '8MD6#7ZmbNAXwUKW)*ri'
+  nonce: "17283948273928102845"

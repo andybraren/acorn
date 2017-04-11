@@ -60,6 +60,7 @@
         <?php
           $active = null;
           $missing = null;
+          $subnav = null;
           $classes = array();
           
           // add active class
@@ -136,9 +137,8 @@
           
           <ul class="dropdown-menu">
             <li><a id="datausername" href="<?php echo $site->url() . '/' . $user->username() ?>" data-username="<?php echo $user->username() ?>">View Profile</a></li>
-            <li><span><s>Change URL</s></span></li>
-            <li><s>Schedule post</s></li>
-            <li><s>Save revision</s></li>
+            <li><a href="<?php echo $site->url() . '/settings' ?>">Site Settings</a></li>
+            <li><span>Manage Users</span></li>
             <li><a href="<?php echo $page->url() . '/logout' ?>">Logout</a></li>
           </ul>
         </div>

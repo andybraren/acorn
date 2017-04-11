@@ -158,6 +158,7 @@ header .container {
   flex: 1;
   flex-flow: row nowrap;
   justify-content: space-between;
+  overflow: visible;
   /*
   overflow: auto;
   overflow-x: auto;
@@ -488,11 +489,11 @@ body {
 }
 .menu a { color: #4C4C4C; }
 .menu-secondary a { color: #797878; font-weight: 500;}
-#navigation .menu-secondary .login a { color: darkgrey; border-color: darkgrey; }
-.menu a:hover, .menu .active > a { background-color: rgba(0, 0, 0, 0.05); }
+#navigation .menu-secondary .login a, .button-login { color: darkgrey; border-color: darkgrey; }
+.menu > li a:hover, .menu li.active > a { background-color: rgba(0, 0, 0, 0.05); }
 
 /* Only change color if the entire thing is one color already */
-.logo svg g:not([fill*='none']) path {
+.logo svg > g:not([fill*='none']) path {
   fill: var(--theme-main);
 }
 .logo svg > path {
@@ -625,8 +626,12 @@ blockquote {
 }
 */
 
+.logo svg g path {
+  /*animation: cyclecolors 90s linear infinite;*/
+}
+
 @keyframes cyclecolors {
-	0%  {fill:#62A5F0;}
+	0%  {fill:var(--theme-main);}
 	16% {fill:#5D9A6D;}
 	32% {fill:#AF5555;}
 	48% {fill:#D08536;}
@@ -687,7 +692,9 @@ nav {
   cursor: pointer;
   cursor: hand;
 }
-#navigation .menu li a, .menu-modal {
+#navigation .menu > li a,
+#navigation .menu > li button,
+.menu-modal {
   padding: .35em 0;
   padding: 15px 13px;
 }
@@ -703,10 +710,10 @@ nav {
   letter-spacing: initial;
 }
 
-#navigation .menu-secondary .login a {
+#navigation .menu-secondary .button-login {
   border-width: 1px;
   border-style: solid;
-  padding: 5px 10px;
+  padding: 8px 10px;
   border-radius: 4px;
   margin: 0 10px 0 15px;
   transition: background-color .3s;
@@ -737,88 +744,8 @@ nav {
 ul.submenu {
   display: none;
 }
-/*
-.submenu {
-  position: absolute;
-  z-index: 1;
-  display: none;
-  left: 1em;
-}
-.submenu:before {
-  position: absolute;
-  z-index: -1;
-  content: '';
-  top: -.5em;
-  left: 0;
-  border-top: .5em solid transparent;
-  border-bottom: .5em solid transparent;
-  border-left: .5em solid #222;
-}
-.submenu li {
-  border-bottom: 1px solid #444;
-}
-.submenu a {
-  padding: .5em 1.5em;
-  font-size: .9em;
-  font-weight: 300;
-  color: #fff;
-  background: #222;
-  white-space: nowrap;
-}
-.submenu a:hover {
-  background: #333;
-  color: #fff;
-}
-*/
 
 
-/*
-
-Submenu testing with better structure, stopping this for now
-http://themedemos.dottoro.com/features/menu/horizontal-submenu/
-http://codepen.io/dmathisen/pen/lpszg
-
-body {
-  margin-top: 52px;
-}
-
-header {
-  overflow-y: initial;
-}
-
-
-.menu {
-  position: relative;
-}
-
-.menu > li {
-  position: initial;
-}
-
-.menu li ul {
-  position: absolute;
-  display: block;
-  left: 0;
-}
-
-.menu li ul li {
-  float: left;
-  width: auto;
-}
-.menu li ul li a {
-    padding: 7px 10px !important;
-    text-transform: initial;
-}
-
-nav {
-  overflow-y: initial;
-  overflow-x: initial;
-}
-
-#subnavigation {
-  margin-top: 60px;
-}
-*/
 .menu li ul {
   display: flex;
   position: fixed;
@@ -847,15 +774,10 @@ li a {
 .newnav .menu > li.hassubnav {
   transition: box-shadow .2s;
 }
-.newnav .menu > li.hassubnav:hover {
+.newnav .menu > li.hassubnav:not(.active):hover {
   box-shadow: inset 0px -1px 0px 0px #efefef;
 }
 .menu li ul {
-  /*
-  margin-left: -50vw;
-  padding-left: 50vw;
-  padding-right: 100vw;
-  */
   padding: 0 2rem 2rem 2rem;
   margin-left: -2rem;
 }
@@ -876,15 +798,23 @@ li a {
   opacity: 0;
   transition: opacity .2s, visibility .2s;
 }
-.subnav .newnav .menu > li.hassubnav:hover ~ .backdrop {
+.subnav .newnav .menu > li.hassubnav:not(.active):hover ~ .backdrop {
   visibility: visible;
   opacity: 1;
 }
 
+/*
 .menu li:hover ul {
   visibility: visible;
   opacity: 1;
 }
+*/
+
+.menu li:not(.active):hover ul {
+  visibility: visible;
+  opacity: 1;
+}
+
 .menu li ul li {
   box-shadow: inset 0px -1px 0px 0px #e0e0e0;
 }
@@ -1298,7 +1228,8 @@ hr {
 .night .menu a {
   color: inherit;
 }
-.night #navigation .menu-secondary .login a {
+.night #navigation .menu-secondary .login a,
+.night #navigation .menu-secondary .login button {
   color: inherit;
   border-color: inherit;
 }
@@ -1410,9 +1341,8 @@ h2 a:hover {
  color: inherit;
 }
 h3 {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   line-height: 1.5rem;
-  font-weight: 500;
   font-weight: 400;
   clear: both;
   transition: background-color 0.2s, color 0.2s;
@@ -1420,7 +1350,7 @@ h3 {
 h4 {
   font-size: 1.1rem;
   line-height: 1.3rem;
-  font-weight: 600;
+  font-weight: 500;
   margin: 1rem 0 .5rem 0;
   clear: both;
 }
@@ -1578,6 +1508,7 @@ blockquote p {
 .subsection > .card-join {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 .subsection > div > .button {
   margin-top: auto;
@@ -2740,8 +2671,16 @@ button {
   color: white;
 }
 
-
+/*
 .dropdown button:nth-child(2):focus + .dropdown-menu,
+button.focused + .dropdown-menu {
+  visibility: visible;
+    opacity: 1;
+    transition: opacity .25s;
+}
+*/
+
+button:focus + .dropdown-menu,
 button.focused + .dropdown-menu {
   visibility: visible;
     opacity: 1;
@@ -2762,9 +2701,11 @@ button.focused + .dropdown-menu {
   opacity: 0;
   transition: opacity .25s, visibility .25s; /* Learned how to make the transition look good http://www.greywyvern.com/?post=337 */
   cursor: default;
+  min-width: 150px;
 }
 
-.dropdown-menu li {
+.dropdown-menu li > * {
+    display: block;
     padding: 10px;
     line-height: initial;
     cursor: pointer;
@@ -2786,6 +2727,9 @@ button.focused + .dropdown-menu {
 }
 
 
+.menu .dropdown-menu {
+  margin-right: 10px;
+}
 
 
 
@@ -4578,6 +4522,8 @@ tr:nth-of-type(odd) td {
 
 article .text, article .title {
   max-width: 700px;
+}
+.text, .title {
   line-height: 1.625rem;
 }
 .sidebar ~ article {
@@ -4692,6 +4638,16 @@ aside figcaption {
   margin-bottom: 20rem;
 }
 
+.discussion a.user-avatar {
+  background-color: var(--theme-main);
+  width: 44px;
+  height: 44px;
+  border-radius: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .discussion .user-avatar img {
   width: 40px;
   background-color: var(--theme-main);
@@ -4752,15 +4708,17 @@ aside figcaption {
   
 }
 
-
+.discussion .item > div {
+  height: 100%;
+}
 .discussion .item > div:first-child {
   position: relative;
 }
 
 .discussion .user-badge {
   position: absolute;
-  right: -5px;
-  top: -5px;
+    bottom: -5px;
+    right: 0px;
 }
 
 /* http://www.w3schools.com/css/css_tooltip.asp */

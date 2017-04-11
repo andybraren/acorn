@@ -34,10 +34,12 @@ window.onload = function() {
   });
   
   /* Activate stickyfill */
+  /*
   var stickyElements = document.getElementsByClassName('sticky');
   for (var i = stickyElements.length - 1; i >= 0; i--) {
       Stickyfill.add(stickyElements[i]);
   }
+  */
   
   progressNav();
   
@@ -460,6 +462,8 @@ if (deleteButtons) {
     }, false);
   }
 }
+
+
 
 function openModal(modalname, target) {
   
@@ -1022,9 +1026,11 @@ function toggleItems() { // Enable dragula and toggle each item's href to data-h
   dragula([document.getElementById('authors')]);
   dragula([document.getElementById('groups')]);
   
-  dragula([document.getElementsByClassName('menu')[0]]);
-  dragula([document.getElementsByClassName('menu')[1]]);
-  dragula([document.getElementsByClassName('menu')[2]]);
+  if (window.location.pathname == '/settings') {
+    dragula([document.getElementsByClassName('menu')[0]]);
+    dragula([document.getElementsByClassName('menu')[1]]);
+    dragula([document.getElementsByClassName('menu')[2]]);
+  }
   
   dragula([document.getElementsByClassName('subnodes')[0]]);
   
@@ -1302,46 +1308,48 @@ function savePage() {
   }
   
   /* Navigation */
-  var nav = document.querySelectorAll('.menu')[0];
-  if (nav != null) {
-    
-    var arr = [];
-    var items = nav.querySelectorAll('li');
-    for (var i = 0; i < items.length; i++) {
+  if (window.location.pathname == '/settings') {
+    var nav = document.querySelectorAll('.menu')[0];
+    if (nav != null) {
       
-      var element = items[i].querySelector('a');
-      var obj = {};
-      
-      obj['title'] = element.innerText;
-      obj['href'] = element.href.split('/').pop();
-      
-      if (element.nextElementSibling) {
-        obj['subtitle'] = element.nextElementSibling.innerText;
-      }
-      
-      // if active and submenu is present, create those
-      if (items[i].classList) {
-        if (items[i].classList.contains('active')) {
-          if (document.querySelector('#subnavigation')) {
-            var subNavItems = document.querySelector('#subnavigation').querySelectorAll('.menu')[0].querySelectorAll('a');
-            var arr2 = [];
-            
-            for (var e = 0; e < subNavItems.length; e++) {
-              var obj2 = {};
-              obj2['title'] = subNavItems[e].innerText;
-              if (subNavItems[e].href) {
-                obj2['href']  = subNavItems[e].href.split('/').pop();
+      var arr = [];
+      var items = nav.querySelectorAll('li');
+      for (var i = 0; i < items.length; i++) {
+        
+        var element = items[i].querySelector('a');
+        var obj = {};
+        
+        obj['title'] = element.innerText;
+        obj['href'] = element.href.split('/').pop();
+        
+        if (element.nextElementSibling) {
+          obj['subtitle'] = element.nextElementSibling.innerText;
+        }
+        
+        // if active and submenu is present, create those
+        if (items[i].classList) {
+          if (items[i].classList.contains('active')) {
+            if (document.querySelector('#subnavigation')) {
+              var subNavItems = document.querySelector('#subnavigation').querySelectorAll('.menu')[0].querySelectorAll('a');
+              var arr2 = [];
+              
+              for (var e = 0; e < subNavItems.length; e++) {
+                var obj2 = {};
+                obj2['title'] = subNavItems[e].innerText;
+                if (subNavItems[e].href) {
+                  obj2['href']  = subNavItems[e].href.split('/').pop();
+                }
+                arr2.push(obj2);
               }
-              arr2.push(obj2);
+              obj['sub'] = arr2;
             }
-            obj['sub'] = arr2;
           }
         }
+        
+        arr.push(obj);
       }
-      
-      arr.push(obj);
+      data.append('menusecondary', JSON.stringify(arr));
     }
-    data.append('menusecondary', JSON.stringify(arr));
   }
   
   data.append('page', window.location.pathname);
@@ -1352,7 +1360,6 @@ function savePage() {
   request.send(data);
   
 }
-
 
 
 

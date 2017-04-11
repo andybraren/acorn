@@ -189,7 +189,8 @@ var kirbytagtweaks = [
       //var filename = str_replace('%20', ' ', blah2);
       
       if (node.getAttribute('alt') == 'Image') {
-        var filename = node.src.split("/").pop().replace(/\%20/g,' ');
+        //var filename = node.src.split("/").pop().replace(/\%20/g,' ');
+        var filename = node.src.split("/").pop().replace(/\%20/g,' ').replace(/(\-.*)\./, '.');
       } else {
         var filename = node.getAttribute('data-filename');
       }

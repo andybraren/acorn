@@ -58,13 +58,16 @@ RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
   
   Header set X-Content-Type-Options: nosniff
   
+  # Only send a shortened referrer to foreign sites
+  Header set Referrer-Policy: "no-referrer, strict-origin-when-cross-origin"
+  
   # Block site from being framed with X-Frame-Options and CSP
   # For IE/Edge, superceded by CSS frame-ancestors
   Header set X-Frame-Options DENY
   
   # Prevent reflected XSS attacks
   # For old browsers, deprecated by CSP unsafe-inline
-  Header set X-XSS-Protection "1; mode=block" 
+  Header set X-XSS-Protection "1; mode=block"
   
 </IfModule>
 

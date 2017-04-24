@@ -552,24 +552,29 @@ c::set('routes', array(
   		
   		$title = (isset($_POST['title'])) ? $_POST['title'] : $targetpage->title();
   		$text  = (isset($_POST['text'])) ? $_POST['text'] : $targetpage->text();
+  		$text = strip_tags($text);
   		
   		/* DateData */
   		$dateCreated = date('Y-m-d H:i:s', $targetpage->dateCreated());
   		$dateModified  = date('Y-m-d H:i:s');
   		//$modifiedBy = site()->user(get('username'));
-  		if (!$targetpage->datePublished() or isset($_POST['visibility'])) {
-    		if ($_POST['visibility'] == 'public' or $_POST['visibility'] == 'groups') {
-      		$datePublished = date('Y-m-d H:i:s');
+  		if ($targetpage->datePublished()) {
+    		$datePublished = date('Y-m-d H:i:s', $targetpage->datePublished());
+  		} else {
+    		if (isset($_POST['visibility'])) {
+      		if ($_POST['visibility'] == 'public' or $_POST['visibility'] == 'groups') {
+        		$datePublished = date('Y-m-d H:i:s');
+      		} else {
+        		$datePublished = null;
+      		}
     		} else {
       		$datePublished = null;
     		}
-  		} else {
-    		$datePublished = null;
   		}
   		$datedata = implode(', ', array_filter(array($dateCreated, $dateModified, $datePublished)));
   		
   		/* UserData */
-  		$authors = (isset($_POST['users'])) ? $_POST['users'] : implode(', ', $targetpage->authors());
+  		$authors = (isset($_POST['users'])) ? $_POST['users'] : implode(', ', $targetpage->authors()->toArray());
   		
   		if (empty($_POST['users'])) {
     		$authors = $targetpage->authorsRaw();
@@ -636,9 +641,13 @@ c::set('routes', array(
       } catch(Exception $e) {
         echo $e->getMessage();
       }
+      
+      
           
 		}
 	),
+	
+	
 	
 	
   // SAVE COMMENTS
@@ -654,6 +663,7 @@ c::set('routes', array(
       $newpage = $targetpage->uri() . '/comments/' . $slug;
       
       $text  = (isset($_POST['text'])) ? $_POST['text'] : $targetpage->text();
+      $text = strip_tags($text);
       
       try {
         page()->create($newpage, 'comment', array(
@@ -697,7 +707,7 @@ c::set('routes', array(
   		
       try {
         
-        $targetpage->delete();
+        $targetpage->delete(true); // Force page to be deleted, even if it has subpages
         
         $response = array('redirecturl' => $redirecturl);
         echo json_encode($response);
@@ -866,20 +876,6 @@ c::set('routes', array(
 
   
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   
 	

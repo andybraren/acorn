@@ -42,7 +42,7 @@
       $commentcount++;
     ?>
     
-    <div class="item row" id="comment-<?php echo $commentcount ?>" data-id="<?php echo $comment->slug() ?>">
+    <div class="item row <?php echo ' ' . userColor($user) ?>" id="comment-<?php echo $commentcount ?>" data-id="<?php echo $comment->slug() ?>">
         
       <div>
         <?php if ($user->usertype()): ?>
@@ -77,7 +77,7 @@
   
   <?php if (site()->user()): ?>
     <?php $user = site()->user() ?>
-    <div class="item row" id="add-comment">
+    <div class="item row<?php echo ' ' . userColor($user) ?>" id="add-comment">
       <div>
         <?php if ($user->usertype()): ?>
           <?php if ($user->usertype() == 'admin'): ?>

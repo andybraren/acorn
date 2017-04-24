@@ -20,26 +20,36 @@ array(
     } else {
       $key = 'public';
     }
-      
+    
     header('Content-type: application/json; charset=utf-8');
     
     $temp = array();
     
     // Users API
     if (get('users')) {
+      
+      if (get('users') == 'empty') {
+        $users = array();
+        $error = "No username.";
+        echo 'hi';
+      }
+      
       if (get('users') == 'all') {
         $users = site()->users();
       } elseif (site()->user(get('users'))) {
         $users = array(site()->user(get('users')));
       } else {
+        $users = array();
         $error = "No user exists with the provided username.";
       }
+      
       if (get('search')) {
         $users = site()->users()->filterBy('firstname', 'c*=', get('search'));
         if ($users == "") {
           $error = "No users found.";
         }
       }
+      
       foreach ($users as $user) {
         $temp['username']   = ($username = $user->username()) ? (string)$username : null;
         $temp['profileURL'] = ($user->username()) ? (string)site()->url() . '/users/' . $user->username() : null;

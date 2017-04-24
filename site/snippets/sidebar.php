@@ -1,3 +1,8 @@
+<?php
+  $page = page();
+  $site = site();
+?>
+
 <div class="sidebar">
   
   <?php // PAGE ICON / LOGO ?>
@@ -6,7 +11,7 @@
   <?php endif ?>
 
   <?php // MAKER PROFILE IMAGE ?>
-  <?php if ($page->parent() == 'makers'): ?>
+  <?php if ($page->parent() == 'users'): ?>
     <?php $user = $site->user($page->slug()); ?>
     <?php if ($avatar = $user->avatar()): ?>
       <div id="icon">
@@ -39,110 +44,12 @@
       <?php endif ?>
     <?php endif ?>
   <?php endif ?>
-    
-  <?php // FRONTEND EDITING CONTROLS ?>
-  <?php // Need to figure out how to enable admins still, multiple operators, maybe a case statement ?>
-  <?php if ($page->isEditableByUser()): ?>
-    
-    <div class="button-edit dropdown">
-      <button type="button" class="button" id="button-edit" title="Edit this page">Edit</button>
-      <button type="button" class="button" title="Additional options for this page"></button>
-      <ul class="dropdown-menu">
-        <li data-modal="delete">Delete page</li>
-        <li><s>Change URL</s></li>
-        <li><s>Schedule post</s></li>
-        <li><s>Save revision</s></li>
-        <li><s>Revision history</s></li>
-      </ul>
-    </div>
-    
-    <div id="settings" class="">
-      <span class="heading">SETTINGS</span>
-      <form method="post" action="savesettings" id="form-settings">
-        
-        <div class="size-full">
-          <?php $class = ($page->color() != '') ? "hasbeenclicked clicked" : "neverclicked"; ?>
-          <select name="color" id="color" class="<?php echo $class ?>">
-            <?php foreach ($site->content()->coloroptions()->split(',') as $color): ?>
-              <?php $selected = ($color == $page->color()) ? "selected " : ""; ?>
-              <?php echo '<option ' . $selected . 'value="' . $color . '">' . ucfirst($color) . '</option>' ?>
-            <?php endforeach ?>
-          </select>
-          <label for="color">Color</label>
-        </div>
-        
-        <div class="size-full">
-          <?php $class = ($page->visibility() != '') ? "hasbeenclicked clicked" : "neverclicked"; ?>
-          <select name="visibility" id="visibility" class="<?php echo $class ?>">
-            <?php foreach ($site->content()->visibilityoptions()->split(',') as $visibility): ?>
-              <?php $selected = ($visibility == $page->visibility()) ? "selected " : ""; ?>
-              <?php echo '<option ' . $selected . 'value="' . str::slug($visibility) . '">' . ucfirst($visibility) . '</option>' ?>
-            <?php endforeach ?>
-          </select>
-          <label for="visibility">Visibility</label>
-        </div>
-        
-        <div class="size-full">
-          <select name="submissions" id="setting-submissions" class="hasbeenclicked clicked">
-            <option value="public" <?php echo ($page->submissions() == 'public') ? 'selected ' : '' ?>>On, anonymous too</option>
-            <option value="on" <?php echo ($page->submissions() == 'on') ? 'selected ' : '' ?>>On</option>
-            <option value="off" <?php echo (!$page->submissions()) ? 'selected ' : '' ?>>Off</option>
-          </select>
-          <label for="submissions">Submissions</label>
-        </div>
-        
-        <div class="size-full">
-          <select name="comments" id="setting-comments" class="hasbeenclicked clicked">
-            <option value="on" <?php echo ($page->comments()) ? 'selected ' : '' ?>>On</option>
-            <option value="off" <?php echo (!$page->comments()) ? 'selected ' : '' ?>>Off</option>
-          </select>
-          <label for="comments">Comments</label>
-        </div>
-        
-      </form>
-    </div>
-    
-    <?php // Used for adding new hero images and icons ?>
-    <form method="post" action="uploadnew" id="upload-form" enctype="multipart/form-data">
-      <input type="file" accept="image/*" name="avatar" id="avatarToUpload">
-      <input type="file" accept="image/*" name="hero" id="heroToUpload">
-      <input type="file" accept="image/*" name="images" id="imageToUpload">
-      <input type="file" accept="video/*" name="videos" id="videoToUpload">
-      <input type="file" accept="" name="files" id="fileToUpload">
-    </form>
-    
-<?php /*
-    <div id="settings" class="settings column">
-      <span class="heading">SETTINGS</span>
-      <?php if ($page->parent() != 'makers'): ?>
-      <div class="row"><span>Visible to:</span></div>
-        <select>
-          <option>Public</option>
-          <option>Tufts MAKE</option>
-          <option>Tufts Robotics</option>
-          <option>Only Me</option>
-        </select>
-
-      <?php endif ?>
-      <div class="row"><span>Color:</span></div>
-        <select>
-          <option>Blue</option>
-          <option>Red</option>
-          <option>Green</option>
-          <option>Purple</option>
-          <option>Gold</option>
-          <option>Silver</option>
-        </select>
-    </div>
-*/ ?>
-
-  <?php endif ?>
-
-
-
-
-  <?php // MAKERS ?>
-  <?php if($page->uid() == 'makers'): ?>
+  
+  <?php // EDIT BUTTON ?>
+  <?php snippet('widget', array('type' => 'edit')) ?>
+  
+  <?php // USERS ?>
+  <?php if($page->uid() == 'users'): ?>
     <span class="heading">FILTER BY:</span>
     <form id="filters">
       <div>
@@ -193,7 +100,7 @@
     */ ?>
   <?php endif ?>
 
-  <?php // MAKERS ?>
+  <?php // PROJECT FILTER ?>
   <?php if($page->uid() == 'projects'): ?>
     <!--
     <div class="filter">
@@ -209,7 +116,7 @@
   <?php endif ?>
   
   <?php // MAKER PROFILES ?>
-  <?php if ($page->parent() == 'makers'): ?>
+  <?php if ($page->parent() == 'users'): ?>
     <?php $user = $site->user($page->slug()) ?>
     <div class="info">
 
@@ -365,17 +272,19 @@
   <?php endif ?>
   
   <?php // PURCHASE WIDGET ?>
-  <?php if($page->parent() != 'makers'): ?>
+  <?php if($page->parent() != 'users'): ?>
     <?php snippet('widget', array('type' => 'purchase')) ?>
   <?php endif ?>
 
   <?php // AUTHORS WIDGET ?>
-  <?php if($page->parent() != 'makers'): ?>
+  <?php if($page->parent() != 'users' and $page->uid() != 'settings'): ?>
     <?php snippet('widget', array('type' => 'authors')) ?>
   <?php endif ?>
   
-  <?php // AUTHORS WIDGET ?>
-  <?php snippet('widget', array('type' => 'meta')) ?>
+  <?php // META WIDGET ?>
+  <?php if (!in_array($page->parent(), array('', 'users', 'spaces', 'settings', 'handbooks'))): ?>
+    <?php snippet('widget', array('type' => 'meta')) ?>
+  <?php endif ?>
   
   <?php // RELATED PROJECTS WIDGET ?>
   <?php if($page->parent() != 'projects'): ?>
@@ -391,13 +300,6 @@
   <?php if($page->parent() != 'events'): ?>
     <?php snippet('widget', array('type' => 'events')) ?>
   <?php endif ?>
-  
-  <?php // RELEVANT EQUIPMENT WIDGET - displays each piece of Equipment related to this Handbook ?>
-  <?php /*
-  <?php if($page->parent() == "handbooks"): ?>
-    <?php snippet('widget', array('type' => 'equipment')) ?>
-  <?php endif ?>
-  */ ?>
   
   <?php // RELEVANT SPACES WIDGET - displays each Handbook related to this piece of Equipment ?>
   <?php if($page->parent() == "equipment"): ?>

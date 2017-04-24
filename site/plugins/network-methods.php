@@ -58,8 +58,10 @@ page::$methods['datePublished'] = function($page) {
   if ($page->content()->datedata() != '') {
     if (isset(str::split($page->content()->datedata(),',')[2])) {
       return strtotime(str::split($page->content()->datedata(),',')[2]);
-    } elseif (isset(str::split($page->content()->datedata(),',')[0])) {
-      return strtotime(str::split($page->content()->datedata(),',')[0]);
+    } elseif (isset(str::split($page->content()->datedata(),',')[1])) {
+      return strtotime(str::split($page->content()->datedata(),',')[1]);
+    } else {
+      return null;
     }
   }
 };
@@ -699,9 +701,11 @@ function isVisibleToUser($page) {
       }
       elseif (!in_array(site()->user(), $page->authors()->toArray())) {
         if (!empty($page->relatedGroups())) {
+          /*
           if (!array_intersect(str::split(site()->user()->groups()), $page->relatedGroups()->toArray())) {
             $isvisible = false;
           }
+          */
         }
       }
     }
@@ -739,6 +743,10 @@ function isEditableByUser($page) {
     if (strpos($page->userdata(),cookie::get('anonymousID')) !== false) {
       $isEditable = true;
     }
+  }
+  
+  if ($isEditable == true) {
+    kirby()->set('option', 'photoswipe', 'on'); // Load PhotoSwipe in case they add images while editing
   }
   
   return $isEditable;
@@ -1133,17 +1141,25 @@ function submenuItems() {
 }
 
 
+kirby()->set('option', 'test', 'DATA');
+
+kirby()->set('site::method', 'adsOnn', function() { return yaml(site()->settings())['style']['default-color']; });
 
 
 
 
+// Equipment Status
+// returns the event/page's price
+site::$methods['adsOn'] = function() {
+  return yaml(site()->settings())['style']['default-color'];
+};
 
 
-
-
-
-
-
+kirby()->set('site::method', 'setting', function($page, $setting) {
+  
+  if ($setting = 'ads') return yaml(site()->settings())['style']['default-color'];
+    
+});
 
 
 

@@ -72,8 +72,8 @@ kirbytext::$tags['image'] = array(
     $thumb = "null";
     
 
-    
-    
+    // Tell the site to load PhotoSwipe in the footer
+    kirby()->set('option', 'photoswipe', 'on');
     
     
     
@@ -207,7 +207,7 @@ kirbytext::$tags['image'] = array(
             'target' => $tag->target()
           ));
         }
-  
+        
       };
   
       $datasrc = $url;
@@ -216,7 +216,7 @@ kirbytext::$tags['image'] = array(
       //$_image = function($class) use($tag, $url, $alt, $title) {
       $_image = function($class) use($tag, $datasrc, $alt, $title, $minithumb, $thumb) {
         $url = "/maker/assets/images/blank.gif"; // Added for b-lazy
-        $url = $minithumb;
+        $url = 'a';
         return html::img($url, array(
           'width'  => $tag->attr('width'),
           'height' => $tag->attr('height'),

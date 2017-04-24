@@ -1,5 +1,5 @@
 <?php // Authentication ?>
-<?php if (!$page->isVisibleToUser()): ?>
+<?php if (!$page->isVisibleToUser() or $page->isErrorPage()): ?>
   <?php snippet('header') ?>
   <div class="main">
     <div class="container">
@@ -19,6 +19,7 @@
   <?php snippet('footer') ?>
 <?php else: ?>
 
+
 <?php snippet('header') ?>
 
 <?php snippet('hero', array('type' => 'fullwidth')) ?>
@@ -36,18 +37,18 @@
       <?php snippet('sidebar') ?>
     <?php endif ?>
     
-    <?php if ($page->links() != '' or $page->equipment() != '' or $page->handbooks() != '' or $page->visibility() == 'unlisted'): ?>
       <div class="sidebar rightsidebar">
         <?php snippet('widget', array('type' => 'links')) ?>
-        <?php snippet('widget', array('type' => 'equipment')) ?>
+        <?php if ($page->parent() == "handbooks"): ?>
+          <?php snippet('widget', array('type' => 'equipment')) ?>
+        <?php endif ?>
         <?php snippet('widget', array('type' => 'handbooks')) ?>
         <?php
           if ($page->visibility() == 'unlisted') {
-            echo kirbytag(array('callout' => 'notice', 'text' => 'Notice: The author has marked this page as unlisted, and hidden from Google. Please think twice before sharing.'));
+            echo kirbytag(array('callout' => 'notice', 'text' => 'The author has marked this page as unlisted and hidden from Google. Please think twice before sharing it with others.'));
           }
         ?>
       </div>
-    <?php endif ?>
     
     <main class="content">
       <article>
@@ -79,6 +80,10 @@
         <?php endif ?>
         
       </article>
+      
+      <?php if($page->uid() == 'settings'): ?>
+        <?php snippet('settings') ?>
+      <?php endif ?>
       
       <?php // MAKER PROFILES ?>
       <?php if ($page->parent() == 'users'): ?>

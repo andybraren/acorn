@@ -111,6 +111,8 @@
     </ul>
     
     <ul class="menu menu-secondary">
+      
+
     
       <?php foreach (yaml(site()->MenuSecondary()) as $item): ?>
         <?php
@@ -130,19 +132,16 @@
         </li>
       <?php endforeach ?>
       
+      <li class="search">
+        <form class="search-container" action="<?php echo $site->url() . '/search'?>">
+          <?php echo (new Asset('/assets/images/menu-search.svg'))->content() ?>
+          <input id="search-box" type="text" class="search-box" name="s">
+          <input type="submit" id="search-submit">
+        </form>
+      </li>
+      
       <?php if ($user = $site->user()): ?>
-        
-        <div class="dropdown">
-          <button class="button-login"><?php echo esc($user->firstName()) ?></button>
-          
-          <ul class="dropdown-menu">
-            <li><a id="datausername" href="<?php echo $site->url() . '/' . $user->username() ?>" data-username="<?php echo $user->username() ?>">View Profile</a></li>
-            <li><a href="<?php echo $site->url() . '/settings' ?>">Site Settings</a></li>
-            <li><span>Manage Users</span></li>
-            <li><a href="<?php echo $page->url() . '/logout' ?>">Logout</a></li>
-          </ul>
-        </div>
-            
+        <button class="button-login" data-modal="account"><?php echo esc($user->firstName()) ?></button>        
       <?php else: ?>
         <li class="login">
           <a id="button-login" class="login" data-modal="login">Log in</a>
@@ -165,7 +164,7 @@
         
         <?php if(preg_match_all('/(?<!#)#{2,3}([^#].*)\n/', $page->text(), $matches)): // Grabs H2's and H3's ?>
           <li id="toggle-toc">
-            <a><?php echo (new Asset('/assets/images/menu-toc.svg'))->content() ?></a>
+            <a data-modal="toc"><?php echo (new Asset('/assets/images/menu-toc.svg'))->content() ?></a>
           </li>
         <?php endif ?>
         
@@ -193,16 +192,9 @@
       </ul>
       
       <ul class="menu menu-secondary">
-        <li class="search">
-          <form class="search-container" action="<?php echo $site->url() . '/search'?>">
-            <a><?php echo (new Asset('/assets/images/menu-search.svg'))->content() ?></a>
-            <input id="search-box" type="text" class="search-box" name="s">
-            <input type="submit" id="search-submit">
-          </form>
-        </li>
         
         <li>
-          <a id="settings-reading"><?php echo (new Asset('/assets/images/menu-font.svg'))->content() ?></a>
+          <a id="settings-reading" data-modal="reading"><?php echo (new Asset('/assets/images/menu-font.svg'))->content() ?></a>
         </li>
       </ul>
       

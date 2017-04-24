@@ -1,6 +1,118 @@
-<?php // Master widget snippet for makers, projects, events, tools, etc. ?>
+<?php // Master widget snippet for users, projects, events, tools, etc. ?>
 
 <?php if ($type != null): ?>
+
+
+
+
+<?php // EDIT BUTTON ?>
+<?php if ($type == 'edit' and $page->isEditableByUser()): ?>
+  
+  <div class="">
+    <div class="button-edit dropdown">
+      <button type="button" class="button" id="button-edit" title="Edit this page">Edit</button>
+      <button type="button" class="button" title="Additional options for this page"></button>
+      <ul class="dropdown-menu">
+        <li data-modal="delete"><span>Delete page</span></li>
+        <li><s>Change URL</s></li>
+        <li><s>Schedule post</s></li>
+        <li><s>Save revision</s></li>
+        <li><s>Revision history</s></li>
+      </ul>
+    </div>
+    
+    <div id="settings" class="">
+      <span class="heading">SETTINGS</span>
+      
+      <form method="post" action="savesettings" id="form-settings">
+        
+        <div class="size-full">
+          <?php $class = ($page->color() != '') ? "hasbeenclicked clicked" : "neverclicked"; ?>
+          <select name="color" id="color" class="<?php echo $class ?>">
+            <?php foreach ($site->content()->coloroptions()->split(',') as $color): ?>
+              <?php $selected = ($color == $page->color()) ? "selected " : ""; ?>
+              <?php echo '<option ' . $selected . 'value="' . $color . '">' . ucfirst($color) . '</option>' ?>
+            <?php endforeach ?>
+          </select>
+          <label for="color">Color</label>
+        </div>
+        
+        <div class="size-full">
+          <?php $class = ($page->visibility() != '') ? "hasbeenclicked clicked" : "neverclicked"; ?>
+          <select name="visibility" id="visibility" class="<?php echo $class ?>">
+            <?php foreach ($site->content()->visibilityoptions()->split(',') as $visibility): ?>
+              <?php $selected = ($visibility == $page->visibility()) ? "selected " : ""; ?>
+              <?php echo '<option ' . $selected . 'value="' . str::slug($visibility) . '">' . ucfirst($visibility) . '</option>' ?>
+            <?php endforeach ?>
+          </select>
+          <label for="visibility">Visibility</label>
+        </div>
+        
+        <div class="size-full">
+          <select name="submissions" id="setting-submissions" class="hasbeenclicked clicked">
+            <option value="public" <?php echo ($page->submissions() == 'public') ? 'selected ' : '' ?>>On, anonymous too</option>
+            <option value="on" <?php echo ($page->submissions() == 'on') ? 'selected ' : '' ?>>On</option>
+            <option value="off" <?php echo (!$page->submissions()) ? 'selected ' : '' ?>>Off</option>
+          </select>
+          <label for="submissions">Submissions</label>
+        </div>
+        
+        <div class="size-full">
+          <select name="comments" id="setting-comments" class="hasbeenclicked clicked">
+            <option value="on" <?php echo ($page->comments()) ? 'selected ' : '' ?>>On</option>
+            <option value="off" <?php echo (!$page->comments()) ? 'selected ' : '' ?>>Off</option>
+          </select>
+          <label for="comments">Comments</label>
+        </div>
+        
+      </form>
+    </div>
+    
+    <?php // Used for adding new hero images and icons ?>
+    <form method="post" action="uploadnew" id="upload-form" enctype="multipart/form-data">
+      <input type="file" accept="image/*" name="avatar" id="avatarToUpload">
+      <input type="file" accept="image/*" name="hero" id="heroToUpload">
+      <input type="file" accept="image/*" name="images" id="imageToUpload">
+      <input type="file" accept="video/*" name="videos" id="videoToUpload">
+      <input type="file" accept="" name="files" id="fileToUpload">
+    </form>
+      
+    <?php /*
+      <div id="settings" class="settings column">
+        <span class="heading">SETTINGS</span>
+        <?php if ($page->parent() != 'users'): ?>
+        <div class="row"><span>Visible to:</span></div>
+          <select>
+            <option>Public</option>
+            <option>Tufts MAKE</option>
+            <option>Tufts Robotics</option>
+            <option>Only Me</option>
+          </select>
+  
+        <?php endif ?>
+        <div class="row"><span>Color:</span></div>
+          <select>
+            <option>Blue</option>
+            <option>Red</option>
+            <option>Green</option>
+            <option>Purple</option>
+            <option>Gold</option>
+            <option>Silver</option>
+          </select>
+      </div>
+    */ ?>
+    
+  </div>
+  
+<?php endif ?>
+
+
+
+
+
+
+
+
 
 <?php // RELATED SPACES AND HANDBOOKS ?>
 <?php if ($type == 'spaces' or $type == 'handbooks'): ?>
@@ -46,11 +158,6 @@
   <?php endif ?>
     
 <?php endif ?>
-
-
-
-
-
 
 
 
@@ -220,7 +327,7 @@
             ?>
   
             <?php if($site->user($username)): ?>
-              <a class="item" href="<?php echo $site->url() . "/makers/" . $username ?>" data-username="<?php echo $site->user($username)->username() ?>">
+              <a class="item" href="<?php echo $site->url() . "/users/" . $username ?>" data-username="<?php echo $site->user($username)->username() ?>">
                 
                 <?php if ($page->isEditableByUser()): ?>
                   <div class="item-delete"></div>
@@ -265,7 +372,7 @@
       <?php if ($page->isEditableByUser()): ?>
         <div class="items" id="requests">
           <?php foreach (str::split($page->requests()) as $username): ?>
-            <a class="item" href="<?php echo $site->url() . "/makers/" . $username ?>" data-username="<?php echo $site->user($username)->username() ?>">
+            <a class="item" href="<?php echo $site->url() . "/users/" . $username ?>" data-username="<?php echo $site->user($username)->username() ?>">
               
               <div class="item-delete"></div>
               <div class="item-confirm"></div>
@@ -313,13 +420,13 @@
 
 
 <?php // META ?>
-<!--
+
 <?php if ($type == 'meta'): ?>
   <div class="widget">
     <span class="heading">META</span>
 
     <span>Published:</span>
-    <span><?php echo humanDate($page->datePublished()) ?></span>
+    <span><?php echo date('M j, Y', $page->datePublished()) ?></span>
     
     <br>
     
@@ -328,7 +435,7 @@
   </div>
   
 <?php endif ?>
--->
+
 
 
 <?php // Related Groups, Events, and Authors ?>
@@ -340,6 +447,21 @@
       $singular = 'author';
       $plural   = 'authors';
       $id       = 'users';
+      
+      switch ($page->parent()) {
+        case 'clubs':
+          $singular = 'officer';
+          $plural = 'officers'; break;
+        case 'spaces':
+          $singular = 'staff';
+          $plural = 'staff'; break;
+        case 'courses':
+          $singular = 'instructor';
+          $plural = 'instructors'; break;
+        default:
+          $singular = $singular;
+          $plural = $plural;
+      }
     }
     if ($type == 'groups') {
       $items    = $page->relatedGroups();

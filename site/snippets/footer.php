@@ -1,4 +1,4 @@
-  <footer class="footer">
+<footer class="footer">
   <div class="container">
 
     <div class="copyright">
@@ -18,7 +18,7 @@
 
 
   <?php // Load all of the editing-related resources if they're a logged-in maker with the right permissions ?>
-  <?php if($page->isEditableByUser() or $page->comments() or $page->submissions() == 'public'): ?>
+  <?php if($page->isEditableByUser()): ?>
     <?php echo js('assets/js/editing/packery.min.js') ?>
     <?php echo js('assets/js/editing/to-markdown.js') ?>
     <?php echo css('assets/js/contenttools/content-tools.min.css') ?>
@@ -31,8 +31,9 @@
 <?php /*
 <div id="whatever" class="ct-widget ct-toolbox ct-widget--active" style="left: 323px; top: 322px;"><div class="ct-toolbox__grip ct-grip"><div class="ct-grip__bump"></div><div class="ct-grip__bump"></div><div class="ct-grip__bump"></div></div><div class="ct-tool-groups"><div class="ct-tool-group"><div class="ct-tool ct-tool--bold ct-tool--disabled" data-tooltip="Bold"></div><div class="ct-tool ct-tool--italic ct-tool--disabled" data-tooltip="Italic"></div><div class="ct-tool ct-tool--link ct-tool--disabled" data-tooltip="Link"></div><div class="ct-tool ct-tool--heading ct-tool--disabled" data-tooltip="Heading"></div><div class="ct-tool ct-tool--subheading ct-tool--disabled" data-tooltip="Subheading"></div><div class="ct-tool ct-tool--paragraph ct-tool--disabled" data-tooltip="Paragraph"></div><div class="ct-tool ct-tool--unordered-list ct-tool--disabled" data-tooltip="Bullet list"></div><div class="ct-tool ct-tool--ordered-list ct-tool--disabled" data-tooltip="Numbers list"></div><div class="ct-tool ct-tool--table ct-tool--disabled" data-tooltip="Table"></div></div><div class="ct-tool-group"><div class="ct-tool ct-tool--image ct-tool--disabled" data-tooltip="Image"></div><div class="ct-tool ct-tool--video ct-tool--disabled" data-tooltip="Video"></div><div class="ct-tool ct-tool--preformatted ct-tool--disabled" data-tooltip="Preformatted"></div></div><div class="ct-tool-group"><div class="ct-tool ct-tool--undo ct-tool--disabled" data-tooltip="Undo"></div><div class="ct-tool ct-tool--redo ct-tool--disabled" data-tooltip="Redo"></div><div class="ct-tool ct-tool--remove ct-tool--disabled" data-tooltip="Remove"></div></div></div></div>
 */ ?>
-
-  <?php if (is_dir('assets/js/photoswipe')): ?>
+  
+  
+  <?php if (is_dir('assets/js/photoswipe') and kirby()->get('option', 'photoswipe') == 'on'): ?>
     <?php // Load image scrapers for photoswipe, eventually these should be combined ?>
     <?php echo js('assets/js/photoswipe/photoswipe-scraper.js', true) ?>
     <?php echo js('assets/js/photoswipe/photoswipe-gallery-scraper.js', true) ?>

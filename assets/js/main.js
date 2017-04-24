@@ -169,78 +169,6 @@ function openEdit() {
 }
 
 /*--------------------------------------------------
-  TOC Toggle
-  - Displays the TOC on mobile devices
---------------------------------------------------*/
-
-
-var tocToggle = document.getElementById('toggle-toc');
-if (tocToggle != null) {
-  
-  tocToggle.addEventListener('click', function(event) {
-    var rect = tocToggle.getBoundingClientRect();
-    modal = document.getElementById('modal-toc');
-    modal.classList.toggle('visible');
-    modal.style.left = Number(rect.left) + 5 + 'px';
-    
-    window.addEventListener('scroll', closeOnScroll);
-    document.addEventListener('click', closeOnClick);
-  });
-  /*
-  function closeOnScroll(e) {
-    modal.classList.remove('visible');
-    this.removeEventListener('scroll', closeOnScroll);
-  }
-  
-  function closeOnClick(e) {
-    console.log(e);
-    console.log(e.target);
-    var isClickInside = modal.contains(e.target);
-    var isOpenButton = tocToggle.contains(e.target);
-    if (!isClickInside && !isOpenButton) {
-      modal.classList.remove('visible');
-      this.removeEventListener('click', closeOnClick);
-    }
-  }
-  */
-  
-}
-
-/*--------------------------------------------------
-  Reading Settings
-  - Toggles the reading settings modal, with night mode, font size adjustment, etc.
---------------------------------------------------*/
-
-var stylesettings = document.getElementById('settings-reading');
-if (stylesettings != null) {
-  
-  stylesettings.addEventListener('click', function(event) {
-    /* Position and expose the settings modal based on the stylesettings button */
-    var rect = stylesettings.getBoundingClientRect();
-    modal = document.getElementById('modal-reading');
-    modal.classList.toggle('visible');
-    modal.style.right = Number(document.body.clientWidth) - Number(rect.right) + 5 + 'px';
-    
-    window.addEventListener('scroll', closeOnScroll);
-    document.addEventListener('click', closeOnClick);
-  });
-  
-  function closeOnScroll(e) {
-    modal.classList.remove('visible');
-    this.removeEventListener('scroll', closeOnScroll);
-  }
-  
-  function closeOnClick(e) {
-    var isClickInside = modal.contains(e.target);
-    var isOpenButton = stylesettings.contains(e.target);
-    if (!isClickInside && !isOpenButton) {
-      modal.classList.remove('visible');
-      this.removeEventListener('click', closeOnClick);
-    }
-  }
-}
-
-/*--------------------------------------------------
   Theme Setting
   - Adds a "night" class to the body and stores the night setting within localstorage
 --------------------------------------------------*/
@@ -391,11 +319,11 @@ if (search != null) {
 
 
 
-/*
+
 var allButtons = document.querySelectorAll('button');
 for (var i = 0; i < allButtons.length; i++) {
   
-  allButtons[i].addEventListener('click', function() {
+  allButtons[i].addEventListener('click', function(event) {
         
     // Add a class to the button, or the nearest button ancestor
     if (event.target.tagName != 'BUTTON') {
@@ -410,7 +338,7 @@ for (var i = 0; i < allButtons.length; i++) {
   }, false);
   
 }
-*/
+
 
 /* http://stackoverflow.com/questions/2234979/how-to-check-in-javascript-if-one-element-is-contained-within-another */
 function isDescendant(parent, child) {
@@ -424,13 +352,13 @@ function isDescendant(parent, child) {
   return false;
 }
 
-function closeOnOutsideClick() {
+function closeOnOutsideClick(event) {
   
   var firstClick = document.firstClick; // The first clicked element
   var newClick = event.target;          // The newly-clicked element
   
   if (!isDescendant(firstClick, newClick)) {
-    console.log('outside click');
+    //console.log('outside click');
     firstClick.classList.remove('focused');
     document.removeEventListener('mousedown', closeOnOutsideClick);
   }
@@ -493,7 +421,7 @@ function openModal(modalname, target) {
     modal.querySelector('form').reset();
     modal.querySelector('[name="title"]').value = target.innerText;
     modal.querySelector('[name="url"]').value   = target.getAttribute('data-href');
-    if (target.nextElementSibling) {
+    if (target.nextElementSibling && target.nextElementSibling.classList.contains('subtitle')) {
       modal.querySelector('[name="subtitle"]').value = target.nextElementSibling.innerHTML;
     }
   }
@@ -504,13 +432,14 @@ function openModal(modalname, target) {
     function updateItem() {
       target.innerText = modal.querySelector('[name="title"]').value;
       target.setAttribute('data-href', modal.querySelector('[name="url"]').value);
-      if (target.nextElementSibling) {
+      
+      if (target.nextElementSibling && target.nextElementSibling.classList.contains('subtitle')) {
         target.nextElementSibling.innerHTML = modal.querySelector('[name="subtitle"]').value;
-      }
-      if (!target.nextElementSibling && modal.querySelector('[name="subtitle"]').value != '') {
+      } else if (modal.querySelector('[name="subtitle"]').value != '') {
         html = '<div class="subtitle">' + modal.querySelector('[name="subtitle"]').value + '</div>';
         target.insertAdjacentHTML('afterend', html);
       }
+      
       closeModal(modal);
       button.removeEventListener('click', updateItem);
     }
@@ -530,7 +459,9 @@ function openModal(modalname, target) {
   }
   
   // Show the modal
-  document.body.classList.add('noscroll');
+  if (!modal.classList.contains('top')) {
+    document.body.classList.add('noscroll');
+  }
   container.classList.add('visible');
   modal.classList.add('visible');
   
@@ -592,36 +523,6 @@ if (window.location.href.indexOf('login:failed') != -1) {
 
 
 
-
-
-
-
-
-
-
-/* Adds a class to modals when opened */
-/*
-var modals = document.getElementsByClassName('modal');
-if (modals != null) {
-  for (var i = 0; i < modals.length; i++) {
-    
-    // Add click listener to previous element
-    modals[i].previousElementSibling.addEventListener('click', function(event) {
-      var target = getEventTarget(event);
-      target.nextElementSibling.classList.add('visible');
-      document.body.classList.add('noscroll');
-    }, false);
-    
-    // Add click listener to background
-    modals[i].firstElementChild.addEventListener('click', function(event) {
-      var target = getEventTarget(event);
-      target.parentNode.classList.remove('visible');
-      document.body.classList.remove('noscroll');
-    }, false);
-    
-  }
-}
-*/
 
 function addFileTool() {
   
@@ -928,64 +829,9 @@ function toggleHero(clickcount, formupload) {
       heroDiv.removeEventListener('click', formclick);
     }
   }
-  /*
-  if (heroAdd != null) {
-    if (clickcount == '0') {
-      heroAdd.addEventListener('click', formclick = function() {
-        formHero.click();
-      });
-      formHero.onchange = function() {
-        savePage();
-        editor.ignition().confirm();
-        formupload.submit();
-      };
-    }
-    else {
-      heroAdd.removeEventListener('click', formclick);
-    }
-  }
-  */
 }
 
-/*
-function toggleHero(clickcount, formupload) {
-  var heroDiv = document.getElementById('hero');
-  var heroAdd = document.getElementById('hero-add');
-  var formHero = document.getElementById('heroToUpload');
-  
-  if (heroDiv != null) {
-    if (clickcount == '0') {
-      heroDiv.addEventListener('click', formclick = function() {
-        formHero.click();
-      });
-      formHero.onchange = function() {
-        savePage();
-        editor.ignition().confirm();
-        formupload.submit();
-      };
-    }
-    else {
-      heroDiv.removeEventListener('click', formclick);
-    }
-  }
-  
-  if (heroAdd != null) {
-    if (clickcount == '0') {
-      heroAdd.addEventListener('click', formclick = function() {
-        formHero.click();
-      });
-      formHero.onchange = function() {
-        savePage();
-        editor.ignition().confirm();
-        formupload.submit();
-      };
-    }
-    else {
-      heroAdd.removeEventListener('click', formclick);
-    }
-  }
-}
-*/
+
 
 /* Trigger when Save button is clicked */
 /* If empty, then the hidden class is confirmed or added */
@@ -1035,7 +881,7 @@ function toggleItems() { // Enable dragula and toggle each item's href to data-h
   }
   
   dragula([document.getElementsByClassName('subnodes')[0]]);
-  
+    
   /*
   var elem = document.querySelectorAll('.menu')[1];
   var pckry = new Packery( elem, {
@@ -1076,23 +922,6 @@ function toggleItems() { // Enable dragula and toggle each item's href to data-h
     
   }
   
-  
-  
-  /*
-  var widgets = document.getElementsByClassName('widget');
-  for (var i = 0; i < widgets.length; i++) {
-    var items = widgets[i].getElementsByClassName('item');
-    for (var i = 0; i < items.length; i++) {
-      if (items[i].hasAttribute('data-href')) {
-        items[i].setAttribute('href', items[i].getAttribute('data-href'));
-        items[i].removeAttribute('data-href');
-      } else {
-        items[i].setAttribute('data-href', items[i].href);
-        items[i].removeAttribute('href');
-      }
-    }
-  }
-  */
   var items = document.getElementsByClassName('item');
   for (var i = 0; i < items.length; i++) {
     if (items[i].hasAttribute('data-href')) {
@@ -1199,20 +1028,6 @@ function savePage() {
   
   data = new FormData();
   
-  /* Authors */
-  /*
-  var authors = document.getElementById('authors');
-  if (authors != null) {
-    var authors = Array.prototype.slice.call(authors.children);
-    var arr = [];
-    for (var i = authors.length - 1; i >= 0; i--) {
-      arr.push(authors[i].getAttribute('data-username'));
-    }
-    var authors = arr.reverse().join(', ');
-    data.append('authors', authors);
-  }
-  */
-  
   /* Users */
   var users = document.getElementById('users');
   if (users != null) {
@@ -1309,48 +1124,56 @@ function savePage() {
     data.append('text', toMarkdown(text.innerHTML, { converters: kirbytagtweaks }));      
   }
   
+  var modals = document.querySelector('#modals').children;
+  if (modals) {
+    for (var i = 0; i < modals.length; i++) {
+      if (modals[i].classList.contains('visible')) {
+        closeModal(modals[i]);
+      }
+    }
+  }
+  
   /* Navigation */
   if (window.location.pathname == '/settings') {
     var nav = document.querySelectorAll('.menu')[0];
-    if (nav != null) {
+    if (nav) {
       
       var arr = [];
       var items = nav.querySelectorAll('li');
+      
+      var items = nav.children;
+      
       for (var i = 0; i < items.length; i++) {
-        
-        var element = items[i].querySelector('a');
-        var obj = {};
-        
-        obj['title'] = element.innerText;
-        obj['href'] = element.href.split('/').pop();
-        
-        if (element.nextElementSibling) {
-          obj['subtitle'] = element.nextElementSibling.innerText;
-        }
-        
-        // if active and submenu is present, create those
-        if (items[i].classList) {
-          if (items[i].classList.contains('active')) {
-            if (document.querySelector('#subnavigation')) {
-              var subNavItems = document.querySelector('#subnavigation').querySelectorAll('.menu')[0].querySelectorAll('a');
-              var arr2 = [];
-              
-              for (var e = 0; e < subNavItems.length; e++) {
-                var obj2 = {};
-                obj2['title'] = subNavItems[e].innerText;
-                if (subNavItems[e].href) {
-                  obj2['href']  = subNavItems[e].href.split('/').pop();
-                }
-                arr2.push(obj2);
-              }
-              obj['sub'] = arr2;
-            }
+        if (items[i].tagName == 'LI') {
+          
+          var element = items[i].querySelector('a');
+          var subitemdiv = items[i].querySelector('.subnodes');
+          var obj = {};
+          
+          obj['title'] = element.innerText;
+          obj['uid'] = element.href.split('/').pop();
+          
+          if (element.nextElementSibling && element.nextElementSibling.classList.contains('subtitle')) {
+            obj['subtitle'] = element.nextElementSibling.innerText;
           }
+          
+          if (subitemdiv) {
+            var subitems = subitemdiv.querySelectorAll('li');
+            var subarray = [];
+            for (var e = 0; e < subitems.length; e++) {
+              var subobj = {};
+              subobj['title'] = subitems[e].querySelector('a').textContent;
+              subobj['uid']   = subitems[e].querySelector('a').href.split('/').pop();
+              subarray.push(subobj);
+            }
+            obj['sub'] = subarray;
+          }
+          
+          arr.push(obj);
+          
         }
-        
-        arr.push(obj);
       }
-      data.append('menusecondary', JSON.stringify(arr));
+      data.append('menuprimary', JSON.stringify(arr));
     }
   }
   
@@ -1886,47 +1709,6 @@ if (filters != null) {
 
 
 
-/*
-var main = document.getElementsByTagName('main')[0];
-var filters = document.getElementById('filters');
-if (filters != null) {
-  
-  var selects = filters.getElementsByTagName('select');
-  var inputs = filters.getElementsByTagName('input');
-  var allTags = [];
-  allTags.push.apply(allTags, selects);
-  allTags.push.apply(allTags, inputs);
-  
-  for (var i=0; i<allTags.length; i++) {
-    allTags[i].addEventListener('click', function(event) {
-      var initialvalue = getEventTarget(event).value;
-      this.onchange = function() {
-        main.removeAttribute('data-filters', initialvalue);
-        main.setAttribute('data-filters', this.value);
-      }
-    }, false);
-  }
-}
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1981,44 +1763,6 @@ function queryUsername() {
   request.send();
 }
 
-/* Solution toggle */
-/*
-$('.button-solution').on('click', function(event) {
-  $(event.target).next().toggleClass("visibleflex");
-});
-
-$('.button-edit').on('click', function(event) {
-  $(event.target).next().toggleClass("visibleflex");
-});
-*/
-
-/* Solution toggle */
-/* Loop through every solution button, add a listener, and toggle the solution class when clicked */
-/*
-function getEventTarget(e) {
-  e = e || window.event;
-  return e.target || e.srcElement;
-}
-var solutionbutton = document.getElementsByClassName('solution-button');
-for (var i = 0; i < solutionbutton.length; i++) {
-  solutionbutton[i].addEventListener('click', function() {
-    alert('Hello world');
-    event.target
-  }, false);
-}
-*/
-
-/* Menu button toggle */
-/*
-$('.menu-button').on('click', function(event) {
-  $('nav').toggleClass('visibleflex animated fadeinleft');
-});
-*/
-
-
-
-
-
 
 // Set the default coordinates of the toolbox to be directly right of the text box
 function positionToolbox() {
@@ -2049,9 +1793,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
     document.body.classList.add(localStorage.getItem('theme'));
   }
 });
-
-
-
 
 
 
@@ -2105,11 +1846,6 @@ if (affiliateField != null) {
     affiliateField.value = affiliateCookie;
   }
 }
-
-
-
-
-
 
 
 

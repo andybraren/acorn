@@ -33,8 +33,6 @@
       //echo $image->url();
     }
     
-    
-    
   
   ?>
   
@@ -43,6 +41,28 @@
 <?php if($page->uid() == 'equipment'): ?>
   <?php $images = $page->children()->filterBy('visibility','public')->sortBy('created','desc')->images()->filterBy('name', '*=', 'hero')->limit(10) ?>
 <?php endif ?>
+
+
+<?php if ($page->hero() != ''): ?>
+  
+  <?php // YouTube Videos ?>
+  <?php if (str::contains($page->hero(), 'youtu')): ?>
+    <div id="hero" class="hero fullwidth video">
+      <?php echo kirbytag(array('video' => $page->hero())) ?>
+    </div>
+  <?php endif ?>
+  
+  <?php if (str::contains($page->hero(), 'vimeo.com')): ?>
+    <div id="hero" class="hero fullwidth video">
+      <?php echo kirbytag(array('video' => $page->hero())) ?>
+    </div>
+  <?php endif ?>
+  
+    
+  
+  
+<?php endif ?>
+
 
 
 

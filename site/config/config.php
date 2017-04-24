@@ -606,7 +606,18 @@ c::set('routes', array(
   		$hero = (isset($_POST['hero'])) ? $_POST['hero'] : $targetpage->hero();
   		
   		/* Menu */
-  		$menuSecondary = $_POST['menusecondary'];
+  		$menuPrimary = (isset($_POST['menuprimary'])) ? $_POST['menuprimary'] : '';
+  		
+  		$menuPrimary = yaml::encode(str::parse($menuPrimary));
+  		
+  		if ($menuPrimary) {
+        site()->update(array(
+          'menuprimary'  => $menuPrimary,
+        ));
+  		}
+  		
+  		
+  		
   		
   		
   		
@@ -621,10 +632,6 @@ c::set('routes', array(
           'Text'  => $text,
         ));
         //echo var_dump($_POST);
-        
-        site()->page('site')->update(array(
-          'newstuff'  => $menuSecondary,
-        ));
 
         if ($title != $originaltitle and $targetpage->parent() != 'forum') {
           $currentlocation = kirby()->roots()->content() . '/' . $targetpage->diruri();

@@ -174,47 +174,60 @@ array(
 	'method'  => 'POST|GET',
   'action'  => function() {
     
-    $key = '';
     $error = '';
+        
+    $name = (get('name')) ? get('name') : '';
+    $thekey  = (get('key'))  ? get('key')  : '';
+    //$key = (isset($_POST['key'])) ? $_POST['key'] : '';
     
-
-  
-  function deviceArray() {
-    $array       = array();
-    $string      = site()->page('site')->content()->devices();
-    $cleanstring = str_replace(array(', ','== '), array(',','=='), $string);
-    $toparray    = explode(',', $cleanstring);
-    foreach($toparray as $x) {
-      $x = explode('==', $x);
-      $array[] = $x;
+    $ip = (isset($_POST['ip'])) ? $_POST['ip'] : null;
+    
+    function deviceArray() {
+      $array       = array();
+      $string      = site()->devices();
+      $cleanstring = str_replace(array(', ','== '), array(',','=='), $string);
+      $toparray    = explode(',', $cleanstring);
+      foreach($toparray as $x) {
+        $x = explode('==', $x);
+        $array[] = $x;
+      }
+      return $array;
     }
-    return $array;
-  }
-  
-  print_r(deviceArray());
-  
-  $apikeys     = a::extract(deviceArray(), 0);
-  $ipaddresses = a::extract(deviceArray(), 1);
-  $devicenames = a::extract(deviceArray(), 2);
-  
-  print_r($apikeys);
-  print_r($ipaddresses);
-  print_r($devicenames);
-  
-  
-  echo "NEW";
-  
-  print_r(site()->page('site')->content()->YAMLdevices()->yaml());
-  
-  foreach (site()->page('site')->content()->YAMLdevices()->toStructure() as $item) {
-    echo $item->name();
-  }
-  
-  
-  
+    
+    //print_r(deviceArray());
+    
+    $apikeys     = a::extract(deviceArray(), 0);
+    $ipaddresses = a::extract(deviceArray(), 1);
+    $devicenames = a::extract(deviceArray(), 2);
+    
+    //print_r($apikeys);
+    //print_r($ipaddresses);
+    //print_r($devicenames);
+    
+    //echo "NEW";
+    
+    $devices = site()->devices()->toStructure();
+    
+    //print_r($devices);
+    
+    
+    foreach ($devices as $device) {
+      //echo $device->name();
+    }
     
     //$array = str::split(explode('==',site()->page('site')->content()->devices())[0],',');
     //print_r($array);
+    // Get Staff Page
+    $devices = site()->devices()->yaml();
+    
+    foreach($devices as &$device) {
+      if ($device['key'] == $thekey) {
+        $device['ip'] = ($ip) ? $ip : $device['ip'];
+      }
+    }
+    
+    site()->update(['devices' => yaml::encode($devices)]);
+    
     
     if (get('key')) {
       if (in_array(get('key'), deviceArray())) {

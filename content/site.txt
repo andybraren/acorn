@@ -18,47 +18,76 @@ Departmentoptions: Anthropology ## Art and Art History ## Biology ## Biomedical 
 ----
 Majoroptions: Anthropology ## Art and Art History ## Biology ## Biomedical Engineering ## Center for Engineering Education and Outreach ## Chemical and Biological Engineering ## Chemistry ## Child Study and Human Development ## Civil and Environmental Engineering ## Classics ## Computer Science ## Drama and Dance ## Earth and Ocean Sciences ## Economics ## Education ## Electrical and Computer Engineering ## Engineering Management ## English, German, Russian, and Asian Languages/Literature ## History ## Human Factors ## Mathematics ## Mechanical Engineering ## Music ## Occupational Therapy ## Philosophy ## Physical Education ## Physics and Astronomy ## Political Science ## Psychology ## Religion ## Romance Languages ## Sociology ## Urban and Environmental Policy and Planning
 ----
-Googleanalytics: #########
+Googleanalytics: 
 ----
-Stripeapikeys: ########,
+Stripeapikeys: 
 ----
 Apikeys: 
 ----
 Menuprimary: 
 
-- title: Features
-  uid: features
+- 
+  title: Home
+  uid: home
   sub:
-    - title: Accounts
+    - 
+      title: Accounts
       uid: users
-    - title: Articles
+    - 
+      title: Articles
       uid: articles
-    - title: Posts
+    - 
+      title: Posts
       uid: posts
-    - title: Projects
+- 
+  title: Features
+  uid: features
+- 
+  title: Examples
+  uid: examples
+  sub:
+    - 
+      title: Accounts
+      uid: users
+    - 
+      title: Articles
+      uid: articles
+    - 
+      title: Posts
+      uid: posts
+    - 
+      title: Projects
       uid: projects
-    - title: Challenges
+    - 
+      title: Challenges
       uid: challenges
-    - title: Equipment
+    - 
+      title: Equipment
       uid: equipment
-    - title: Groups
+    - 
+      title: Groups
       uid: groups
-      subtitle: ALPHA
-    - title: Forum
+    - 
+      title: Forum
       uid: forum
-    - title: Events
+    - 
+      title: Events
       uid: events
-    - title: Commerce
+    - 
+      title: Commerce
       uid: store
-- title: Pricing
-  uid: spaces
-- title: "Q&A"
-  uid: questions
+- 
+  title: Pricing
+  uid: pricing
+- 
+  title: FAQ
+  uid: faq
+- 
+  title: Support
+  uid: support
 ----
 Menusecondary: 
 
-- title: About
-  uid: about
 - title: Docs
   uid: docs
   subtitle: v0.3

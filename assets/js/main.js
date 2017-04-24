@@ -15,6 +15,8 @@ ga('create', '', 'auto');
 ga('send', 'pageview');
 */
 
+var VAR_GoogleAnalytics = "";
+
 window.onload = function() {
   checkTheme();
   checkFontSize();

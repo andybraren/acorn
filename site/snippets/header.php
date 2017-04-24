@@ -6,11 +6,15 @@
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  
 
   <?php if($page->isHomePage()): ?>
-  <title><?php echo $site->title()->html() ?></title>
+    <title><?php echo $site->title()->html() ?></title>
   <?php else: ?>
-  <title><?php echo $page->title()->html() ?> | <?php echo $site->title()->html() ?></title>
+  
+    <?php $title = (preg_match("/[a-z]/i", $page->content()->title())) ? $page->content()->title() : 'Post'; ?>
+    
+    <title><?php echo $title . ' | ' . $site->title()->html() ?></title>
   <?php endif ?>
 
   <meta name="description" content="<?php echo $site->description()->html() ?>">
@@ -37,9 +41,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   -->
   
-  <?php // Necessary for sticky TOC until better supported ?>
   <?php echo js('assets/js/main.js', true) ?>
-  
+    
   <?php // Hotjar Tracking Code ?>
   <?php if ($hotjarid = array_search($_SERVER['SERVER_NAME'], array('209846' => 'drewbaren.com', '286199' => 'tuftsmake.com', '232998' => 'maker.tufts.edu'))): ?>
     <script>
@@ -53,22 +56,6 @@
       })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
     </script>
   <?php endif ?>
-  
-  <?php // Google Analytics Tracking Code ?>
-  <?php /*
-  <?php if($_SERVER['SERVER_NAME'] != 'makernetwork.org'): ?>
-    <?php if ($analyticsID = array_search($_SERVER['SERVER_NAME'], array('209846' => 'drewbaren.com', 'UA-43696470-1' => 'tuftsmake.com', 'UA-55995707-1' => 'maker.tufts.edu'))): ?>
-      <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-        ga('create', '<?php echo $site->googleanalytics() ?>', 'auto');
-        ga('send', 'pageview');
-      </script>
-    <?php endif ?>
-  <?php endif ?>
-  */?>
 
 </head>
 

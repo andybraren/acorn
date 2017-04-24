@@ -23,7 +23,6 @@ Icon
 # Unlicensed components
 # ---------------
 
-/site/plugins/cachebuster/*
 /site/plugins/guggenheim/*
 /site/plugins/imagekit/*
 /site/plugins/phpmailer/*

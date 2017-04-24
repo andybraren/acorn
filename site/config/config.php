@@ -1471,6 +1471,47 @@ c::set('routes', array(
       go(site()->url() . '/' . $uid);
     }
   ),
+  
+  // Save Site Settings
+	array(
+		'pattern' => array('savesettings', '(.+savesettings)'),
+		'method' => 'POST',
+		'action'  => function() {
+  		
+      $settings = $site->settings()->yaml();
+      
+      // Style
+      if ($_POST['theme']) $settings['style']['theme'] = $_POST['theme'];
+      
+      // Monetization
+      if ($_POST['ads']) $settings['monetization']['ads'] = $_POST['ads'];
+      
+      // Update settings
+      site()->update(['settings' => yaml::encode($settings)]);
+      
+      //echo $settings['style']['theme'];
+      
+		}
+	),
+  
+  
+
+          
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
 
 ));

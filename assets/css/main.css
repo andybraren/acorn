@@ -2259,7 +2259,19 @@ footer .container {
 
 
 
+label {
+    display: block;
+    position: relative;
+    height: 1.5rem;
+    line-height: 1.5rem;
+}
 
+label input {
+    float: left;
+    width: initial;
+    height: 100%;
+    margin-right: 10px;
+}
 
 
 
@@ -2273,7 +2285,8 @@ form div {
   */
 }
 
-form label {
+form input ~ label,
+form select ~ label {
   line-height: initial;
   pointer-events: none;
   position: absolute;
@@ -2283,14 +2296,69 @@ form label {
   transform: translate3d(0, 0, 0);
   transition: all 0.2s ease-in-out;
 }
-form input[type="text"]:valid, form input[type="text"]:focus, form select:focus {
+
+form input:valid,
+form input:focus,
+form input[type="text"]:valid,
+form input[type="text"]:focus,
+form select:focus {
   padding: 12px 8px 0px;
 }
 
 input[required] {
+  /*
   background: url("../../assets/images/form-dot.svg") no-repeat top right;
   background: url("../../assets/images/form-dot.svg") no-repeat top -6px right -10px;
+  */
 }
+
+.icons {
+  position: absolute;
+  pointer-events: none;
+  margin: 0;
+  top: 0;  
+}
+
+/* Required dot */
+input:required  ~ .icons::before,
+select:required ~ .icons::before {
+  content: '\00B7';
+  color: #e32;
+  position: absolute;
+  right: 0;
+  margin: 5px;
+  font-size: 40px;
+  line-height: 5px;
+}
+
+/* Dropdown caret */
+select ~ .icons::after {
+  content: '\276F';
+  color: var(--theme-main);
+  transform: rotate(90deg) scale(.8, .6);
+  position: absolute;
+  right: 0;
+  margin: 5px;
+  top: 10px;
+  font-size: 20px;
+}
+
+/* Icons */
+.icons svg {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
+
+/* Space for icons */
+form input[name="firstname"] { padding-left: 45px !important; }
+form label[for="firstname"] { padding-left: 38px !important; }
+
+form input[type="email"] { padding-left: 45px !important; }
+form input[type="email"] + label { padding-left: 38px !important; }
+
+
+
 /*
 select[required] {
   background: url("../../assets/images/form-dot.svg") no-repeat top right, url("../../assets/images/form-arrow.svg") no-repeat center right 9px, linear-gradient(to right,rgba(255, 255, 255, 0) 0%,rgba(255, 255, 255, 1) 100%) no-repeat center right
@@ -2299,11 +2367,13 @@ select[required] {
 
 select {
   -webkit-appearance: none;
+  /*
   background: url("../../assets/images/form-arrow.svg") no-repeat center right 9px;
   background: url("../../assets/images/form-arrow.svg") no-repeat center right 9px, linear-gradient(to right,rgba(255, 255, 255, 0) 0%,rgba(255, 255, 255, 1) 100%) no-repeat center right;
     
   background-size: auto, 40px 100%;
     background-size: 10px;
+  */
 }
 /*
 select.clicked {
@@ -2319,7 +2389,8 @@ input[type=number]::-webkit-outer-spin-button {
 
 
 
-
+form input + label,
+form input:optional + label,
 form input[type="text"] + label,
 form input[type="text"]:optional + label,
 form input[type="email"] + label,
@@ -2331,6 +2402,8 @@ form input[type="password"]:optional + label {
   color: #909090;
 }
 
+
+form input:required:valid + label, form input:focus + label,
 form input[type="text"]:required:valid + label, form input[type="text"]:focus + label,
 form input[type="text"]:optional.clicked + label, form input[type="text"]:focus + label,
 form input[type="email"]:valid + label, form input[type="email"]:focus + label,

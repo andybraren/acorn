@@ -11,8 +11,8 @@
             <?php echo $page->text()->kirbytext() ?>
           </div>
           <div class="text size-33 card-join highlight">
-            <h2>Join the Network</h2>
-            <p>Get email updates, register for events, reserve equipment, start new projects and more with one account that ties everything together.</p>
+            <h2>Create an account</h2>
+            <p>Start and share new projects and ideas with the community.</p>
             <button class="button fullwidth button-signup" data-modal="signup">Create an account</button>
           </div>
         </div>
@@ -20,70 +20,110 @@
       
       <hr class="divider">
       
-      <div class="section">
-        <div class="subsection">
-          
-          <div class="size-quarter green card-join highlight">
-            <?php if ($site->page('projects')): ?>
+      <div class="grid">
+        
+        <?php if ($site->page('projects') and $site->page('projects')->hasChildren()): ?>
+          <?php if ($firstpage = page('projects')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()): ?>
+            <div class="green card-join highlight">
               <a href="<?php echo page('projects')->url() ?>">
                 <h2>Browse projects</h2>
                 
-                <?php if ($image = page('projects')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()->heroImage()): ?>
-                  <img style="height:100px;" src="<?php echo $image->crop(270,100)->url() ?>"></img>
+                <?php if ($image = $firstpage->heroImage()): ?>
+                  <img src="<?php echo $image->crop(270,100)->url() ?>"></img>
                 <?php endif ?>
                 
-                <p>Browse projects and ideas created by Tufts students, faculty, and community members.</p>
+                <p>Browse projects and ideas created by students, faculty, and community members.</p>
               </a>
               <a class="button fullwidth" href="<?php echo page('projects')->url() ?>">View projects</a>
-            <?php endif ?>
-          </div>
+            </div>
+          <?php endif ?>
+        <?php endif ?>
         
-          <div class="size-quarter red card-join highlight">
-            <?php if ($site->page('handbooks')): ?>
+        <?php if ($site->page('equipment') and $site->page('equipment')->hasChildren()): ?>
+          <?php if ($firstpage = page('equipment')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()): ?>
+            <div class="orange card-join highlight">
+              <a href="<?php echo page('equipment')->url() ?>">
+                <h2>Learn digital tools</h2>
+                
+                  <?php if ($image = $firstpage->heroImage()): ?>
+                    <img src="<?php echo $image->crop(270,100)->url() ?>"></img>
+                  <?php endif ?>
+                
+                <p>Learn the basics of a variety of makerspace tools.</p>
+              </a>
+              <a class="button fullwidth" href="<?php echo page('equipment')->url() ?>">View tools</a>
+            </div>
+          <?php endif ?>
+        <?php endif ?>
+      
+        <?php if ($site->page('handbooks') and $site->page('handbooks')->hasChildren()): ?>
+          <?php if ($firstpage = page('handbooks')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()): ?>
+            <div class="red card-join highlight">
               <a href="<?php echo page('handbooks')->url() ?>">
                 <h2>Read handbooks</h2>
                 
-                  <?php if ($image = page('handbooks')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()->heroImage()): ?>
-                    <img style="height:100px;" src="<?php echo $image->crop(270,100)->url() ?>"></img>
+                  <?php if ($image = $firstpage->heroImage()): ?>
+                    <img src="<?php echo $image->crop(270,100)->url() ?>"></img>
                   <?php endif ?>
                 
                 <p>Learn the basics of a variety of tools and techniques.</p>
               </a>
               <a class="button fullwidth" href="<?php echo page('handbooks')->url() ?>">View handbooks</a>
-            <?php endif ?>
-          </div>
-          
-          <div class="size-quarter gold card-join highlight">
-            <?php if ($site->page('events')): ?>
+            </div>
+          <?php endif ?>
+        <?php endif ?>
+        
+        <?php if ($site->page('tools') and $site->page('tools')->hasChildren()): ?>
+          <?php if ($firstpage = page('tools')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()): ?>
+            <div class="red card-join highlight">
+              <a href="<?php echo page('tools')->url() ?>">
+                <h2>Learn digital tools</h2>
+                
+                  <?php if ($image = $firstpage->heroImage()): ?>
+                    <img src="<?php echo $image->crop(270,100)->url() ?>"></img>
+                  <?php endif ?>
+                
+                <p>Learn the basics of a variety of makerspace tools.</p>
+              </a>
+              <a class="button fullwidth" href="<?php echo page('tools')->url() ?>">View tools</a>
+            </div>
+          <?php endif ?>
+        <?php endif ?>
+        
+        <?php if ($site->page('events') and $site->page('events')->hasChildren()): ?>
+          <?php if ($firstpage = page('events')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()): ?>
+            <div class="gold card-join highlight">
               <a href="<?php echo page('events')->url() ?>">
                 <h2>Attend an event</h2>
                 
-                <?php if ($image = page('events')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()->heroImage()): ?>
-                  <img style="height:100px;" src="<?php echo $image->crop(270,100)->url() ?>"></img>
+                <?php if ($image = $firstpage->heroImage()): ?>
+                  <img src="<?php echo $image->crop(270,100)->url() ?>"></img>
                 <?php endif ?>
                 
                 <p>Join a workshop or event to learn new things with others.</p>
               </a>
               <a class="button fullwidth" href="<?php echo page('events')->url() ?>">View events</a>
-            <?php endif ?>
-          </div>
-          
-          <div class="size-quarter purple card-join highlight">
-            <?php if ($site->page('spaces')): ?>
-              <a href="<?php echo page('spaces')->url() ?>">
-                <h2>Visit a space</h2>
-                
-                  <?php if ($image = page('spaces')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()->heroImage()): ?>                
-                    <img style="height:100px;" src="<?php echo $image->crop(270,100)->url() ?>"></img>
-                  <?php endif ?>
-                
-                <p>Stop by one of Tufts' makerspaces to get access to tools and equipment.</p>
-              </a>
-              <a class="button fullwidth" href="<?php echo page('spaces')->url() ?>">View spaces</a>
-            <?php endif ?>
-          </div>
-          
-        </div>
+            </div>
+          <?php endif ?>
+        <?php endif ?>
+        
+        <?php if ($site->page('spaces') and $site->page('spaces')->hasChildren()): ?>
+          <?php if ($firstpage = page('spaces')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()): ?>
+            <div class="purple card-join highlight">
+                <a href="<?php echo page('spaces')->url() ?>">
+                  <h2>Visit a space</h2>
+                  
+                    <?php if ($image = $firstpage->heroImage()): ?>                
+                      <img src="<?php echo $image->crop(270,100)->url() ?>"></img>
+                    <?php endif ?>
+                  
+                  <p>Stop by one of Tufts' makerspaces to get access to tools and equipment.</p>
+                </a>
+                <a class="button fullwidth" href="<?php echo page('spaces')->url() ?>">View spaces</a>
+            </div>
+          <?php endif ?>
+        <?php endif ?>
+        
       </div>
       
       <?php /*

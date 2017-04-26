@@ -140,8 +140,10 @@ thumb::$defaults['autoOrient'] = 'true';
 c::set('sirvy.path', 'api');
 
 /* Turn on debugging */
-if($_SERVER['SERVER_NAME'] == 'makernetwork.org') {
+if($_SERVER['SERVER_NAME'] == 'dev.acorn.blog') {
   c::set('debug', true);
+} else {
+  c::set('whoops', false);
 }
 
 /* Set the timezone */
@@ -173,12 +175,6 @@ If I log out manually, then kirby_session_auth gets destroyed.
 //c::set('panel.session.timeout', 2160); // 36 hours
 //cookie::set('username', site()->user()->username(), $expires = 42000, $path = '/', $domain = null, $secure = true);
 
-
-
-
-
-
-c::set('debug', true);
 
 
 
@@ -978,18 +974,19 @@ c::set('routes', array(
           
           if (move_uploaded_file($_FILES[$name]['tmp_name'], $target_file)) {
             
-            // Use GD Lib to detect image orientation and rotate if necessary
-            // - https://forum.getkirby.com/t/wrong-orientation-of-images-portrait-landscape-after-upload/692/19
-            // - https://github.com/getkirby/starterkit/blob/0b4a6e8cf929237621d77adb996e98b08d234004/kirby/toolkit/lib/thumb.php
-            try {
-              $img = new abeautifulsite\SimpleImage($target_file);
-              $img->auto_orient();
-              @$img->save($target_file);
-            } catch(Exception $e) {
-              echo "Error rotating image";
-            }
-            
             if ($file_type == 'image') {
+            
+              // Use GD Lib to detect image orientation and rotate if necessary
+              // - https://forum.getkirby.com/t/wrong-orientation-of-images-portrait-landscape-after-upload/692/19
+              // - https://github.com/getkirby/starterkit/blob/0b4a6e8cf929237621d77adb996e98b08d234004/kirby/toolkit/lib/thumb.php
+              try {
+                $img = new abeautifulsite\SimpleImage($target_file);
+                $img->auto_orient();
+                @$img->save($target_file);
+              } catch(Exception $e) {
+                echo "Error rotating image";
+              }
+              
               $file_url = (string)kirbytag(array('image' => $file, 'targetpage' => $targetpage, 'output' => 'url'));
             }
             

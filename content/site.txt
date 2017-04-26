@@ -27,24 +27,8 @@ Apikeys:
 Menuprimary: 
 
 - 
-  title: Home
-  uid: home
-  sub:
-    - 
-      title: Accounts
-      uid: users
-    - 
-      title: Articles
-      uid: articles
-    - 
-      title: Posts
-      uid: posts
-- 
   title: Features
   uid: features
-- 
-  title: Examples
-  uid: examples
   sub:
     - 
       title: Accounts
@@ -84,7 +68,7 @@ Menuprimary:
   uid: faq
 - 
   title: Support
-  uid: support
+  uid: forum
 ----
 Menusecondary: 
 

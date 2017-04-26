@@ -161,7 +161,7 @@ if (!isset($type)) {
 */ ?>
 
 <?php if ($site->user() and $type != 'users' or $items != '' and $type != 'users' or $page->isSubmissibleByUser()): ?>
-<div class="cards">
+<div class="grid">
   
   <?php $newhero = new Asset('/assets/images/hero-new.png'); ?>
   <?php $defaulthero = new Asset('/assets/images/hero-1.jpg'); ?>

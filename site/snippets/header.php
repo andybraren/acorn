@@ -76,6 +76,8 @@
   <header id="top" class="headroom">
     
       <?php snippet('menu') ?>
+      
+      <div class="placemat container"></div>
     
   </header>
 

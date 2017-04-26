@@ -127,16 +127,15 @@
       <?php endif ?>
       
       <?php if($page->uid() == 'learn'): ?>
-        <p>Content from the sub-tabs above will be included here in a way that makes sense.</p>      
+            
       <?php endif ?>
       
       <?php if($page->uid() == 'make'): ?>
-        <p>Content from the sub-tabs above will be included here in a way that makes sense.</p>
-        <p>Ideas should be a sub-set of Projects. Materials might be moved elsewhere. Challenges are maybe more like events.</p>
+        
       <?php endif ?>
       
       <?php if($page->uid() == 'connect'): ?>
-        <p>Content from the sub-tabs above will be included here in a way that makes sense.</p>
+        
       <?php endif ?>
       
       <?php if($page->uid() == 'projects'): ?>
@@ -188,10 +187,12 @@
         <?php snippet('cards', array('type' => 'projects', 'event' => $page->uid())) ?>
       <?php endif ?>
       
+      <!--
       <?php if($page->parent() == 'projects'): ?>
         <h2>Updates</h2>
         <?php snippet('cards', array('type' => 'posts', 'relatedto' => $page->uid())) ?>
       <?php endif ?>
+      -->
             
       <?php if($page->uid() == 'forum'): ?>
         <?php snippet('forum') ?>

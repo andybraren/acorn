@@ -21,20 +21,6 @@
       <?php if ($logo or $logoIcon): ?>
         <a class="logo" href="<?php echo url() ?>">
           
-          <?php if ($logo): ?>
-            <div id="logo-1">
-              
-              <?php
-                if ($logo->extension() == 'svg') {
-                  echo $logo->content();
-                } elseif (in_array($logo->extension(), array('jpg','png','gif','ico','tiff','bmp'))) {
-                  echo '<img src="' . $logo->url() . '">';
-                }
-              ?>
-              
-            </div>
-          <?php endif ?>
-          
           <?php if ($logoIcon): ?>
             <div id="logo-2">
               
@@ -43,6 +29,20 @@
                   echo $logoIcon->content();
                 } elseif (in_array($logoIcon->extension(), array('jpg','png','gif','ico','tiff','bmp'))) {
                   echo '<img src="' . $logoIcon->url() . '">';
+                }
+              ?>
+              
+            </div>
+          <?php endif ?>
+          
+          <?php if ($logo): ?>
+            <div id="logo-1">
+              
+              <?php
+                if ($logo->extension() == 'svg') {
+                  echo $logo->content();
+                } elseif (in_array($logo->extension(), array('jpg','png','gif','ico','tiff','bmp'))) {
+                  echo '<img src="' . $logo->url() . '">';
                 }
               ?>
               
@@ -143,9 +143,7 @@
       <?php if ($user = $site->user()): ?>
         <button class="button-login" data-modal="account"><?php echo esc($user->firstName()) ?></button>        
       <?php else: ?>
-        <li class="login">
-          <a id="button-login" class="login" data-modal="login">Log in</a>
-        </li>
+        <button class="button-login" data-modal="login">Log in</button>    
       <?php endif ?>
       
 

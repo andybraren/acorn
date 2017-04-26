@@ -20,13 +20,37 @@ Icon
 /cache/content/*
 !/cache/content/.keep
 
+/cache/content/*
+!/cache/content/.keep
+
+/cache/sessions/*
+!/cache/sessions/.keep
+
+/cache/thumbs/*
+!/cache/thumbs/.keep
+
+# User info
+# ---------------
+
+/users/accounts/*
+!/users/accounts/.keep
+
+/users/avatars/*
+!/users/avatars/.keep
+
 # Content
 # ---------------
 
 /content/*
-!/content/error/*
+
+!/content/home/
 !/content/home/*
-!/content/settings/*
+/content/home/.DS_Store
+
+!/content/error/
+!/content/error/page.txt
+
+!/content/settings/page.txt
 !/content/users/page.txt
 
 # Unlicensed components

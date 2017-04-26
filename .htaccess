@@ -3,6 +3,9 @@
 # Boost the memory limit to ensure image thumbnails are always generated
 php_value memory_limit 256M
 
+# Prevent directory browsing
+Options -Indexes
+
 # rewrite rules
 <IfModule mod_rewrite.c>
 
@@ -22,8 +25,14 @@ RewriteEngine on
 # block text files in the content folder from being accessed directly
 RewriteRule ^content/(.*)\.(txt|md|mdown)$ index.php [L]
 
-# block all files in the site folder from being accessed directly
-RewriteRule ^site/(.*) index.php [L]
+# block direct access to everything within site folder, except for assets
+# http://stackoverflow.com/questions/6942652/all-except-one-directory-in-mod-rewrite
+# RewriteRule ^site/(.*) index.php [L]
+RewriteCond %{REQUEST_URI} !^/assets(/|$)
+RewriteRule ^([\w/]*)$ index.php [L]
+
+# block all files in the accounts folder from being accessed directly
+RewriteRule ^accounts/(.*) index.php [L]
 
 # block all files in the kirby folder from being accessed directly
 RewriteRule ^kirby/(.*) index.php [L]

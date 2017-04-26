@@ -22,10 +22,10 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
-	<link rel="shortcut icon" type="image/png" href="<?php echo url('assets/images/logo-favicon.png') ?>">
-	<link rel="apple-touch-icon" href="<?php echo url('assets/images/apple-touch-icon.png') ?>">
+	<link rel="shortcut icon" type="image/png" href="<?php echo url('site/assets/images/logo-favicon.png') ?>">
+	<link rel="apple-touch-icon" href="<?php echo url('site/assets/images/apple-touch-icon.png') ?>">
 	
-  <?php echo css('assets/css/main.css') ?>
+  <?php echo css('site/assets/css/main.css') ?>
 
   <?php // Load page-specific css ?>
   <?php foreach($page->files()->filterBy('extension', 'css') as $css): ?>
@@ -41,7 +41,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   -->
   
-  <?php echo js('assets/js/main.js', true) ?>
+  <?php echo js('site/assets/js/main.js', true) ?>
     
   <?php // Hotjar Tracking Code ?>
   <?php if ($hotjarid = array_search($_SERVER['SERVER_NAME'], array('209846' => 'drewbaren.com', '286199' => 'tuftsmake.com', '232998' => 'maker.tufts.edu'))): ?>

@@ -40,7 +40,7 @@ ini_set('session.gc_maxlifetime', 604800); // 1 week
 //ini_set('session.gc_maxlifetime', 10); // 1 hour
 
 // Set session save directory
-ini_set('session.save_path', dirname(dirname(__FILE__)) . '/sessions');
+ini_set('session.save_path', kirby()->roots()->index() . DS . 'cache' . DS . 'sessions');
 
 // Enable PHP's garbage collection method, even on Ubuntu/Debian, with a prob/divisor % chance of happening on each session_start()
 //ini_set('session.gc_probability', 1);

@@ -225,7 +225,7 @@
               <div class="size-50">
                 <input type="text" name="firstname" pattern="^[^0-9]{2,20}$" required> <?php // No numbers, at least 2 characters ?>
                 <label for="firstname">First name</label>
-                <div class="icons"><?php echo (new Asset('/assets/images/form-user.svg'))->content() ?></div>
+                <div class="icons"><?php echo (new Asset('/site/assets/images/form-user.svg'))->content() ?></div>
               </div>
         
               <div class="size-50">
@@ -236,7 +236,7 @@
               <div class="size-50">
                 <input type="email" name="email" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,3}$" required> <?php // (whatever)@xx.co ?>
                 <label for="email">Personal email address</label>
-                <div class="icons"><?php echo (new Asset('/assets/images/form-email.svg'))->content() ?></div>
+                <div class="icons"><?php echo (new Asset('/site/assets/images/form-email.svg'))->content() ?></div>
                 <span>Used to reset your password</span>
               </div>
               

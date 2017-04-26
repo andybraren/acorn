@@ -1,8 +1,8 @@
-Title: Maker Network Platform Documentation
+Title: Acorn Documentation
 ----
 Datedata: 2016-11-03 12:00:00, 2016-11-03 12:00:00 == abraren, 2016-11-03 12:00:00, 2016-11-03 15:00:00, 2016-11-03 16:00:00
 ----
-Userdata: abraren ~ Creator
+Userdata: abraren
 ----
 Reldata: 
 ----
@@ -325,71 +325,321 @@ This will return a JSON array containing the public information available for al
 
 This will return a JSON array containing the public information available for all groups, or just one.
 
-## Q&A
+## Releases
 
-### You didn't explain how "X" works.
+### v0.0 - September 1, 2015
 
-That's likely. This documentation, like the site itself, is a work in progress. Let me know what feature/component you'd like an explanation for and I'll prioritize writing that section next.
+- WordPress-based site containing handbooks, some event pages, and maker profiles
 
-### Who will continue to develop this platform in the future?
+### v0.1 - October 1, 2015
 
-Probably Andy, hopefully with some additional help from other Tufts students.
+- Initial switch to Kirby
+- Migrated handbooks
 
-### Why not create a WordPress theme/plugin instead?
+### v0.2 - January 6, 2016
 
-Here are the top four reasons:
+- Password reset
+- RFID connection
+- Space pages
 
-**Speed.** It’s barely a contest compared to WordPress, whether out of the box or with a caching plugin. I’ve built ~8 WordPress sites for clients over the years, but even with caching plugins and many hours of tuning I’ve never reached the load times I can get with Kirby. I have plans to make it even faster in the future.
+### v0.3 - April 1, 2016
 
-**No database required.** I’ll discuss this a bit more below, but the flat-file nature of Kirby makes it far easier to install, back up, update, or duplicate. If the need arises it can be tied to a database, but I haven’t had a performance reason to do so yet. One of my largest clients uses Kirby to deliver 800+ pages of content to hundreds of thousands of visitors each month without any trouble.
+- Theme colors
+- Table of Contents
+- Lazy-loading images and videos
 
-**Complete control.** Kirby isn’t as beginner-friendly as WordPress (fewer out-of-the-box themes and plugins), but that’s somewhat of a blessing in disguise. By controlling everything about how the site looks and works, things like inline editing or the RFID system are going to continue to work for years to come, without being broken by a rogue plugin update.
+### v0.4 - May 1, 2016
 
-**Documentation and support.** There are a few other flat-file alternatives to Kirby (Statamatic, others) but none that I’ve seen come close in terms of documentation and support. Every question I’ve asked in Kirby's forum has been answered within a day, and although PHP has its issues, there are a ton of resources for beginning developers to refer to online. Kirby’s Cheat Sheet also makes developing new things way more straightforward than WordPress’ Codex.
+- Site-wide login and signup
+- Image uploading
 
-### How large can the site become without slowing down?
+### v0.5 - October 4, 2016
 
-So far I haven't found a limit. Kirby's creator [has used it](https://forum.getkirby.com/t/server-response-time/279) for multi-thousand-page websites with 4GB+ of files, and others have tested it with over [10,000 pages](https://forum.getkirby.com/t/performance-for-10000-pages-by-tags-with-pagination/1244). As of November 2016, makernetwork.org is around 6GB in size and still speedy without caching turned on. I also know of a Kirby-based blog with thousands of articles and more than 10,000 page views per day, and it runs far more efficiently than WordPress ever did.
+- Inline editing
+- Page authors (add/remove authors who can edit the page)
+- Page visibility setting
+    + Public - visible to the world
+    + Unlisted - visible to anyone with the URL, not displayed within site, hidden from Google
+    + Groups - visible only to designated groups/classes
+    + Private - hidden from everyone except yourself and designated authors
+- Page color setting
+- Hero image upload
 
-So long as the server it's running on is SSD-based and effort is put into keeping the code and folder structure simple, I don't anticipate problems with bloat or slowdown.
+### v0.6
 
-### Is there an underlying relational database for the site?
+- Created [GitHub repository](https://github.com/andybraren/acorn)
+- File uploading
+- Log in with email address (not just username)
+- Night mode
+- Dyslexia font
+- Font size adjustment
+- Improved client-side security with Mozilla Web Observatory
+- Mobile access to TOC
+- [gzipped](https://forum.getkirby.com/t/an-elegant-way-to-serve-gzipped-html/2546) HTML
+- Resource caching
 
-Out of the box, Kirby uses .txt files to store information in a YAML-esque format, as described above. It can, however, connect to a MySQL or SQLite database (or PostegreSQL) if the application requires it.
+- Menu editor
 
-So far I’ve been able to avoid using a relational database with maker.tufts.edu. I’ve been burned by WordPress databases in the past, and I enjoy being able to quickly back up, restore, and install new instances of the site simply by dragging and dropping a folder. I suspect students/teachers/librarians who spin up their own Network on a new server will appreciate that as well.
+- Submenu support
+- Form validity
+- Extend session time
+
 
 ## Roadmap
 
-There's a ton of stuff left to develop. I'm using a Workflowy list to document and keep track of releases, and will eventually move that to this page.
+### v0.7 - May 1, 2017
 
-Future development
-- automatic in-makerspace documentation
-- Project documentation apps
-- Inter-makerspace telepresence
+Pre-alpha. Frontend site creation.
 
-## Release History
+### v0.8 - June 1, 2017
 
-### v3.0 - October 4th, 2016
+Alpha. Basic features complete.
 
-A giant update. Page visibility settings, group pages, event pages, inline editing, and more.
+### v0.9 - July 1, 2017
 
-### v2.3 - May 1st, 2016
+Beta. Commerce features. Downloading CSV.
 
-Site-wide login and signup modals, image uploading
+### v1.0 -September 1, 2017
 
-### v2.2 - April 1st, 2016
+Launch. Updating system. Reliable page.txt upgrade path.
 
-Colors, lazy-loading images and videos, table of contents
+### vx.x - Future
 
-### v2.1 - January 6th, 2016
+- Accounts
+    + Pre-registration
+        * Allow a site admin to pre-register a group of email addresses as being part of a group. When those email addresses register, they will automatically be a member of certain group pages, allowing them to view that content.
+        * This would also allow those accounts to have certain other privileges, like being a "teacher" account or something.
+- Tags
+    + Allow certain types of pages (posts, articles, videos, photos, etc.) to be taggable. Tags are displayed in the sidebar.
+    + Tag pages
+        * Tag pages collect every page containing a given tag. Pages can then be sorted by type. This allows a user to quickly and easily find every video related to 3D printing, for example, without the website owner having to create a category for that page.
+        * Tag pages are seamlessly at website.com/tag:3d-printing
+- CDN
+    + Turn on via settings
+- Google Analytics
+    + Add key within Settings page
+    + Per-post statistic embeds
+        * Figure out if it would be possible to display per-post analytics either using Google's API or just using server logs somehow, and how to make that data portable and hopefully local.
+- Layout Settings
+    + Header
+        * Tall, with ad spot
+    + Boxed vs Full
+- In-page tabs
+    + http://youmightnotneedjs.com/#tabs
+    + [Mobile styling](https://scotch.io/tutorials/building-a-morphing-hamburger-menu-with-css)
+- Clearer form validity
+    + See [here](https://bitsofco.de/realtime-form-validation/), [here](https://baymard.com/blog/inline-form-validation), and [here](http://tympanus.net/Development/SelectInspiration/index.html)
+- Commerce
+    + Stripe integration
+    + Crowdfunding
+        * Goals, no charge until reached, etc.
+    + Memberships
+- Ads
+    + Ad board, similar to [Overcast](https://overcast.fm/account/buy_ad), for native advertising, with manual image uploads
+    + https://sortable.com/
+    + http://www.adthrive.com
+- PJAX page transitions
+    + Replace the page's content while keeping all cached resources to improve perceived performance to visitors with JavaScript enabled.
+        * [Barba.js](http://barbajs.org/index.html) and [discussion](https://www.reddit.com/r/web_design/comments/4m9ie4/barbajs_create_smooth_transition_between_your/)
+        * [smoothState.js](https://github.com/miguel-perez/smoothState.js) is another (fancier) option
+        * Page [transition effect](https://kasper.io/How-to-create-transition-effect-between-pages/)
+        * [Check if page is open](https://forum.getkirby.com/t/checking-page-isopen-via-javascript/5299)
+- Social media sharing icons
+    + Placed near bottom of article
+- Call to action / tip jar
+    + Customizable text via settings
+    + Display on certain posts types
+        * "Display on articles, posts, and events written by anyone"
+- Scheduled posts
+    + https://blog.ghost.org/scheduled-posts/
+- Page revisions / "Time Machine"
+    + Settings: On (for every edit), Automatic (for substantial edits), Off by default, Never (don't display the option on pages)
+    + Automatic archive of a page's major updates, determined by the amount of text that changes
+    + Allow the reader to browse revisions
+    + Revisions can only be deleted, and not edited, for posterity
+    + [Kirby plugin already available](https://forum.getkirby.com/t/kirby-revisions/3874)
+- Site-wide newsletter
+    + Upcoming events, recent posts, recent projects, recent revisions
+    + Allow the admin to set distribution frequency and included sections
+    + Automatically store sent newsletters within an archive
+        * Allow the admin to add a preamble and tweak the content prior to its release
+- Placeholder-less lazy loading
+    + To reduce network requests and initial page weight, remove small placeholder/thumbnail images. [Example behavior](http://www.epicurious.com/).
+    + Could maybe replace with color gradients? Seems to be a feature of ImageKit.
+    + http://blog.dynamicdrive.com/5-brilliant-ways-to-lazy-load-images-for-faster-page-loads/
+- Image galleries
+    + Allow the user to upload multiple image files at once, creating a gallery of thumbnails
+    + Caption support, delete one image, add more images
+    + Enable reordering with something like [Packery](http://packery.metafizzy.co/)
+- File replacement
+    + Dragging and dropping, or manually uploading, any file onto the main body with the exact same filename should display a message and allow the user to replace all old instances of that file
+- Hero
+    + Video support
+        * YouTube, Vimeo, or MP4
+        * Allow the user to manually upload a teaser image for the hero video
+    + Editor
+        * Multiple hero iimages
+        * Add image text
+        * [Accessible carousel](https://github.com/estelle/merry-go-round)
+    + Guidance
+        * Warnings for small images and large video files.
+        * [Tooltips](https://github.com/eliortabeka/tootik)
+- Image captions
+    + Use JS to add a span below images. Have the span's content update data-caption of the image, which is then passed to the text file as the image's caption.
+- Messaging system
+    + Allow users to initiate private one-to-one or small group chats. This will require live-updating of a comment-like chat thread via WebSockets or something.
+    + Group mailing lists
+        * Stored as posts, with the ability to comment below, kind of like an email thread
+- Notifications system
+    + Customizable email/webapp notifications with badge
+    + Subscribe to page revisions and comment/forum threads
+- Profiles
+    + Messaging (in-site and/or via email)
+        * Allow users to opt-in to receiving messages from other community members.
+- RSS Feeds
+    + A ton of possible feeds. All, discussions, posts-only, page revisions, etc.
+- Automatic image cleanup
+    + On page save, any files that aren't included within the updated page.txt are either moved to the previous page revision or deleted
+- Events
+    + "Event" page type
+    + Calendar
+        * Filtering options
+        * Google Calendar subscriptions
+    + Ticketing
+        * "Get in line" feature
+    + Facebook event importer (manual and refresh)
+        * [Example plugin](https://wordpress.org/plugins/facebook-events-importer/)
+- Places
+    + "Place" page type
+    + Address, hours, staff directory
+    + Hours
+        * Default weekly hours with manual override (using a calendar view?)
+    + Bookings (Reservation system)
+        * Book by station
+        * Book by hour
+        * https://eventsmanagerpro.com
+- Equipment
+    + Reservation system (see above)
+- Private profiles
+    + Add [robots noindex](https://developers.google.com/webmasters/control-crawl-index/docs/robots_meta_tag) to profile page header
+    + Use [HTML obfuscation](http://stackoverflow.com/questions/4818766/any-simple-obfuscator-of-html-code-generated-by-php) for their name on other pages
+- Profile export
+    + Allow users to export their profile page and all of their content as either raw HTML or a new Acorn instance
+    + See backup idea [here](https://forum.getkirby.com/t/custom-field-backup-all-your-content-with-just-one-click/2307)
+- Allow admins to edit user information
+    + Change username, password, email, and any other info
+- Settings
+- Widgets
+    + GitHub widget
+        * Display GitHub activity within the sidebar of a page, potentially useful for code project pages
+        * [Example plugin](https://github.com/surbhioberoi/github-widget/blob/master/README.md)
+        * [API output](https://api.github.com/users/andybraren)
+    + Quiz widget
+    + Polls
+        * Similar to strawpoll or pollmaker
+        * With duplication checking (accounts, cookies, and IP address (?))
+- Code highlighting
+    + prism.js, highlight.js, or server-side styling
+- Custom fonts
+    + First learn about best method for loading external fonts ([here](https://bitsofco.de/the-new-system-font-stack/))
+- Gravatar support
+    + Option within user's settings page
+    + [Download](https://gist.github.com/samundra/7819411) avatars periodically for more control
+- Webapps
+    + "Dash" app
+        * Inter-space telepresence via WebRTC
+    + "Station" app
+        * Automatic 
+    + "Capture" app
+        * Project documentation
+        * Available as a bookmarklet too
+            - Create a new post, or add it to an existing page they have editing permissions to via a search field and recents localStorage
+    + See [here](https://tympanus.net/codrops/2014/03/21/responsive-full-width-tabs/) for responsive full-width tabs, and [here](https://tympanus.net/codrops/2014/09/02/tab-styles-inspiration/) for tab styles
+- API
+- Acorn pod
+    + In-space documentation
+- "Wiki" page type
+    + Like [Piazza](https://piazza.com)?
+- Forums
+    + Q&A [Stack Overflow style](https://discuss.flarum.org/d/3868-select-post-best-answer)
+- Reading Enhancements
+    + Bookmarks
+        * For long, book-length pages, use localStorage)
+- Podcasts
+    + Transcriptions
+    + Timestamps
+    + Listing on iTunes
+- Real-time collaboration
+    + Like Google Docs
+    + [DiffSync](http://janmonschke.com/projects/diffsync.html)
+    + [Other tools](https://blogory.org/private/1/other/softwareengineering/javascript/collaborative-editing-in-javascript/javascript-collaborative-editing-tools)
+- Auto-import and export
+    + Medium, Tumblr, WordPress, Instagram
+    + YouTube
+        * https://wordpress.org/plugins/automatic-youtube-video-posts/faq/
+    + Twitter
+        * https://forum.getkirby.com/t/twitter-integration-with-full-control-cache-mechanism-and-oauth/2344
+        * http://blog.oneduality.com/2013/06/26/how-to-get-a-twitter-feed-using-php-without-using-api-1-1-and-without-oauth/
+        * https://github.com/cosmocatalano/tweet-2-json
+- Style editor (?)
+    + What if the style editor were an editable style guide?
+    + https://wordpress.com/design-handbook/colors/
+    + http://demo.patternlab.io/
+    + https://tympanus.net/Development/InteractiveColoringConcept/
+- Link snapshots
+    + Store a copy of a linked website's page in case it ever 404's
+    + Similar to Web Archive or Pinboard, this would automatically download and store an optimized (or original?) version of the linked-to web page in case the original link ever goes down.
+    + https://mercury.postlight.com/web-parser/
+    + The link would be stored in a folder. Each night a cron job triggers a check of every link post for 404's. If one is detected, an "archived" bit is flipped in the page.txt's to change the href to be the local copy.
+- Bugs and Tiny Things
+    + If two headings within a page are exactly the same, anchor navigation breaks
+        * This could either be solved relationally, using the previous heading as a reference, or numerically, by appending a number to each duplicate ID. Numerically seems to be the better approach, given that a previous heading isn't always guaranteed.
+    + Toggle showing passwords ([context](http://allthingssmitty.com/2016/10/24/show-my-password-please/))
+    + Fix Chrome omnibox ([here](http://stackoverflow.com/questions/7630144/how-to-add-google-chrome-omnibox-search-support-for-your-site))
+    + 
 
-RFID connection, password reset, space pages
 
-### v2.0 - October 1st, 2015
 
-Switch to Kirby
 
-### v1.0 - September 1st, 2015
 
-This is the initial version of the site, based on WordPress.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -17,10 +17,17 @@ Icon
 
 /assets/js/main.mod.js
 
+/cache/content/*
+!/cache/content/.keep
+
 # Content
 # ---------------
 
-
+/content/*
+!/content/error/*
+!/content/home/*
+!/content/settings/*
+!/content/users/page.txt
 
 # Unlicensed components
 # ---------------

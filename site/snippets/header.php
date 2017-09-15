@@ -22,8 +22,19 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
-	<link rel="shortcut icon" type="image/png" href="<?php echo url('site/assets/images/logo-favicon.png') ?>">
-	<link rel="apple-touch-icon" href="<?php echo url('site/assets/images/apple-touch-icon.png') ?>">
+  <meta property="og:title" content='<?php echo $page->title() ?>'>
+  <meta property="og:site_name" content='<?php echo $site->title() ?>'>
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="<?php echo $page->url() ?>">
+  <?php if ($page->heroImage() != null): ?>
+    <meta property="og:image" content="<?php echo $page->heroImage()->url() ?>">
+  <?php endif ?>
+	
+	<?php $favicon = site()->images()->findBy('name', 'logo-favicon') ?>
+	<link rel="shortcut icon" type="image/png" href="<?php echo $favicon->url() ?>">
+	
+	<?php $appletouch = site()->images()->findBy('name', 'logo-apple-touch') ?>
+	<link rel="apple-touch-icon" href="<?php echo $appletouch->url() ?>">
 	
   <?php echo css('site/assets/css/main.css') ?>
 
@@ -37,14 +48,10 @@
   <?php echo js($js->url(), true) ?>
   <?php endforeach ?>
   
-  <!--
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  -->
-  
   <?php echo js('site/assets/js/main.js', true) ?>
-    
+      
   <?php // Hotjar Tracking Code ?>
-  <?php if ($hotjarid = array_search($_SERVER['SERVER_NAME'], array('209846' => 'drewbaren.com', '286199' => 'tuftsmake.com', '232998' => 'maker.tufts.edu'))): ?>
+  <?php if ($hotjarid = array_search($_SERVER['SERVER_NAME'], array('286199' => 'tuftsmake.com', '232998' => 'maker.tufts.edu'))): ?>
     <script>
       (function(h,o,t,j,a,r){
         h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};

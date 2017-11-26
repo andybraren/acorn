@@ -2,40 +2,12 @@ Title: Settings
 ----
 Datedata: 2016-11-03 12:00:00, 2017-04-18 00:07:38, 2016-11-03 12:00:00
 ----
-Userdata: abraren
+Userdata: 
 ----
 Reldata: 
 ----
-Settings: public, red, comments == off, submissions == off, price == off
+Settings: public, red
 ----
 Hero: 
 ----
 Text:
-
-Discussion / Comments / Forum
-- Look at Discourse settings
-- Look at Disqus settings
-- Look at Flarum settings
-- Look at LyveFire settings
-- Defaults
-	- Allow anonymous comments
-		- (For security reasons, anonymous commenters will not be allowed to upload images or post links)
-	- Allow reporting
-- Discussion Restrictions
-	- Allow users to post
-		- Immediately
-		- After 14 days
-		- After (1) moderator approval
-	- Allow users to upload media
-		- Immediately
-		- After 14 days
-		- After (1) moderator approval
-	- Allow users to post links
-		- Immediately
-		- After 14 days
-		- After (1) moderator approval
-
-User settings
-- Moderator has approved commenting
-	- With media
-	- With links

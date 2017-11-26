@@ -1,8 +1,18 @@
 Title: Oops. Something's missing.
 ----
+Datedata: 2017-04-28 03:59:43, 2017-04-28 04:04:28, 2017-04-28 03:59:43
+----
+Userdata: 
+----
+Reldata: 
+----
+Settings: public, red, comments == off, submissions == off, price == off
+----
+Hero: 
+----
 Text: 
 
-If a page should be here but it's not, blame [Andy](https://drewbaren.com/maker/makers/abraren). I bet it's his fault.
+If a page should be here but it's not, blame Andy. I bet it's his fault.
 
 If you have a moment, please send him a <a href="&#109;&#97;ilto&#58;and%79&#98;rare%&#54;&#69;&#64;g&#109;a%&#54;9l&#46;&#99;%6&#70;m?subject=Your website brought me here">strongly-worded email</a> describing how you got here so that he can fix the issue. I apologize in advance on his behalf.
 

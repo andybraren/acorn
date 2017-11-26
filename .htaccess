@@ -1,7 +1,8 @@
 # Kirby .htaccess
 
 # Boost the memory limit to ensure image thumbnails are always generated
-php_value memory_limit 256M
+# php_value memory_limit 256M
+# Only works with mod_php, breaks with mpm_event
 
 # Prevent directory browsing
 Options -Indexes
@@ -28,11 +29,11 @@ RewriteRule ^content/(.*)\.(txt|md|mdown)$ index.php [L]
 # block direct access to everything within site folder, except for assets
 # http://stackoverflow.com/questions/6942652/all-except-one-directory-in-mod-rewrite
 # RewriteRule ^site/(.*) index.php [L]
-RewriteCond %{REQUEST_URI} !^/assets(/|$)
-RewriteRule ^([\w/]*)$ index.php [L]
+# RewriteCond %{REQUEST_URI} !^/assets(/|$)
+# RewriteRule ^([\w/]*)$ index.php [L]
 
 # block all files in the accounts folder from being accessed directly
-RewriteRule ^accounts/(.*) index.php [L]
+# RewriteRule ^accounts/(.*) index.php [L]
 
 # block all files in the kirby folder from being accessed directly
 RewriteRule ^kirby/(.*) index.php [L]
@@ -59,9 +60,10 @@ RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
 # force https
 RewriteCond %{HTTPS} !on
 RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+
 <IfModule mod_headers.c>
 
-  Header set Content-Security-Policy: "default-src 'none'; style-src 'self' 'unsafe-inline'; font-src 'self' themes.googleusercontent.com; img-src *; media-src *; object-src 'self'; script-src 'self' www.google-analytics.com ajax.googleapis.com; child-src https://player.vimeo.com https://www.youtube.com https://acorn.blog; connect-src 'self'"
+  Header set Content-Security-Policy: "default-src 'none'; style-src 'self' 'unsafe-inline'; font-src 'self' themes.googleusercontent.com; img-src *; media-src *; object-src 'self'; script-src 'self' www.google-analytics.com ajax.googleapis.com data:; child-src https://player.vimeo.com https://www.youtube.com https://acorn.blog; connect-src 'self'"
   
   Header always set Strict-Transport-Security "max-age=15768000; includeSubDomains"
   
@@ -78,6 +80,14 @@ RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
   # For old browsers, deprecated by CSP unsafe-inline
   Header set X-XSS-Protection "1; mode=block"
   
+  <filesMatch ".(jpe?g|png|gif|ico|svg)$">
+    Header set Cache-Control "max-age=604800, public"
+  </filesMatch>
+  # One month for css and js
+  <filesMatch ".(css|js)$">
+    Header set Cache-Control "max-age=604800, public"
+  </filesMatch>
+  
 </IfModule>
 
 
@@ -92,18 +102,10 @@ AddDefaultCharset UTF-8
 # php_flag short_open_tag on
 
 # Increase max amount of data that can be sent via a POST in a form
-php_value post_max_size 100M
+# php_value post_max_size 100M
+# Only works with mod_php, breaks with mpm_event
 
-# Caching
-<IfModule mod_headers.c>
-  <filesMatch ".(jpe?g|png|gif|ico|svg)$">
-    Header set Cache-Control "max-age=604800, public"
-  </filesMatch>
-  # One month for css and js
-  <filesMatch ".(css|js)$">
-    Header set Cache-Control "max-age=604800, public"
-  </filesMatch>
-</IfModule>
+
 
 
 

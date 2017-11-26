@@ -6,37 +6,24 @@ Icon
 .dropbox
 .git
 
-# Temporary files
+# Temporary cache files
 # ---------------
 
-/thumbs/*
-!/thumbs/index.html
-
-/site/cache/*
-!/site/cache/index.html
-
-/assets/js/main.mod.js
-
+/cache/assets/*
 /cache/content/*
-!/cache/content/.keep
-
-/cache/content/*
-!/cache/content/.keep
-
+/cache/media/*
 /cache/sessions/*
-!/cache/sessions/.keep
-
 /cache/thumbs/*
-!/cache/thumbs/.keep
+!/cache/.gitkeep
 
 # User info
 # ---------------
 
 /users/accounts/*
-!/users/accounts/.keep
+!/users/accounts/.gitkeep
 
 /users/avatars/*
-!/users/avatars/.keep
+!/users/avatars/.gitkeep
 
 # Content
 # ---------------
@@ -50,6 +37,7 @@ Icon
 !/content/error/
 !/content/error/page.txt
 
+!/content/settings/
 !/content/settings/page.txt
 !/content/users/page.txt
 
@@ -79,4 +67,6 @@ Icon
 # Config (private)
 # ---------------
 
+/subdomains/*
+/content/site-dev.txt
 /site/config/private.php

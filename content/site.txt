@@ -1,8 +1,6 @@
 Title: Acorn
 ----
-Description: Websites built to grow
-----
-Copyright: © 2014-(date: Year)
+Description: 
 ----
 Coloroptions: red, blue, green, purple, orange, silver, gold
 ----
@@ -10,268 +8,164 @@ Visibilityoptions: public, unlisted, groups, private
 ----
 Usertypes: user, admin
 ----
-Grouptypes: club, course
+Grouptypes: 
 ----
-Affiliationoptions: Undergraduate, Graduate (Masters), Graduate (PhD), Faculty, Staff, Community member, None
+Footerleft: © 2017-(date: Year)
 ----
-Departmentoptions: Anthropology ## Art and Art History ## Biology ## Biomedical Engineering ## Center for Engineering Education and Outreach ## Chemical and Biological Engineering ## Chemistry ## Child Study and Human Development ## Civil and Environmental Engineering ## Classics ## Computer Science ## Drama and Dance ## Earth and Ocean Sciences ## Economics ## Education ## Electrical and Computer Engineering ## Engineering Management ## English, German, Russian, and Asian Languages/Literature ## History ## Human Factors ## Mathematics ## Mechanical Engineering ## Music ## Occupational Therapy ## Philosophy ## Physical Education ## Physics and Astronomy ## Political Science ## Psychology ## Religion ## Romance Languages ## Sociology ## Urban and Environmental Policy and Planning
+Footerright: 
 ----
-Majoroptions: Anthropology ## Art and Art History ## Biology ## Biomedical Engineering ## Center for Engineering Education and Outreach ## Chemical and Biological Engineering ## Chemistry ## Child Study and Human Development ## Civil and Environmental Engineering ## Classics ## Computer Science ## Drama and Dance ## Earth and Ocean Sciences ## Economics ## Education ## Electrical and Computer Engineering ## Engineering Management ## English, German, Russian, and Asian Languages/Literature ## History ## Human Factors ## Mathematics ## Mechanical Engineering ## Music ## Occupational Therapy ## Philosophy ## Physical Education ## Physics and Astronomy ## Political Science ## Psychology ## Religion ## Romance Languages ## Sociology ## Urban and Environmental Policy and Planning
+Affiliationoptions: 
 ----
-Googleanalytics: 
+Departmentoptions: 
 ----
-Stripeapikeys: 
-----
-Apikeys: 
+Majoroptions: 
 ----
 Menuprimary: 
 
 - 
-  title: Features
-  uid: features
-  sub:
-    - 
-      title: Accounts
-      uid: users
-    - 
-      title: Articles
-      uid: articles
-    - 
-      title: Posts
-      uid: posts
-    - 
-      title: Projects
-      uid: projects
-    - 
-      title: Challenges
-      uid: challenges
-    - 
-      title: Equipment
-      uid: equipment
-    - 
-      title: Groups
-      uid: groups
-    - 
-      title: Forum
-      uid: forum
-    - 
-      title: Events
-      uid: events
-    - 
-      title: Commerce
-      uid: store
-- 
-  title: Pricing
-  uid: pricing
-- 
-  title: FAQ
-  uid: faq
-- 
-  title: Support
-  uid: forum
+  title: About
+  uid: about
 ----
 Menusecondary: 
 
-- title: Docs
-  uid: docs
-  subtitle: v0.3
-- title: Download
-  url: https://github.com/andybraren/acorn
-  subtitle: v0.3
 - title: Contact
-  url: mailto:andy@acorn.blog
+  uid: contact
 ----
 Devices: 
+----
+Info: 
 
-- 
-  name: Raspberry Pi Zero
-  ip: 10.10.1.123
-  uid: epilog-zing-24-laser-cutter
-  id: 20170330160354131
-  key: 'z9gK$36jEdJ{YLuqvyr}'
-  pkey: Xtt3//tvr32wpAJWW$cA
-  nonce: "18273928394837283748"
-- 
-  name: Raspberry Pi 2
-  ip: 10.10.1.122
-  id: 20170329224303305
-  uid: flashforge-creater-pro
-  key: 'zM7iFm(y{2r4&TaTUsqf'
-  pkey: '8MD6#7ZmbNAXwUKW)*ri'
-  nonce: "17283948273928102845"
+acorn:
+  version: 0.1.0
+  updated: 2017-01-01 14:00:00
+  updatehistory:
+    '0.1.0': 2017-01-01 14:00:00
+    '0.2.0': 2017-02-01 14:00:00
+    '0.3.0': 2017-03-01 14:00:00
 ----
 Settings: 
 
+general:
+  timezone: EST
+  autoupdate: true
+  indexable: false
 style:
   theme: original
-  default-color: red
+  default-color: blue
   logo: logo.svg
   logo-icon: logo-icon.svg
   favicon: favicon.svg
   header: one-line, two-line-left, two-line-center
-connections:
-  twitter:
-    status: false
-    key: ""
-    autoimport: false
-    autoexport: false
-  medium:
-    status: false
-    key: ""
-    autoimport: false
-    autoexport: false
-  tumblr:
-    status: false
-    key: ""
-    autoimport: false
-    autoexport: false
-  wordpress:
-    status: false
-    key: ""
-    autoimport: false
-    autoexport: false
-page:
-  suggestions: true
-  comments: false
-  comments-anon: false
+  width: 1240
+menu:
+  search:
+    enabled: true
 users:
   roles: user, author
   passwordless: false
   login-twitter: false
   login-google: false
-monetization:
-  ads: false
-  ads-self:
-    status: false
-    ad-board: /advertise
-  ads-google:
-    status: false
-  ads-bsa:
-    status: false
-  ads-header:
-    status: false
-    provider: ""
-    pages: all
-  ads-sidebar:
-    status: false
-    provider: ""
-    pages: posts, projects, events
-  ads-footer:
-    status: false
-    provider: ""
-    pages: all
-  ads-rss:
-    status: false
-    provider: ""
-    pages: all
-  affiliate:
-    status: false
-    amazon: blah-20
-    newegg: blah-20
-    skimlinks: blah-20
-analytics:
-  analytics: true
-  google: UA-283728
-memberships:
-  memberships: false
-  perks:
-    status: false
-    dis-google-analytics: false
-    dis-affiliates: false
-commerce:
-  commerce: true
-  coupons: true
-  stripe-key: ""
-  braintree-key: ""
-  authorize-key: ""
-  paypal-key: ""
-advanced:
-  cdn: true
-----
-Settings2: 
-
-style:
-  theme: helsslo
-  default-color: red
-  logo: logo.svg
-  logo-icon: logo-icon.svg
-  favicon: favicon.svg
-  header: one-line, two-line-left, two-line-center
+discussion:
+  acorn:
+    enabled: false
+    anonymous: false
+    upvotes:
+      enabled: false
+      style: clap
+    moderators:
+      status: false
+    restrictions:
+      linksMinTime: ''
+      linksMinPost: ''
+      mediaMinTime: ''
+      mediaMinPost: ''
+  disqus:
+    enabled: false
+    code: ''
+    anonymous: false
 connections:
+  mailgun:
+    enabled: false
+    key: 
+    domain: 
+  sparkpost:
+    enabled: false
+    key: 
   twitter:
-    status: false
-    key: ""
+    enabled: false
+    key: ''
     autoimport: false
     autoexport: false
   medium:
-    status: false
-    key: ""
+    enabled: false
+    key: ''
     autoimport: false
     autoexport: false
   tumblr:
-    status: false
-    key: ""
+    enabled: false
+    key: ''
     autoimport: false
     autoexport: false
   wordpress:
-    status: false
-    key: ""
+    enabled: false
+    key: ''
     autoimport: false
     autoexport: false
 page:
-  suggestions: true
+  suggestions: false
   comments: false
   comments-anon: false
-users:
-  roles: user, author
-  passwordless: false
-  login-twitter: false
-  login-google: false
 monetization:
   ads: false
   ads-self:
-    status: false
+    enabled: false
     ad-board: /advertise
   ads-google:
-    status: false
+    enabled: false
   ads-bsa:
-    status: false
+    enabled: false
   ads-header:
-    status: false
-    provider: ""
+    enabled: false
+    provider: ''
     pages: all
   ads-sidebar:
-    status: false
-    provider: ""
+    enabled: false
+    provider: ''
     pages: posts, projects, events
   ads-footer:
-    status: false
-    provider: ""
+    enabled: false
+    provider: ''
     pages: all
   ads-rss:
-    status: false
-    provider: ""
+    enabled: false
+    provider: ''
     pages: all
   affiliate:
-    status: false
-    amazon: blah-20
-    newegg: blah-20
-    skimlinks: blah-20
+    enabled: false
+    amazon: 
+    newegg: 
+    skimlinks: 
 analytics:
-  analytics: true
-  google: UA-283728
+  acorn:
+    enabled: false
+    id: ''
+  google:
+    enabled: false
+    id: ''
 memberships:
   memberships: false
   perks:
-    status: false
+    enabled: false
     dis-google-analytics: false
     dis-affiliates: false
 commerce:
   commerce: true
   coupons: true
-  stripe-key: ""
-  braintree-key: ""
-  authorize-key: ""
-  paypal-key: ""
+  stripe-key: ''
+  braintree-key: ''
+  authorize-key: ''
+  paypal-key: ''
 advanced:
   cdn: true
+  cache: false
+  debug: true

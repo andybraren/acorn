@@ -31,11 +31,33 @@ class CSS extends \Kirby\Component\CSS {
     $file = kirby()->roots()->index() . DS . $url;
 
     if(file_exists($file)) {
+      /*
       $mod = f::modified($file);
       $url = dirname($url) . '/' . f::name($url) . '.' . $mod . '.css';
+      */
+      
+      $newcss = file_get_contents($file);
+      
+      // Add site width
+      $search  = '--site-width: /**/;';
+      $replace = '--site-width: ' . site()->setting('style/width') . 'px;';
+      $newcss = str_replace($search, $replace, $newcss);
+            
+      $newfilename = f::name($url) . '.' . f::modified($file) . '.css';
+      
+      $newsrc = kirby()->roots()->index() . DS . 'cache/assets/css/' . $newfilename;
+      $newsrc = 'cache/assets/css/' . $newfilename;
+      
+      $newfile = kirby()->roots()->index() . DS . 'cache/assets/css/' . $newfilename;
+      if (!is_dir(kirby()->roots()->index() . DS . 'cache/assets/css/')) {
+        mkdir(kirby()->roots()->index() . DS . 'cache/assets/css/', 0775, true);
+      }
+      file_put_contents($newfile, $newcss);
+      
     }
 
-    return parent::tag($url, $media);
+    //return parent::tag($url, $media);
+    return parent::tag($newsrc, $media);
 
   }
 

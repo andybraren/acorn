@@ -19,12 +19,21 @@
 
 kirbytext::$tags['callout'] = array(
   'attr' => array(
+    'icon',
+    'title',
     'text',
   ),
   'html' => function($tag) {
-    $type = $tag->attr('callout');
+    
+    $color = $tag->attr('callout');
+    $icon = $tag->attr('icon');
+    $title = $tag->attr('title');
   	$text = $tag->attr('text');
-  	return '<div class="callout ' . $type . '">' . kirbytext($text) . '</div>';
+  	
+  	$color = $color ? ' ' . $color : ' gold'; // The color of the callout should never be a globally-changeable "default"
+  	$icon = $icon ? ' ' . $icon : '';
+  	
+  	return '<div class="callout' . $color . $icon . '">' . kirbytext($title . ' ' . $text) . '</div>';
   }
 );
 

@@ -15,6 +15,8 @@ kirbytext::$tags['link'] = array(
     'author',
     'date',
     'excerpt',
+    'quote',
+    'image',
   ),
   'html' => function($tag) {
     
@@ -23,57 +25,93 @@ kirbytext::$tags['link'] = array(
     $author    = $tag->attr('author');
     $date      = $tag->attr('date');
     $excerpt   = $tag->attr('excerpt');
+    $quote     = $tag->attr('quote');
+    $image     = $tag->attr('image');
     
     $link = url($url);
     
+    /*
     if(empty($excerpt)) {
       $title = $url;
-    } 
+    }
+    */
     
     if(str::isURL($excerpt)) {
       $excerpt = url::short($excerpt);
     }
     
-    $author = '';
-    $date = '';
     $excerpt = '';
     $host = '';
-    $image = '';
+    
+    if ($quote) {
+      $quote = '<blockquote>' . kirbytext($quote) . '</blockquote>';
+    }
     
     if ($_SERVER['SERVER_NAME'] == parse_url($url, PHP_URL_HOST)) { // if the URL is an internal link
       
       $page = site()->page(trim(parse_url($url, PHP_URL_PATH), '/'));
       
-      $title = $page->title();
-      $excerpt = preg_replace("!(?=[^\]])\([a-z0-9_-]+:.*?\)!is", "", html::decode(markdown(preg_replace("/(#+)(.*)/", "", $page->text()->short(300)))));
+      if ($page) {
+        $title = $page->title();
+        $excerpt = preg_replace("!(?=[^\]])\([a-z0-9_-]+:.*?\)!is", "", html::decode(markdown(preg_replace("/(#+)(.*)/", "", $page->text()->short(300)))));
+        
+        $date = date('M j Y', $page->datePublished());
+        
+        $host = $_SERVER['SERVER_NAME'] . ' - ';
+        
+        if ($page->heroImage()) {
+          $image = $page->heroImage()->crop(170, 110);
+        } else {
+          $image = '';
+        }
+        
+        
+        //$author = a::first($page->authors()); // Get the first (primary) author of a page
+        $author = $page->authors()->first();
+        //$author = str::split($author,'~')[0]; // Strip out the author's role (if needed)
+        if (site()->user($author)) {
+          $author = site()->user($author);
+          $author = $author->firstname() . ' ' . $author->lastname() . ' - ';
+        }
+      }
       
-      $date = date('M j Y', $page->datePublished());
+    } else {
       
-      $host = $_SERVER['SERVER_NAME'];
+      //$title = get_title("http://www.washingtontimes.com/");
+      //$title = get_title($url);
       
-      if ($page->heroImage()) {
-        $image = '<div>' . $page->heroImage()->crop(150) . '</div>';
+      
+      if ($author) {
+        $author = $author . ' - ';
+      }
+      
+      if ($date) {
+        $date = ' - ' . date('M j Y', strtotime($date));
+      }
+      
+      $host = parse_url($url, PHP_URL_HOST);
+      if ($image and page() == site()->page(trim(parse_url($url, PHP_URL_PATH), '/'))) {
+        $image = '<img src="' . page()->image($image)->crop(170, 110)->url() . '">';
       } else {
         $image = '';
       }
       
-      
-      //$author = a::first($page->authors()); // Get the first (primary) author of a page
-      $author = $page->authors()->first();
-      //$author = str::split($author,'~')[0]; // Strip out the author's role (if needed)
-      if (site()->user($author)) {
-        $author = site()->user($author);
-        $author = $author->firstname() . ' ' . $author->lastname();
-      }
-    } else {
-      
-      //$title = get_title("http://www.washingtontimes.com/");
-      
     }
     
+    if ($quote) {
+      $classes = 'link quote';
+    } else {
+      $classes = 'link';
+    }
     
-    $html = '<div><a class="link" href="' . $url . '"><div><strong>' . $title . '</strong><span>' . $excerpt . '</span><span>' . $author . ' - ' . $host . ' - ' . $date . '</span></div>' . $image . '</a></div>';
+    $title = '<strong>' . $title . '</strong>';
+    $info = '<span>' . $author . $host . $date . '</span>';
     
+    if ($quote) {
+      $html = '<div class="' . $classes . '"><a href="' . $url . '">' . $image . '<div>' . $title . '<span>' . $excerpt . '</span>' . $info . '</div></a>' . $quote . '</div>';
+    } else {
+      $html = '<div class="' . $classes . '"><a href="' . $url . '">' . $image . '<div>' . $title . '<span>' . $excerpt . '</span>' . $info . '</div></a></div>';
+    }
     
     
     return $html;
@@ -93,13 +131,57 @@ function domain($url) {
   return $result['scheme']."://".$result['host'];
 }
 
-function get_title($url){
-  $str = file_get_contents($url);
-  if(strlen($str)>0){
-    $str = trim(preg_replace('/\s+/', ' ', $str)); // supports line breaks inside <title>
-    preg_match("/\<title\>(.*)\<\/title\>/i",$str,$title); // ignore case
-    return $title[1];
+function get_http_response_code($url) {
+  $headers = get_headers($url);
+  if ($headers !== false) {
+    return substr($headers[0], 9, 3);
   }
+  
+}
+
+function get_title($url){
+  
+  try {
+    $str = file_get_contents($url);
+    
+    if ($str === false) {
+      return 'failure';
+    }
+    
+    if (get_http_response_code($url) != "200"){
+      return "error";
+    } else{
+      return 'his';
+    }
+  } catch(Exception $ex) {
+    return $ex;
+  }
+  
+
+
 }
 
 ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

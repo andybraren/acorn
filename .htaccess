@@ -63,7 +63,7 @@ RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 
 <IfModule mod_headers.c>
 
-  Header set Content-Security-Policy: "default-src 'none'; style-src 'self' 'unsafe-inline'; font-src 'self' themes.googleusercontent.com; img-src *; media-src *; object-src 'self'; script-src 'self' www.google-analytics.com ajax.googleapis.com data:; child-src https://player.vimeo.com https://www.youtube.com https://acorn.blog; connect-src 'self'"
+  Header set Content-Security-Policy: "default-src 'none'; style-src 'self' 'unsafe-inline' checkout.stripe.com; font-src 'self' themes.googleusercontent.com; img-src *; media-src *; object-src 'self'; script-src 'self' www.google-analytics.com ajax.googleapis.com checkout.stripe.com js.stripe.com data:; child-src https://player.vimeo.com https://www.youtube.com https://acorn.blog checkout.stripe.com js.stripe.com; connect-src 'self' checkout.stripe.com"
   
   Header always set Strict-Transport-Security "max-age=15768000; includeSubDomains"
   

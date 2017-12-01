@@ -161,7 +161,11 @@ memberships:
 commerce:
   commerce: true
   coupons: true
-  stripe-key: ''
+  stripe:
+    pk-test: ''
+    sk-test: ''
+    pk-live: ''
+    sk-live: ''
   braintree-key: ''
   authorize-key: ''
   paypal-key: ''

@@ -12,10 +12,13 @@
   
   <?php
     $user = $site->user($item->authors()->first());
-    $userurl = $site->url() . "/makers/" . $user->username();
+    if (!$user) {
+      $user = $site->user('abraren');
+    }
+    $userurl = $site->url() . "/users/" . $user->username();
     $firstname = $user->firstname();
     $fullname = $user->firstname() . ' ' . $user->lastname();
-                  
+    
     $commentdate = $item->dateCreated();
     $exactdate = date('M j, Y g:ia', $commentdate);
     $humandate = humanDate($commentdate);
@@ -27,13 +30,13 @@
   <div class="item row" id="comment-" data-id="<?php echo $item->slug() ?>">
       
     <div>
-      <?php if ($user->usertype() == 'admin'): ?>
+      <?php if ($user and $user->usertype() == 'admin'): ?>
         <div class="user-badge">
-          <div><?php echo (new Asset('/assets/images/icon-mod.svg'))->content() ?></div>
+          <div><?php echo (new Asset('/site/assets/images/icon-mod.svg'))->content() ?></div>
           <span class="tooltip">Moderator</span>
         </div>
       <?php endif ?>
-      <a href="<?php echo $site->url() . "/makers/" . $user->username() ?>" class="user-avatar">
+      <a href="<?php echo $userurl ?>" class="user-avatar">
         <img src="<?php echo userAvatar($user->username(), 40) ?>" width="40" height="40" class="<?php echo userColor($user->username()) ?>">
       </a>
     </div>

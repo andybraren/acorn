@@ -13,6 +13,45 @@ Note to self: this will become a giant mess of code. Should create a new "formfi
 
 <form id="sitesettings" action="<?php echo $page->url() . '/savesettings' ?>" method="post">
   
+  <?php /*
+    Acorn version v0.x
+    Acorn license
+    Update Acorn to v0.x
+      [] Get an email when a new version is released
+  */?>
+  
+  <?php /*
+    
+    Discussion / Comments / Forum
+    - Look at Discourse settings
+    - Look at Disqus settings
+    - Look at Flarum settings
+    - Look at LyveFire settings
+    - Defaults
+    	- Allow anonymous comments
+    		- (For security reasons, anonymous commenters will not be allowed to upload images or post links)
+    	- Allow reporting
+    - Discussion Restrictions
+    	- Allow users to post
+    		- Immediately
+    		- After 14 days
+    		- After (1) moderator approval
+    	- Allow users to upload media
+    		- Immediately
+    		- After 14 days
+    		- After (1) moderator approval
+    	- Allow users to post links
+    		- Immediately
+    		- After 14 days
+    		- After (1) moderator approval
+    
+    User settings
+    - Moderator has approved commenting
+    	- With media
+    	- With links
+	
+	*/ ?>
+  
   <?php // Style ?>
   <div role="group">
     <h2>Style</h2>

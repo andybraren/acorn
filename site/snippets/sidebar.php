@@ -3,6 +3,7 @@
   $site = site();
 ?>
 
+
 <div class="sidebar">
   
   <?php // PAGE ICON / LOGO ?>
@@ -14,19 +15,17 @@
   <?php if ($page->parent() == 'users'): ?>
     <?php $user = $site->user($page->slug()); ?>
     <?php if ($avatar = $user->avatar()): ?>
-      <div id="icon">
-        <img id="icon-img" src="<?php echo $avatar->crop(300, 300)->url() ?>">
+      <div id="avatar">
+        <img id="avatar-img" src="<?php echo $avatar->crop(300, 300)->url() ?>">
         <?php if ($page->isEditableByUser()): ?>
-          <div id="icon-add">Change profile photo</div>
+          <div id="avatar-add">Change profile photo</div>
         <?php endif ?>
       </div>
     <?php else: ?>
-      <?php $counter = ceil( strlen($user->username()) / 4 ); ?>
-      <?php $defaultimage = new Asset('/assets/images/avatar-' . $counter . '.svg'); ?>
-      <div id="icon" class="<?php echo ($user->color() != "") ? $user->color() : $site->defaultcolor(); ?>">
-        <img id="icon-img" src="<?php echo $defaultimage->url() ?>">
+      <div id="avatar" class="<?php echo userColor($user) ?>">
+        <img id="avatar-img" src="<?php echo userAvatar($user, 108) ?>">
         <?php if ($page->isEditableByUser()): ?>
-          <div id="icon-add">Change profile photo</div>
+          <div id="avatar-add">Change profile photo</div>
         <?php endif ?>
       </div>
     <?php endif ?>
@@ -272,12 +271,12 @@
   <?php endif ?>
   
   <?php // PURCHASE WIDGET ?>
-  <?php if($page->parent() != 'users'): ?>
-    <?php snippet('widget', array('type' => 'purchase')) ?>
+  <?php if($page->content()->price() != ''): ?>
+    <?php snippet('checkout') ?>
   <?php endif ?>
 
   <?php // AUTHORS WIDGET ?>
-  <?php if($page->parent() != 'users' and $page->uid() != 'settings'): ?>
+  <?php if($page->parent() != 'users' and $page->uid() != 'settings' and $_SERVER['SERVER_NAME'] != 'dev.andybraren.com'): ?>
     <?php snippet('widget', array('type' => 'authors')) ?>
   <?php endif ?>
   
@@ -288,17 +287,23 @@
   
   <?php // RELATED PROJECTS WIDGET ?>
   <?php if($page->parent() != 'projects'): ?>
-    <?php snippet('widget', array('type' => 'projects')) ?>
+    <?php if ($page->parent() != 'users'): ?>
+      <?php snippet('widget', array('type' => 'projects')) ?>
+    <?php endif ?>
   <?php endif ?>
   
   <?php // RELATED GROUPS WIDGET ?>
   <?php if($page->parent() != 'groups'): ?>
-    <?php snippet('widget', array('type' => 'groups')) ?>
+    <?php if ($page->parent() != 'users'): ?>
+      <?php snippet('widget', array('type' => 'groups')) ?>
+    <?php endif ?>
   <?php endif ?>
   
   <?php // RELATED EVENTS WIDGET ?>
   <?php if($page->parent() != 'events'): ?>
-    <?php snippet('widget', array('type' => 'events')) ?>
+    <?php if ($page->parent() != 'users'): ?>
+      <?php snippet('widget', array('type' => 'events')) ?>
+    <?php endif ?>
   <?php endif ?>
   
   <?php // RELEVANT SPACES WIDGET - displays each Handbook related to this piece of Equipment ?>
@@ -313,7 +318,7 @@
   
   <?php // TABLE OF CONTENTS ?>
   <?php if($page->intendedTemplate() == 'page' or $page->intendedTemplate() == 'handbook' or $page->intendedTemplate() == 'article' or $page->intendedTemplate() == 'project' or $page->uid() == 'docs'): ?>
-    <?php if(preg_match_all('/(?<!#)#{2,3}([^#].*)\n/', $page->text(), $matches)): // Grabs H2's and H3's ?>
+    <?php if(preg_match_all('/(?<!#)#{2,4}([^#].*)\n/', $page->text(), $matches)): // Grabs H2's and H3's ?>
       <div class="widget toc sticky">
         <div>
           <span class="heading">CONTENTS</span>
@@ -323,6 +328,7 @@
           <?php
             $count = 0;
             $sublist = 'none';
+            $sublist2 = 'none';
             foreach ($matches[0] as $rawmatch) {
               
               $text = $matches[1][$count];
@@ -344,6 +350,20 @@
                   $sublist = 'start';
                   echo '<ul>';
                 }
+                if ($sublist2 == 'start') {
+                  echo '</ul>';
+                  $sublist2 = 'none';
+                }
+                
+                echo '<li><a href="#' . str::slug($text) . '">' . $text . '</a></li>';
+                
+              }
+              if (preg_match('/(?<!#)#{4}([^#].*)\n/', $rawmatch)) { // H4
+                
+                if ($sublist2 == 'none') {
+                  $sublist2 = 'start';
+                  echo '<ul>';
+                }
                 
                 echo '<li><a href="#' . str::slug($text) . '">' . $text . '</a></li>';
                 
@@ -351,6 +371,7 @@
               
               if ($rawmatch == $lastmatch) {
                 echo ($sublist == 'start') ? '</ul>' : '';
+                echo ($sublist2 == 'start') ? '</ul>' : '';
               }
               
               $count++;
@@ -386,3 +407,4 @@ function getMakerRole($person) {
 ?>
 
 </div>
+

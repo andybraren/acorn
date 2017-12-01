@@ -48,6 +48,7 @@
           <label for="visibility">Visibility</label>
         </div>
         
+        <?php if ($page->parent() != 'users'): ?>
         <div class="size-full">
           <select name="submissions" id="setting-submissions" class="hasbeenclicked clicked">
             <option value="public" <?php echo ($page->submissions() == 'public') ? 'selected ' : '' ?>>On, anonymous too</option>
@@ -56,22 +57,26 @@
           </select>
           <label for="submissions">Submissions</label>
         </div>
+        <?php endif ?>
         
-        <div class="size-full">
-          <select name="comments" id="setting-comments" class="hasbeenclicked clicked">
-            <option value="on" <?php echo ($page->comments()) ? 'selected ' : '' ?>>On</option>
-            <option value="off" <?php echo (!$page->comments()) ? 'selected ' : '' ?>>Off</option>
-          </select>
-          <label for="comments">Comments</label>
-        </div>
+        <?php if ($page->parent() != 'users'): ?>
+          <div class="size-full">
+            <select name="comments" id="setting-comments" class="hasbeenclicked clicked">
+              <option value="on" <?php echo ($page->comments()) ? 'selected ' : '' ?>>On</option>
+              <option value="off" <?php echo (!$page->comments()) ? 'selected ' : '' ?>>Off</option>
+            </select>
+            <label for="comments">Comments</label>
+          </div>
+        <?php endif ?>
         
       </form>
     </div>
     
     <?php // Used for adding new hero images and icons ?>
     <form method="post" action="uploadnew" id="upload-form" enctype="multipart/form-data">
-      <input type="file" accept="image/*" name="avatar" id="avatarToUpload">
-      <input type="file" accept="image/*" name="hero" id="heroToUpload">
+      <input type="file" accept="image/*" name="icon">
+      <input type="file" accept="image/*" name="avatar">
+      <input type="file" accept="image/*" name="hero">
       <input type="file" accept="image/*" name="images" id="imageToUpload">
       <input type="file" accept="video/*" name="videos" id="videoToUpload">
       <input type="file" accept="" name="files" id="fileToUpload">
@@ -200,58 +205,10 @@
 
 
 <?php // PURCHASE ?>
-<?php if ($type == 'purchase' and $page->price() != ''): ?>
+<?php if ($type == 'purchase'): ?>
+  
 
-  <div class="widget">
-    <span class="heading">PURCHASE</span>
-    <?php echo $page->price(); ?>
-  </div>
   
-  <?php
-  
-    // Set the correct public key, based on whether test_mode is enabled
-    $pkey = (c::get('stripe_test_mode')) ? c::get('stripe_test_publishable_key') : c::get('stripe_live_publishable_key');
-    
-    // Set some variables
-    $currency = c::get('stripe_currency');
-    $displayAmount = $page->price();
-  
-    if ($page->price() == null) {
-      $amount = c::get('stripe_default_amount');
-    } else {
-      $amount = str_replace('.', '', $page->price());
-      $amount = str_replace(',', '', $amount);
-    }
-    $checkoutName = $site->title();
-    $checkoutDescription = ($page->priceDescription()) ? $page->priceDescription() : c::get('stripe_default_description');
-  
-    // Check if an icon has been set. 
-    $logo = (c::get('stripe_icon')) ? c::get('stripe_icon_location') : null;
-  
-    // Check if "Remember Me" has been enabled
-    $rememberMe = (c::get('stripe_remember_me')) ? 'data-allow-remember-me="false"' : null;
-  
-    // Process the charge
-    if (isset($_POST['stripeToken'])) {
-      stripeCheckout();
-      return;
-    }
-  
-  ?>
-  
-  <form action="/stripe" method="POST">
-    <script
-      src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-      data-key="<?php echo $pkey ?>"
-      data-amount="<?php echo $amount ?>"
-      data-name="<?php echo $checkoutName ?>"
-      data-description="<?php echo $checkoutDescription ?>"
-      data-image="<?php echo $logo ?>"
-      data-locale="auto"
-      data-zip-code="true">
-    </script>
-  </form>
-    
 <?php endif ?>
 
 
@@ -398,7 +355,7 @@
       <?php endif ?>
       
       <?php if ($page->isEditableByUser()): ?>
-        <?php $image = new Asset('/assets/images/hero-add.png'); ?>
+        <?php $image = new Asset('site/assets/images/hero-add.png'); ?>
         <form id="form-author-add">
           <div>
             <input type="text" id="author-add" autocomplete="off">
@@ -423,15 +380,23 @@
 
 <?php if ($type == 'meta'): ?>
   <div class="widget">
-    <span class="heading">META</span>
-
-    <span>Published:</span>
-    <span><?php echo date('M j, Y', $page->datePublished()) ?></span>
     
-    <br>
-    
-    <span>Modified:</span>
-    <span><?php echo humanDate($page->dateModified()) ?></span>
+    <?php if ($page->content()->started()->exists()): ?>
+      <span class="heading">INFO</span>
+      <span>Started:</span>
+      <span><?php echo $page->started() ?></span> <br>
+      <?php if ($page->content()->ended() != '' and $page->content()->ended() != 'Present'): ?>
+        <span>Ended:</span>
+        <span><?php echo $page->ended() ?></span> <br>
+      <?php endif ?>
+    <?php else: ?>
+      <span class="heading">META</span>
+      <span>Published:</span>
+      <span><?php echo date('M j, Y', $page->datePublished()) ?></span>
+      <br>
+      <span>Modified:</span>
+      <span><?php echo humanDate($page->dateModified()) ?></span>
+    <?php endif ?>
   </div>
   
 <?php endif ?>

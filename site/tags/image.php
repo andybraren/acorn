@@ -215,9 +215,12 @@ kirbytext::$tags['image'] = array(
       // image builder
       //$_image = function($class) use($tag, $url, $alt, $title) {
       $_image = function($class) use($tag, $datasrc, $alt, $title, $minithumb, $thumb) {
-        $url = "/maker/assets/images/blank.gif"; // Added for b-lazy
-        $url = 'a';
+        //$url = "/maker/assets/images/blank.gif"; // Added for b-lazy
+        $url = 'null';
+        $url = "/site/assets/images/blank.gif";
+        
         return html::img($url, array(
+          'src'    => $url,
           'width'  => $tag->attr('width'),
           'height' => $tag->attr('height'),
           'class'  => $class . "b-lazy",
@@ -226,6 +229,42 @@ kirbytext::$tags['image'] = array(
           'data-src' => $datasrc,  // Added by Andy for b-lazy
           'data-size' => $thumb->width() . 'x' . $thumb->height(),
         ));
+        
+        /*
+        return html::tag('img', null, array(
+          'src'    => $url,
+          'width'  => $tag->attr('width'),
+          'height' => $tag->attr('height'),
+          'class'  => $class . "b-lazy",
+          'title'  => $title,
+          'alt'    => $alt,
+          'data-src' => $datasrc,  // Added by Andy for b-lazy
+          'data-size' => $thumb->width() . 'x' . $thumb->height(),
+        ));
+        */
+        //return '<img src="" class="b-lazy" data-src="' . $datasrc . '" data-size="' . $thumb->width() . 'x' . $thumb->height() . '">';
+        
+        /*
+          Need to create:
+          
+          <figure>
+            <div style="padding-top:##%;max-width:1200px;max-height:360px;">   // Maybe I could use data attributes instead of inline styles here?
+              <span class="placeholder" data-color="blue"></span>
+              <picture>
+                <source srcset="" data-srcset="">
+                <img src="" data-src="">
+              </picture>
+            </div>
+            <figcaption></figcaption>
+            <noscript></noscript>
+          </figure>
+          
+        */
+        
+        //return '<img src="" class="b-lazy" data-src="' . $datasrc . '" data-size="' . $thumb->width() . 'x' . $thumb->height() . '">';
+        
+        
+        
       };
       
       // noscript image build - same as above, just without the changes

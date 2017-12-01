@@ -1,11 +1,7 @@
 <?php
 
-
-
 // Register the checkout form snippet
 $kirby->set('snippet', 'checkout', __DIR__ . '/snippets/checkout.php');
-
-
 
 function initiateStripe() {
   
@@ -26,7 +22,6 @@ function initiateStripe() {
       
   \Stripe\Stripe::setApiKey($stripe['secret_key']); // Set secret key
 }
-
 
 // Stripe testing
 $kirby->set('route', array(

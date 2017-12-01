@@ -40,8 +40,8 @@ window.onload = function() {
   headroom.init(); // initialise
   
   /* Activate tooltips */
-  var myTooltip = Frtooltip();
-  myTooltip.init();
+  //var myTooltip = Frtooltip();
+  //myTooltip.init();
 
   
   var topbutton = document.getElementsByClassName('toc-top');
@@ -2145,8 +2145,9 @@ function checkStripe() {
   if (stripeButton != null) {
     
     var stripeAmount = parseInt(stripeButton.getAttribute('data-amount'));
+    var stripeKey = stripeButton.getAttribute('data-pkey');
     
-    var stripe = Stripe('pk_test_8jMka6R5EDrbcLnRP78ZnIq4');
+    var stripe = Stripe(stripeKey);
     
     var paymentRequest = stripe.paymentRequest({
       country: 'US',

@@ -4,21 +4,33 @@
   <main class="main">
     <div class="container">
       
+      <?php /*
       <div class="section">
         <div class="subsection">
           <div class="text size-67">
             <h1><?php echo $page->title()->html() ?></h1>
             <?php echo $page->text()->kirbytext() ?>
           </div>
-          <div class="text size-33 card-join highlight">
-            <h2>Create an account</h2>
-            <p>Start and share new projects and ideas with the community.</p>
-            <button class="button fullwidth button-signup" data-modal="signup">Create an account</button>
+          
+            <div class="text size-33 card-join highlight">
+              <h2>Create an account</h2>
+              <p>Start and share new projects and ideas with the community.</span></p>
+              <button class="button fullwidth button-signup" data-modal="signup">Create an account</button>
+            </div>
+        </div>
+      </div>
+      */ ?>
+      
+      <div class="section">
+        <div class="subsection">
+          <div class="text">
+            <?php /* <h1><?php echo $page->title()->html() ?></h1> */ ?>
+            <?php echo $page->text()->kirbytext() ?>
           </div>
         </div>
       </div>
       
-      <hr class="divider">
+      <?php /*
       
       <div class="grid">
         
@@ -43,13 +55,13 @@
           <?php if ($firstpage = page('equipment')->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->first()): ?>
             <div class="orange card-join highlight">
               <a href="<?php echo page('equipment')->url() ?>">
-                <h2>Learn digital tools</h2>
+                <h2>Find tools</h2>
                 
                   <?php if ($image = $firstpage->heroImage()): ?>
                     <img src="<?php echo $image->crop(270,100)->url() ?>"></img>
                   <?php endif ?>
                 
-                <p>Learn the basics of a variety of makerspace tools.</p>
+                <p>Find information about the equipment and tools available to you.</p>
               </a>
               <a class="button fullwidth" href="<?php echo page('equipment')->url() ?>">View tools</a>
             </div>
@@ -125,6 +137,8 @@
         <?php endif ?>
         
       </div>
+      
+      */ ?>
       
       <?php /*
       

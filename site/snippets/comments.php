@@ -48,12 +48,12 @@
         <?php if ($user->usertype()): ?>
           <?php if ($user->usertype() == 'admin'): ?>
             <div class="user-badge">
-              <div><?php echo (new Asset('/assets/images/icon-mod.svg'))->content() ?></div>
+              <div><?php echo (new Asset('site/assets/images/icon-mod.svg'))->content() ?></div>
               <span class="tooltip">Moderator</span>
             </div>
           <?php endif ?>
         <?php endif ?>
-        <a href="<?php echo $site->url() . "/makers/" . $user->username() ?>" class="user-avatar">
+        <a href="<?php echo $site->url() . "/users/" . $user->username() ?>" class="user-avatar">
           <img src="<?php echo userAvatar($user->username(), 40) ?>" width="40" height="40" class="<?php echo userColor($user->username()) ?>">
         </a>
       </div>
@@ -61,6 +61,7 @@
       <div class="column">
         <div>
           <a class="user-firstname" href="<?php echo $userurl ?>"><?php echo $firstname ?></a>
+          <?php // Consider making it just "name" and styling the name with their favorite color ?>
           <div>
             <?php if ($datemodified != ''): ?>
               <span data-role="editbutton" title="<?php echo $datemodified ?>">Edited /</span>
@@ -82,7 +83,7 @@
         <?php if ($user->usertype()): ?>
           <?php if ($user->usertype() == 'admin'): ?>
             <div class="user-badge">
-              <div><?php echo (new Asset('/assets/images/icon-mod.svg'))->content() ?></div>
+              <div><?php echo (new Asset('site/assets/images/icon-mod.svg'))->content() ?></div>
               <span class="tooltip">Moderator</span>
             </div>
           <?php endif ?>

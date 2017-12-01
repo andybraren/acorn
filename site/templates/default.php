@@ -19,16 +19,9 @@
   <?php snippet('footer') ?>
 <?php else: ?>
 
-
 <?php snippet('header') ?>
 
 <?php snippet('hero', array('type' => 'fullwidth')) ?>
-
-
-<?php if ($page->uid() == 'settings'): ?>
-  
-<?php endif ?>
-
 
 <div class="main">
   <div class="container">
@@ -37,6 +30,7 @@
       <?php snippet('sidebar') ?>
     <?php endif ?>
     
+    <?php if ($page->parent() != '' AND $_SERVER['SERVER_NAME'] != 'dev.andybraren.com' AND $_SERVER['SERVER_NAME'] != 'andybraren.com'): ?>
       <div class="sidebar rightsidebar">
         <?php snippet('widget', array('type' => 'links')) ?>
         <?php if ($page->parent() == "handbooks"): ?>
@@ -49,6 +43,7 @@
           }
         ?>
       </div>
+    <?php endif ?>
     
     <main class="content">
       <article>
@@ -88,10 +83,13 @@
       <?php // MAKER PROFILES ?>
       <?php if ($page->parent() == 'users'): ?>
         
+        <h2>Projects</h2>
         <?php snippet('cards', array('type' => 'projects',  'maker' => $page->slug())) ?>
+        <?php /*
         <?php snippet('cards', array('type' => 'articles',  'maker' => $page->slug())) ?>
         <?php snippet('cards', array('type' => 'handbooks', 'maker' => $page->slug())) ?>
         <?php snippet('cards', array('type' => 'groups',    'maker' => $page->slug())) ?>
+        */ ?>
         
         <?php if($page->find('gallery') and $page->find('gallery')->hasImages()): ?>
           <h2>Gallery</h2>

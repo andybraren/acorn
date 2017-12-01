@@ -69,7 +69,7 @@
         <li><span class="theme-night">Night Mode: Off</span></li>
         <li><span class="font-family">Dyslexia: Off</span></li>
         <div class="row">
-          <span>Font size:</span>
+          <span>Text size:</span>
           <span class="font-decrease">-</span>
           <span class="font-reset">16</span>
           <span class="font-increase">+</span>
@@ -107,7 +107,7 @@
       <div class="modal-content">
         <form id="navitem">
           <div>
-            <input type="text" name="title" class="clicked" autofocus>
+            <input type="text" name="title" class="clicked">
             <label for="title">Title</label>
           </div>
           
@@ -149,7 +149,7 @@
           <?php endif ?>
           
           <div>
-            <input type="text" name="username" pattern="^[a-zA-Z0-9]{3,20}$|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,3}$" required autofocus> <?php // Only letters and numbers, between 3 and 20 ?>
+            <input type="text" name="username" pattern="^[a-zA-Z0-9]{3,20}$|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,3}$" required> <?php // Only letters and numbers, between 3 and 20 ?>
             <label for="username">Username (or email)</label>
           </div>
           
@@ -175,6 +175,7 @@
         
       <div class="modal-title">
         <h2>Password Reset</h2>
+        <button type="button" aria-label="close" data-action="close"></button>
       </div>
       
       <div class="modal-content">
@@ -191,18 +192,63 @@
             </div>
           </form>
         <?php endif ?>
+        
+        <?php if (param('forgot') == 'success'): ?>
+          <div class="green highlight card-join">
+            <span>An email has been sent to your inbox. Check your spam filter.</span><br><br>
+            <span>It may take up to 30 seconds to appear.</span><br><br>
+            <span>Click the link it contains to reset your password.</span>
+          </div>
+        <?php elseif (param('forgot') == 'failed'): ?>
+            <div class="red highlight card-join">
+              <span>Password reset failed. Try again, or contact <a href="&#109;&#97;ilto&#58;and%79&#98;rare%&#54;&#69;&#64;g&#109;a%&#54;9l&#46;&#99;%6&#70;m?subject=Website login issue">Andy</a> for help.</span>
+            </div>
+        <?php endif ?>
+      </div>
+        
+    </div>
+    
+    <?php // PASSWORD RESET ?>
+    <div id="modal-reset" class="modal<?php if(param('username') or param('reset')) { echo ' visible'; } ?>">
+      
+      <div class="modal-title">
+        <h2>Password Reset</h2>
+        <button type="button" aria-label="close" data-action="close"></button>
       </div>
       
-      <?php if (param('forgot') == 'success'): ?>
-        <div class="green highlight card-join">
-          <span>An email has been sent to your inbox. Click the link it contains to reset your password.</span>
-        </div>
-      <?php elseif (param('forgot') == 'failed'): ?>
+      <div class="modal-content">
+        <?php if (!param('reset')): ?>
+          <p>Please enter a new password for your account.</p>
+          
+          <form action="reset" method="post">
+            <div>
+              <input readonly type="text" value="<?php echo param('username') ?>" id="username" name="username" class="clicked">
+              <label for="username">Username</label>
+            </div>
+            <div>
+              <input type="password" id="newpassword" name="newpassword" required>
+              <label for="newpassword">New Password</label>
+            </div>
+            <div>
+              <input readonly type="text" value="<?php echo param('resetkey') ?>" id="resetkey" name="resetkey" class="invisible">
+            </div>
+            <div>
+              <input type="submit" class="button fullwidth" name="reset" value="Reset password">
+            </div>
+          </form>
+        <?php endif ?>
+
+        <?php if (param('reset') == 'success'): ?>
+          <div class="green highlight card-join">
+            <span>Password reset successful. You are now logged in.</span>
+          </div>
+        <?php elseif (param('reset') == 'failed'): ?>
           <div class="red highlight card-join">
             <span>Password reset failed. Try again, or contact <a href="&#109;&#97;ilto&#58;and%79&#98;rare%&#54;&#69;&#64;g&#109;a%&#54;9l&#46;&#99;%6&#70;m?subject=Website login issue">Andy</a> for help.</span>
           </div>
-      <?php endif ?>
-        
+        <?php endif ?>
+            
+      </div>
     </div>
     
     
@@ -215,9 +261,7 @@
       </div>
       
       <div class="modal-content">
-        
-        <span>Join workshops and events, reserve equipment, start new projects, and connect with Tufts' maker community by creating an account.</span>
-        
+                
         <form id="signup" action="<?php echo $page->url() . '/signup' ?>" method="post">
           
             <div role="group">
@@ -275,6 +319,45 @@
       </div>
       
     </div>
+    
+    <?php // CREATE NEW SITE ?>
+    <div id="modal-newsite" class="modal">
+      
+      <div class="modal-title">
+        <h2>Create a new Network</h2>
+        <button type="button" aria-label="close" data-action="close"></button>
+      </div>
+      
+      <div class="modal-content">
+        
+        <span>Choose an address for your new site.</span><br><br>
+        
+        <span>https://tufts.makernetwork.org/<span id="newsitesubdomain">address</span></span>
+        
+        <form id="newsite">
+            
+            <div role="group">
+              
+              
+              
+              <div class="size-100">
+                <input type="text" name="desiredname" pattern="^[a-z]{3,20}$" id="newsitefield" required>
+                <label for="username" id="newsitelabel">Address<span id="newsitemessage"></span></label>
+              </div>
+              
+            </div>
+            
+        </form>
+      </div>
+      
+      <div class="modal-options">
+        <button type="button" data-action="close" class="button fullwidth silver">Never mind</button>
+        <button type="" data-action="newsite" class="button fullwidth green">Create new site</button>
+      </div>
+      
+    </div>
+    
+    
 
   </div>
   

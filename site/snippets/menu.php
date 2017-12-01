@@ -8,7 +8,7 @@
   
 ?>
 
-<nav id="navigation" role="navigation" class="newnav">
+<nav id="navigation" class="newnav">
   <div class="container">
     
     <ul class="menu">
@@ -63,22 +63,30 @@
           $subnav = null;
           $classes = array();
           
-          // add active class
-          if ($item['uid'] == $activeTop) {
-            $active = true;
-            $classes[] = 'active';
-          }
+          if (array_key_exists('uid', $item)) {
           
-          // add missing class
-          if (!site()->page($item['uid'])) {
-            $missing = true;
-            $classes[] = 'missing';
-          }
+            // add active class
+            if ($item['uid'] == $activeTop) {
+              $active = true;
+              $classes[] = 'active';
+            }
+            
+            // add missing class
+            if (!site()->page($item['uid'])) {
+              $missing = true;
+              $classes[] = 'missing';
+            }
+            
+            // add subnav class
+            if (array_key_exists('sub', $item) /*and $item['uid'] != $activeTop*/) {
+              $subnav = true;
+              $classes[] = 'hassubnav';
+            }
+            
+            $url = site()->url() . '/' . $item['uid'];
           
-          // add subnav class
-          if (array_key_exists('sub', $item) /*and $item['uid'] != $activeTop*/) {
-            $subnav = true;
-            $classes[] = 'hassubnav';
+          } elseif (array_key_exists('url', $item)) {
+            $url = $item['url'];
           }
           
           // combine classes
@@ -89,7 +97,7 @@
         ?>
         
         <li<?php echo $class ?>>
-          <a href="<?php echo site()->url() . '/' . $item['uid'] ?>"><?php echo $item['title']?></a><?php echo $subtitle ?>
+          <a href="<?php echo $url ?>"><?php echo $item['title']?></a><?php echo $subtitle ?>
           
           <?php if (array_key_exists('sub', $item) /*and $item['uid'] != $activeTop*/): ?>
             <ul class="subnodes">
@@ -132,21 +140,32 @@
         </li>
       <?php endforeach ?>
       
-      <li class="search">
-        <form class="search-container" action="<?php echo $site->url() . '/search'?>">
-          <?php echo (new Asset('/site/assets/images/menu-search.svg'))->content() ?>
-          <input id="search-box" type="text" class="search-box" name="s">
-          <input type="submit" id="search-submit">
-        </form>
+      
+      <?php if (site()->setting('menu/search/enabled')): ?>
+        <li class="search">
+          <form class="search-container" action="<?php echo $site->url() . '/search'?>">
+            <?php echo (new Asset('/site/assets/images/menu-search.svg'))->content() ?>
+            <input id="search-box" type="text" class="search-box" name="s">
+            <input type="submit" id="search-submit">
+          </form>
+        </li>
+      <?php endif ?>
+      
+      <?php /*
+      <li>
+        <a id="settings-reading" data-modal="reading"><?php echo (new Asset('/site/assets/images/menu-font.svg'))->content() ?></a>
+      </li>
+      */ ?>
+      
+      <li>
+        <a id="settings-reading" data-modal="reading">Aa</a>
       </li>
       
       <?php if ($user = $site->user()): ?>
         <button class="button-login" data-modal="account"><?php echo esc($user->firstName()) ?></button>        
       <?php else: ?>
-        <button class="button-login" data-modal="login">Log in</button>    
+        <button class="button-login" data-modal="login">Log in</button>
       <?php endif ?>
-      
-
       
     </ul>
     
@@ -155,7 +174,7 @@
 
 <?php if (hasSubMenu()): ?>
   
-  <nav id="subnavigation" role="navigation">
+  <nav id="subnavigation">
     <div class="container">
       
       <ul class="menu">

@@ -1,4 +1,42 @@
 <?php
+  
+//==================================================
+// SITE SETTING METHOD
+// Simplifies retrieval of site settings to just site()->setting('connections/twitter/key')
+//==================================================
+
+page::$methods['setting'] = function($page, $setting) {
+  
+  // If the settings being requested are not from site.txt, then just return the page's settings
+  if ($page != site()) {
+    return $page->content()->settings();
+  } else {
+    
+    $settings = yaml(site()->content()->settings());
+    
+    $keys = explode('/', $setting);
+    foreach ($keys as $key) {
+      if (isset($settings[$key])) {
+        $settings = $settings[$key];
+      }
+    }
+    
+    $setting = $settings;
+    
+    if (isset($setting) && !is_array($setting)) {
+      return $setting;
+    } else {
+      return 'Incorrect setting syntax';
+    }
+  }
+  
+};
+
+/* The below also does it I guess, adding a site method, never new this was possible, have to figure out where I found this from
+kirby()->set('site::method', 'setting', function($page, $setting) {
+  if ($setting = 'ads') return yaml(site()->settings())['style']['default-color'];
+});
+*/
 
 //==================================================
 // PAGE DATA METHODS
@@ -570,7 +608,7 @@ function userAvatar($username, $size = 256) {
     elseif (strlen(site()->user($username)->firstname()) <= 4) { $number = 2; }
     elseif (strlen(site()->user($username)->firstname()) <= 6) { $number = 3; }
     elseif (strlen(site()->user($username)->firstname()) >= 7) { $number = 4; }
-    $defaultavatar = new Asset('/assets/images/avatar-' . $number . '.svg');
+    $defaultavatar = new Asset('site/assets/images/avatar-' . $number . '.svg');
     return $defaultavatar->url();
   }
 }
@@ -586,7 +624,7 @@ function groupLogo($groupname, $size = 256) {
       elseif (strlen(site()->page('groups/' . $groupname)->title()) <= 6) { $number = 3; }
       elseif (strlen(site()->page('groups/' . $groupname)->title()) >= 7) { $number = 4; }
       
-      $defaultlogo = new Asset('/assets/images/avatar-' . $number . '.svg');
+      $defaultlogo = new Asset('site/assets/images/avatar-' . $number . '.svg');
       return $defaultlogo->url();
     }
   }
@@ -601,7 +639,7 @@ function groupLogo($groupname, $size = 256) {
       elseif (strlen(site()->page('courses/' . $groupname)->title()) <= 6) { $number = 3; }
       elseif (strlen(site()->page('courses/' . $groupname)->title()) >= 7) { $number = 4; }
       
-      $defaultlogo = new Asset('/assets/images/avatar-' . $number . '.svg');
+      $defaultlogo = new Asset('site/assets/images/avatar-' . $number . '.svg');
       return $defaultlogo->url();
     }
   }
@@ -786,16 +824,30 @@ function isSubmissibleByUser($page) {
   - stores a remote image locally and returns the image's URL
   - cannot return the image object because an error occurs, the image is not readable yet
 */
-function downloadedImageURL($filename, $remoteURL) {
-  if (!page()->image($filename . '.jpg')) {
+function downloadedImageURL($filename, $pageuri, $remoteURL) {
+  
+  $page = site()->page($pageuri);
+  
+  // If the image doesn't already exist, then it must be downloaded
+  if (!$page->image($filename . '.jpg')) {
     if ($remoteURL == 'youtube') {
       $youtubeid = substr(strstr($filename, '-'), 1);
       $remoteURL = youtube_image($youtubeid);
-      $imagepath = kirby()->roots()->content() . '/' . page()->diruri() . '/' . $filename . '.jpg';
     }
+    if ($remoteURL == 'vimeo') {
+      
+      $vimeoid = substr(strstr($filename, '-'), 1);
+      $vimeothumburl = "https://vimeo.com/api/v2/video/" . $vimeoid . ".php";
+      $hash = unserialize(@file_get_contents($vimeothumburl));
+      $vimeothumb = $hash[0]['thumbnail_large'];
+      $remoteURL = $vimeothumb;
+    }
+    
+    $imagepath = kirby()->roots()->content() . '/' . $page->diruri() . '/' . $filename . '.jpg';
     copy($remoteURL, $imagepath);
   }
-  $imageURL = page()->contentURL() . '/' . $filename . '.jpg';
+  
+  $imageURL = $page->contentURL() . '/' . $filename . '.jpg';
   return $imageURL;
 };
 
@@ -1066,42 +1118,46 @@ function activeMenuItems() {
   
   foreach (navArrayYAML() as $item) {
     
-    // return top-level item
-    if (site()->page($item['uid'])) {
-      if (site()->page($item['uid'])->isOpen()) {
-        //return $item['uid'];
+    if (array_key_exists('uid', $item)) {
+    
+      // return top-level item
+      if (site()->page($item['uid'])) {
+        if (site()->page($item['uid'])->isOpen()) {
+          //return $item['uid'];
+          $top = $item['uid'];
+        }
+      }
+      
+      // invalid or missing pages
+      elseif ($uid == $item['uid']) {
         $top = $item['uid'];
       }
-    }
-    
-    // invalid or missing pages
-    elseif ($uid == $item['uid']) {
-      $top = $item['uid'];
-    }
-    
-    // return sub-level item
-    if (array_key_exists('sub', $item)) {
-      $hassub = true;
-      foreach ($item['sub'] as $subitem) {
-        
-        if (array_key_exists('uid', $subitem)) {
-          // valid pages
-          if (site()->page($subitem['uid'])) {
-            if (site()->page($subitem['uid'])->isOpen()) {
-              //return $subitem['uid'];
+      
+      // return sub-level item
+      if (array_key_exists('sub', $item)) {
+        $hassub = true;
+        foreach ($item['sub'] as $subitem) {
+          
+          if (array_key_exists('uid', $subitem)) {
+            // valid pages
+            if (site()->page($subitem['uid'])) {
+              if (site()->page($subitem['uid'])->isOpen()) {
+                //return $subitem['uid'];
+                $sub = $subitem['uid'];
+                $top = $item['uid'];
+              }
+            }
+            
+            // invalid or missing pages
+            elseif ($uid == $subitem['uid']) {
               $sub = $subitem['uid'];
               $top = $item['uid'];
             }
           }
           
-          // invalid or missing pages
-          elseif ($uid == $subitem['uid']) {
-            $sub = $subitem['uid'];
-            $top = $item['uid'];
-          }
         }
-        
       }
+    
     }
     
   }
@@ -1155,11 +1211,7 @@ site::$methods['adsOn'] = function() {
 };
 
 
-kirby()->set('site::method', 'setting', function($page, $setting) {
-  
-  if ($setting = 'ads') return yaml(site()->settings())['style']['default-color'];
-    
-});
+
 
 
 

@@ -1,25 +1,35 @@
 /*
 
-Theme: Maker Network
+Theme: Acorn
 Author: Andy Braren
 
 */
 
-/* Reset
--------------------------------------------------- */
+/* CSS Reset
+----------------------------------------------------------------------------- */
 *, *:before, *:after {
   margin: 0;
   padding: 0;
   border: 0;
   box-sizing: border-box;
 }
+
 article, aside, details, figcaption, figure,
 footer, header, hgroup, main, nav, section, summary {
   display: block;
 }
 
+/* Site Settings
+----------------------------------------------------------------------------- */
+
+/* Max width */
+:root {
+  --theme-bgcolor: white;
+  --site-width: /**/;
+}
+
 /* Web Fonts
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 @font-face {
   font-family: 'Source Sans Pro';
   font-style: normal;
@@ -29,10 +39,13 @@ footer, header, hgroup, main, nav, section, summary {
 
 @font-face {
   font-family: dyslexic;
-  src: url('../fonts/OpenDyslexic3-Regular.ttf');
+  src: url('/site/assets/fonts/OpenDyslexic3-Regular.ttf');
 }
 
-body.dyslexic {
+html.dyslexic {
+  font-size: 14px;
+}
+.dyslexic body {
   font-family: dyslexic;
 }
 
@@ -40,23 +53,22 @@ body.dyslexic {
   - https://bocoup.com/weblog/text-rendering
   - https://www.smashingmagazine.com/2015/11/using-system-ui-fonts-practical-guide/
   - https://philipwalton.github.io/solved-by-flexbox/demos/holy-grail/
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 html {
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
+  overflow-y: scroll;                   /* Forces scrollbar on desktop to prevent jumping */
 }
+
 body {
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-	/*
-	line-height: 1.5rem;
-	*/
-  color: #444;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;  color: #444;
   
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: calc(100vh - 53px);
   
   position: relative;
   margin-top: 53px;
@@ -81,6 +93,7 @@ body.noscroll > header > .container {
 
 
 
+
 .visible {
   visibility: visible;
   display: block;
@@ -95,7 +108,7 @@ body.noscroll > header > .container {
 }
 
 /* Header
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 /*
 nav {
   flex-direction: column;
@@ -131,7 +144,8 @@ header {
     
     /*background-color: rgba(98, 165, 240, 0.85);*/
     background-color: var(--theme-opac1);
-    background-image: var(--theme-gradient);
+    background-color: rgba(255, 255, 255, 0.85);
+    /*background-image: var(--theme-gradient);*/
     
     
     border-top: 3px solid var(--theme-main);
@@ -202,12 +216,15 @@ header .container {
 
 
 /* Layout themes
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .container {
+  /*
   max-width: 1080px;
   max-width: 1140px;
   max-width: 1240px;
+  */
+  max-width: var(--site-width, 1240px);
   margin: 0 auto;
   padding: 0 20px;
   /*
@@ -222,7 +239,10 @@ header .container {
 }
 body #hero .container {
   padding: initial;
+  max-width: calc(var(--site-width, 1240px) - 40px);
+  /*
   max-width: 1200px;
+  */
 }
 body.boxed {
   background-color: #f2f2f2;
@@ -253,13 +273,14 @@ body.boxed .main .container {
 
 
 /* Grid Layout
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .grid {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
   grid-gap: 10px;
 }
 
@@ -276,9 +297,15 @@ body.boxed .main .container {
   justify-content: flex-start;
 }
 
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)) !important;
+  }
+}
+
 
 /* Cards & Items
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 .cards {
   display: flex;
   flex-wrap: wrap;
@@ -453,9 +480,11 @@ body.boxed .main .container {
   margin-top: auto;
   padding: 5px 10px;
   background-color: rgb(250, 250, 250);
+  background-color: rgb(253, 253, 253);
   display: flex;
   justify-content: space-between;
   border-top: solid 1px rgb(208, 208, 208);
+  border-top: solid 1px rgba(0, 0, 0, 0.05);
   font-size: .9rem;
   color: grey;
 }
@@ -475,6 +504,7 @@ body.boxed .main .container {
 .card-join {
   padding: 0.7rem;
   border-radius: 3px;
+  align-content: space-between;
 }
 
 .modals .card-join.highlight {
@@ -500,7 +530,8 @@ body.boxed .main .container {
 
 
 /* Images
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
+
 img {
   outline: 0;
   border: 0;
@@ -511,16 +542,18 @@ img {
   transition: opacity 0.2s ease-out;
 }
 
+.small, .medium {
+  margin: 5px 0 5px 5px;
+}
+
 .small {
   max-width: 25%;
   float: right;
-  margin: 10px 0 10px 10px;
 }
 
 .medium {
   max-width: 50%;
   float: right;
-  margin: 10px 0 10px 10px;
 }
 .ce-element.medium {
   /*
@@ -609,7 +642,7 @@ article > img {
 
 
 /* Links
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 a, area, button, input, label, select, textarea, [tabindex] {
   touch-action: manipulation;
@@ -621,49 +654,56 @@ a {
   transition: background .3s, border .3s;
 }
 
+/* Link widget
+----------------------------------------------------------------------------- */
+
 .link {
   margin: 0.5rem 0;
+}
+
+.link a {
   display: flex;
   width: 100%;
-  box-shadow: 0 1px 4px rgba(0,0,0,.04),inset 0 0 0 1px rgba(0,0,0,.09);
-  max-height: 120px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04), inset 0 0 0 1px rgba(0,0,0,.09);
+  max-height: 110px;
+  overflow: hidden;
+}
+.link.quote a {
+  max-height: initial;
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+.link blockquote {
+  margin-top: 0px;
 }
 
-a.link span {
-  color: #444;
+.link strong {
+  line-height: 1.4rem;
 }
 
-.link div:nth-child(1) {
+.link div {
+  width: 100%;
   padding: 10px;
-  flex: 1;
-}
-
-.link div:nth-child(1) {
   display: flex;
-  padding: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.link img {
-  max-height: 100%;
+.link div span:nth-child(2) {
+  max-height: 40px;
+  overflow: hidden;
+  color: #666;
+  font-size: .9rem;
+  line-height: 1.3rem;
+}
+.link.quote div span:nth-child(2) {
+  max-height: initial;
 }
 
-
-.link div:nth-child(1) span:nth-child(2) {
-    max-height: 40px;
-    overflow: hidden;
-    color: #666;
-    font-size: .9rem;
-    line-height: 1.3rem;
+.link div span:nth-child(3) {
+  color: #888;
+  font-size: .8rem;
 }
-
-.link div:nth-child(1) span:nth-child(3) {
-    color: #888;
-    font-size: .8rem;
-}
-
 
 
 
@@ -691,14 +731,16 @@ a.link span {
 
 /* File Links
  - https://simpleicons.org/
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 a[class*="file-"] {
 	background-size: 15px;
 	background-position: center left;
 	background-repeat: no-repeat;
 	padding-left: 20px;
+	/*
 	display: inline-block;
+	*/
 }
 
 .file-pdf { background-image: url(../../assets/images/file-pdf.svg); }
@@ -712,13 +754,9 @@ a[class*="file-"] {
 .file-mp3, .file-m4a, .file-wav { background-image: url(../../assets/images/file-mp3.svg);}
 
 /* Page Themes / Colors
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 /* Theme Colors */
-
-:root {
-  --theme-bgcolor: white;
-}
 
 .blue {
   --theme-main: #62A5F0;
@@ -803,10 +841,13 @@ body.white { background-color: white; }
 
 body {
   
+  /*
   --theme-opac1: rgba(255, 255, 255, 0.85) !important;
+  
   --theme-opac2: rgba(98, 165, 240, 0.1);
   --theme-opac3: rgba(98, 165, 240, 0.05);
   --theme-gradient: none !important;
+  */
 }
 .menu a { color: #4C4C4C; }
 .menu-secondary a { color: #797878; font-weight: 500;}
@@ -873,15 +914,13 @@ blockquote {
 .callout {
   padding: 0 1rem;
   margin: 1rem 0;
-  border: 1px solid #efef29;
-  background: #ffffdc;
+  border-style: solid;
+  border-width: 20px 1px 1px 1px;
 }
-.callout.warning {
-  border-color: #f79d97;
-  background-color: #feedec;
+.callout {
+  border-color: var(--theme-opac1);
+  background-color: var(--theme-opac3);
 }
-
-
 
 
 
@@ -896,7 +935,7 @@ blockquote {
 
 
 /* Other things
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 .main .container {
   display: flex;
   flex-flow: row wrap;
@@ -986,7 +1025,7 @@ blockquote {
 
 
 /* Navigation and Menus
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 nav {
   -webkit-overflow-scrolling: touch;
@@ -1297,6 +1336,7 @@ z-index: 10;
 }
 .night nav {
   border-color: #777777;
+  box-shadow: none;
 }
 
 .menu li {
@@ -1382,7 +1422,7 @@ body.night {
 
 
 /* Options
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 
 #settings {
@@ -1438,88 +1478,6 @@ h1:empty {
 }
 
 
-/* Reading Settings
--------------------------------------------------- */
-
-/*
-#modal-reading, #modal-toc {
-  display: block;
-  position: fixed;
-  
-  opacity: 0;
-  
-  right: 5px;
-  margin-top: 5px;
-  
-  z-index: 100;
-  background-color: white;
-  
-  display: flex;
-  flex-direction: column;
-  border-radius: 4px;
-  box-shadow: 0 50px 100px rgba(50,50,93,.1), 0 15px 35px rgba(50,50,93,.15), 0 5px 15px rgba(0,0,0,.1);
-  
-  transform: rotate3d(1,1,0,-15deg);
-  transform-origin: 100% 0;
-  will-change: transform,opacity;
-  transition-property: transform,opacity;
-  transition-duration: .25s;
-  
-  pointer-events: none;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-}
-
-#modal-reading.visible, #modal-toc.visible {
-  visibility: visible;
-  opacity: 1;
-  pointer-events: auto;
-  
-  will-change: transform,opacity;
-  transform: none;
-    transition-property: transform,opacity;
-  transition-duration: .25s;
-  
-}
-*/
-
-#settings-reading svg {
-  display: block;
-  height: 18px;
-  max-width: 500px; /* Dumb Safari fix http://stackoverflow.com/questions/24153939/inline-svg-scaling-auto-width */
-  width: auto;
-}
-
-
-.font-decrease, .font-reset, .font-increase {
-    text-align: center;
-    border: 1px solid #c3c3c3;
-    margin: 2px;
-    border-radius: 10px;
-    line-height: 32px !important;
-    height: 33px;
-    align-self: center;
-}
-
-hr {
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(197, 197, 197, 0.75), rgba(0, 0, 0, 0));
-}
-
-.night #modal-reading {
-  background-color: var(--theme-bgcolor);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.night #modal-toc {
-  background-color: var(--theme-bgcolor);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-
 
 
 
@@ -1527,7 +1485,7 @@ hr {
 
 
 /* Search Box
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .search svg {
   display: block;
@@ -1624,7 +1582,8 @@ hr {
 
 
 /* Headings
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
+
 h1 {
   /*font-size: 2rem;*/
   font-size: 1.7rem;
@@ -1652,8 +1611,23 @@ article a:hover {
 }
 article a {
   transition: opacity 0.2s;
+}
+
+/* List items, making sure that URLs don't wrap, and long words don't */
+article li {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  -webkit-hyphens: auto;
   hyphens: auto;
 }
+
+/* Workaround for bug in Safari 10.1+ that prevents word-wrap: break-word from working as expected on extremely long words.
+   Hyphens also don't always work properly in Safari either, weird.
+   All other browsers are fine, just not Safari for some reason. */
+@media not all and (min-resolution:.001dpcm) { @media {
+  article li { word-break: break-all; }
+}}
+
 h2 a:hover {
  color: inherit;
 }
@@ -1664,12 +1638,15 @@ h3 {
   clear: both;
   transition: background-color 0.2s, color 0.2s;
 }
-h4 {
+h4, h5 {
   font-size: 1.1rem;
   line-height: 1.3rem;
   font-weight: 500;
   margin: 1rem 0 .5rem 0;
   clear: both;
+}
+h5 {
+  font-size: 1rem;
 }
 h1 a, h2 a, h3 a, h4 a {
   color: inherit;
@@ -1680,7 +1657,7 @@ h1 a, h2 a, h3 a, h4 a {
 
 
 /* Article Content
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 aside, .aside {
   display: block;
@@ -1718,7 +1695,8 @@ aside figure a img {
 
 
 /* Main
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
+
 .main {
   /*
   padding: 1rem 1rem 0 1rem;
@@ -1913,7 +1891,7 @@ textarea {
 }
 
 /* Temporary
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .logo-club figcaption {
   text-align: center;
@@ -1923,7 +1901,8 @@ textarea {
 }
 
 /* Project meta
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
+
 .meta {
   margin-bottom: 1.5em;
 }
@@ -1983,7 +1962,7 @@ https://adactio.com/journal/10877 */
 
 
 /* Makers list
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .featured {
   background-color: white;
@@ -2088,7 +2067,7 @@ https://adactio.com/journal/10877 */
 
 
 /* Clubs
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .logo-club img {
   width: 85%;
@@ -2101,7 +2080,8 @@ https://adactio.com/journal/10877 */
 
 
 /* Projects list
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
+
 .projects {
   list-style: none;
   overflow: auto;
@@ -2118,81 +2098,9 @@ https://adactio.com/journal/10877 */
   text-align: center;
 }
 
-
-
-
-/* Frend tooltips
-  - http://frend.co/components/tooltip/
--------------------------------------------------- */
-
-.fr-tooltip {
-  display: block;
-  visibility: hidden;
-  height: 0;
-  width: 0;
-}
-.fr-tooltip.fr-tooltip--is-ready {
-  display: inline-block;
-  visibility: visible;
-  height: initial;
-  width: initial;
-}
-
-/*	Container */
-.fr-tooltip--is-ready {
-	position: relative;
-}
-
-/*	Toolip */
-.fr-tooltip--is-ready .fr-tooltip-tooltip {
-	bottom: 100%;
-	position: absolute;
-	visibility: hidden;
-  background-color: #ffe566;
-  border-radius: .25em;
-  left: 50%;
-  min-width: 260px;
-  opacity: 0;
-  padding: 5px 10px;
-  text-align: center;
-  -webkit-transform: translateX(-50%) translateY(0);
-  transform: translateX(-50%) translateY(0);
-  transition: visibility .15s ease-out,opacity .15s ease-out,-webkit-transform .15s ease-out;
-  transition: visibility .15s ease-out,opacity .15s ease-out,transform .15s ease-out;
-  transition: visibility .15s ease-out,opacity .15s ease-out,transform .15s ease-out,-webkit-transform .15s ease-out;
-}
-.fr-tooltip--is-ready .fr-tooltip-tooltip:after {
-  border: solid transparent;
-  border-color: transparent;
-  border-top-color: #ffe566;
-  border-width: 8px;
-  bottom: -16px;
-  content: '';
-  height: 0;
-  left: 50%;
-  margin-left: -8px;
-  pointer-events: none;
-  position: absolute;
-  width: 0;
-}
-.fr-tooltip--is-ready .fr-tooltip-tooltip[aria-hidden="false"],
-.fr-tooltip--is-ready .fr-tooltip-tooltip[aria-hidden="false"],
-.fr-tooltip-toggle.js-fr-tooltip-toggle:focus + .fr-tooltip-tooltip {
-	visibility: visible;
-	opacity: 1;
-	transform: translateX(-50%) translateY(-12px);
-}
-
-/*	No JS */
-.fr-tooltip:not(.fr-tooltip--is-ready) .fr-tooltip-tooltip::before {
-	content: " (";
-}
-.fr-tooltip:not(.fr-tooltip--is-ready) .fr-tooltip-tooltip::after {
-	content: ")";
-}
-
 /* Gallery
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
+
 /*
 .gallery {
   display: flex;
@@ -2234,8 +2142,14 @@ https://adactio.com/journal/10877 */
   display: none !important;
 }
 
+.pswp {
+  height: 0;
+  overflow: hidden;
+}
+
 /* Activity
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
+
 .activity {
   background-color: rgba(247, 251, 255, 1);
   border: 4px dotted rgba(222, 238, 255, 1);
@@ -2272,7 +2186,8 @@ https://adactio.com/journal/10877 */
 
 
 /* Footer
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
+
 .footer {
   /*
   padding: 5rem 0 1rem;
@@ -2293,14 +2208,16 @@ footer .container {
   padding-bottom: 1rem;
 }
 
-.copyright {
+footer .left {
   float: left;
+  max-width: 50%;
 }
-.colophon {
+footer .right {
   float: right;
+  max-width: 50%;
 }
 
-.footer .copyright, .footer .colophon {
+foter div {
   margin: 0 5px;
 }
 
@@ -2315,7 +2232,7 @@ footer .container {
   - http://codepen.io/sivan/pen/alKwf
   - http://stackoverflow.com/questions/16952526/detect-if-an-input-has-text-in-it-using-css
   - http://stackoverflow.com/questions/3617020/matching-an-empty-input-box-using-css
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .login-container, .signup-container {
   max-width: 500px;
@@ -2603,14 +2520,14 @@ form div[role='group'] h3 {
   */
 }
 
-#usernameurl {
+#usernameurl, #newsitesubdomain {
   color: var(--theme-main);
   font-size: inherit;
 }
 
 
 /* Signup form color picket (abandoned)
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 #colorselector input[type=radio] {
   position: absolute;
@@ -2670,7 +2587,7 @@ form div[role='group'] h3 {
 }
 
 /* Buttons
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .button {
   display: block;
@@ -2935,7 +2852,7 @@ button.focused + .dropdown-menu {
 
 
 /* Frontend Editing
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .editing #hero img:hover {
   opacity: 0.8;
@@ -2952,35 +2869,35 @@ button.focused + .dropdown-menu {
 
 
 
-#icon-add {
+#icon-add, #avatar-add {
   font-size: .8rem;
   text-align: center;
   display: none;
   cursor: pointer;
   transition: opacity .2s;
 }
-#icon-add:hover {
+#icon-add:hover, #avatar-add:hover {
   opacity: .7;
   transition: opacity .2s;
 }
-.editing #icon-add {
+.editing #icon-add, .editing #avatar-add {
   display: block;
 }
 
 
 
 
-.editing #icon {
+.editing #icon, .editing #avatar {
   /*background-image: url(https://drewbaren.com/maker/assets/images/icon-add.png);*/
   background-size: contain;
   /*border: 1px solid #d2d2d2;*/
 }
 
-#icon img[src*="avatar"] {
+#icon img[src*="avatar"], #avatar img[src*="avatar"] {
   background-color: var(--theme-main);
 }
 
-#hero:not(.nohero) ~ .main .sidebar #icon {
+#hero:not(.nohero) ~ .main .sidebar #icon, #hero:not(.nohero) ~ .main .sidebar #avatar {
   margin-top: -100px;
   border-radius: 5px;
   /*background-color: var(--theme-main);*/
@@ -3014,7 +2931,11 @@ button.focused + .dropdown-menu {
   animation-timing-function: ease-in-out;
 }
 
-
+@media (max-width: 600px) {
+  .ct-app {
+    display: none;
+  }
+}
 
 .ct-ignition {
   display: none;
@@ -3029,6 +2950,10 @@ button.focused + .dropdown-menu {
 
 .ct-widget.ct-anchored-dialog.ct-widget--active {
     margin-top: -150px;
+}
+
+.ct--highlight {
+  outline: none !important;
 }
 
 
@@ -3058,7 +2983,7 @@ button.focused + .dropdown-menu {
     height: 32px;
     width: 32px;
     content: "";
-    background: url(/assets/images/tool-file.svg) no-repeat;
+    background: url(/site/assets/images/tool-file.svg) no-repeat;
     background-position: center;
     background-size: 14px;
 }
@@ -3171,7 +3096,8 @@ h1.ce-element--empty:after {
 
 
 /* Mobile Frontend Editing tweaks
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
+
 /*
 .ct-widget.ct-toolbox {
   position: fixed;
@@ -3198,7 +3124,7 @@ h1.ce-element--empty:after {
 */
 
 /* Editing Bar
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 #editing-form {
   display: none;
@@ -3251,7 +3177,7 @@ h1.ce-element--empty:after {
 
 
 /* Modals & Notifications
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 #modals .container {
   position: relative;
@@ -3284,13 +3210,17 @@ h1.ce-element--empty:after {
   position: absolute;
   transform: translate(50%, 30%);
   background-color: white;
-  border: 1px solid #e0e0e0;
   border-radius: 5px;
   overflow: hidden;
   width: 80%;
   max-width: 550px;
   transition: visibility 0.3s;
   background-color: var(--theme-bgcolor);
+  border: 1px solid #e0e0e0;
+}
+
+body.night .modal {
+  border: 1px solid #e0e0e0;
 }
 
 
@@ -3392,6 +3322,12 @@ ul.list-options li > * {
   font-size: .8rem;
 }
 
+ul.list-options span {
+  display: block;
+  padding: 10px;
+  font-size: .8rem;
+}
+
 .list-options li {
   transition: background-color .2s;
 }
@@ -3410,13 +3346,54 @@ ul.list-options li > * {
 }
 
 
+/* Reading Settings
+----------------------------------------------------------------------------- */
 
+#settings-reading svg {
+  display: block;
+  height: 18px;
+  max-width: 500px; /* Dumb Safari fix http://stackoverflow.com/questions/24153939/inline-svg-scaling-auto-width */
+  width: auto;
+}
+
+#settings-reading {
+  font-family: serif;
+  font-size: 1rem;
+}
+
+
+.font-decrease, .font-reset, .font-increase {
+  padding: 0 10px !important;
+  text-align: center;
+  border: 1px solid #c3c3c3;
+  margin: 2px;
+  border-radius: 10px;
+  line-height: 32px !important;
+  height: 33px;
+  align-self: center;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(197, 197, 197, 0.75), rgba(0, 0, 0, 0));
+}
+
+.night #modal-reading {
+  background-color: var(--theme-bgcolor);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.night #modal-toc {
+  background-color: var(--theme-bgcolor);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
 
 
 
 
 /* WebSocket / myRIO
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .LEDs {
   display: flex;
@@ -3640,7 +3617,7 @@ pre {
 
 
 /* Maker Profiles
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .makerinfo {
   display: flex;
@@ -3677,19 +3654,17 @@ pre {
 }
 
 .twitter {
-  background: url(http://drewbaren.com/assets/images/social-twitter.svg) #00aced center no-repeat;
+  background: url(/site/assets/images/social-twitter.svg) #00aced center no-repeat;
   background-size: 30%;
 }
 .facebook {
-  background: url(http://drewbaren.com/assets/images/social-facebook.svg) #3b5998 center no-repeat;
+  background: url(/site/assets/images/social-facebook.svg) #3b5998 center no-repeat;
   background-size: 30%;
 }
 .linkedin {
-  background: url(http://drewbaren.com/assets/images/social-linkedin.svg) #007bb6 center no-repeat;
+  background: url(/site/assets/images/social-linkedin.svg) #007bb6 center no-repeat;
   background-size: 30%;
 }
-
-
 
 
 .row {
@@ -3707,13 +3682,15 @@ pre {
 
 
 /* Embeds
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 video {
+  /*
   display: inline-block;
+  */
+  display: block;
   width: 100%;
   background-color: black;
-  max-height: 50vh;
 }
 audio {
   display: inline-block;
@@ -3850,7 +3827,7 @@ iframe.visible {
 }
 
 /* Alignment and Responsive Components
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .center {
   margin: 0 auto;
@@ -3858,7 +3835,7 @@ iframe.visible {
 }
 
 /* Homepage Hero Animation
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 #hero {
   position: relative;
@@ -3926,12 +3903,6 @@ iframe.visible {
   background-position: center center;
   height: 100%;
   width: 100%;
-  
-  /*max-height: 40vh;*/
-  /*
-  position: absolute;
-  */
-  font-family: 'object-fit: cover;'; /* Polyfill for IE/Edge */
   left: 0;
   right: 0;
 }
@@ -4043,7 +4014,7 @@ twitterwidget {
 
 
 /* Table of Contents (TOC)
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .sticky {
   position: sticky !important;
@@ -4163,11 +4134,26 @@ p {
   max-height: 100%;
   max-height: calc(100vh - 200px);
 }
+
+.sidebar a {
+  transition: color .1s ease-out;
+}
+
+.toc-items a {
+  padding: 2.5px 0;
+}
+
 .toc-items li {
-  opacity: .8;
+  padding-left: 5px;
+  margin-left: -5px;
+  transition: box-shadow .2s ease-out, opacity .2s ease-out;
 }
 .toc-items li.visible {
   opacity: 1;
+  box-shadow: -1px 0px 0px rgba(0, 0, 0, 0.45);
+}
+.toc-marker {
+  display: none;
 }
 
 /*
@@ -4201,7 +4187,7 @@ p {
 
 
 /* Other stuff
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 .maker img {
   z-index: auto;
   overflow: visible;
@@ -4222,7 +4208,7 @@ p {
 }
 
 /* Photoswipe button reversal
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .pswp__button {
   border-radius: 0;
@@ -4244,7 +4230,7 @@ p {
 }
 
 /* SIDEBAR THE FINAL ONE
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .sidebar:not(.rightsidebar) {
   /*margin-right: 2rem;*/
@@ -4378,9 +4364,11 @@ p {
   display: initial;
 }
 
+/*
 .widget form {
   display: none;
 }
+*/
 
 .editing .widget form {
   display: initial;
@@ -4543,10 +4531,12 @@ p {
 
 
 
-
+.card-join [data-role="results"]:hover {
+  cursor: pointer;
+}
 
 /* SIDEBAR WIDGETS
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 #author-results, #group-results, [data-role="results"] {
   position: absolute;
@@ -4766,7 +4756,7 @@ tr:nth-of-type(odd) td {
 
 
 /* Flexbox Grid
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 /*
 .toc-container {
@@ -4859,7 +4849,11 @@ figcaption {
   font-size: .9rem;
   text-align: center;
   line-height: initial;
-  margin-top: 0.5rem;
+  margin: .2rem .5rem .5rem .5rem;
+}
+figcaption p {
+  line-height: inherit;
+  margin: initial !important;
 }
 aside figcaption {
   display: none;
@@ -4889,7 +4883,7 @@ aside figcaption {
 
 
 /* Discussion
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .discussion {
   max-width: 700px;
@@ -5073,6 +5067,10 @@ aside figcaption {
 
 @media (max-width: 800px) {
   
+  #navigation .container, #subnavigation .container {
+    padding: 0 10px;
+  }
+  
   .rightsidebar {
     width: 0%;
   }
@@ -5146,7 +5144,7 @@ aside figcaption {
     -webkit-overflow-scrolling: touch;
   }
   
-  .sidebar #icon {
+  .sidebar #icon, .sidebar #avatar {
     /*display: none;*/
     margin-top: initial !important;
     max-width: 150px;
@@ -5275,7 +5273,7 @@ aside figcaption {
 
 
 /* DRAGULA
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .gu-transit {
   opacity: 0.2;
@@ -5285,7 +5283,7 @@ aside figcaption {
 
 
 /* CALENDAR
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 #calendar-container {
 		margin: 0 auto;
@@ -5397,10 +5395,11 @@ aside figcaption {
 }
 
 /* GUGGENHEIM IMAGE GALLERIES
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .guggenheim {
     max-width: 100%;
+    clear: both;
 }
 .guggenheim__ratio-container {
     position: relative;
@@ -5454,7 +5453,7 @@ figure.guggenheim__figure {
 }
 
 /* DRAGULA
--------------------------------------------------- */
+----------------------------------------------------------------------------- */
 .gu-mirror{position:fixed!important;margin:0!important;z-index:9999!important;opacity:.8;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";filter:alpha(opacity=80)}.gu-hide{display:none!important}.gu-unselectable{-webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;user-select:none!important}.gu-transit{opacity:.2;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";filter:alpha(opacity=20)}
 
 
@@ -5489,9 +5488,8 @@ figure:hover a:not([href*="makernetwork\.org"]):before {
 
 
 
-
-
-
+/* STRIPE AND APPLE PAY
+----------------------------------------------------------------------------- */
 
 
 

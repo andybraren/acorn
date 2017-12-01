@@ -2,17 +2,19 @@
   
   // Specify the price in cents. Accounts for decimal places if they're included.
   $amount = (float)((string)$page->content()->price()) * 100;
-  
+    
+  if (site()->setting('commerce/stripe/testmode') == true) {
+    $stripekey_public = site()->setting('commerce/stripe/pk-test');
+  } else {
+    $stripekey_public = site()->setting('commerce/stripe/pk-live');
+  }
+    
 ?>
 
 <div class="widget">
   <span class="heading">PURCHASE</span>
-  <div id="payment-request-button" data-amount="<?= $amount ?>"></div>
+  <div id="payment-request-button" data-amount="<?= $amount ?>" data-pkey="<?= $stripekey_public ?>"></div>
 </div>
-
-
-
-
 
 <?php
   /*

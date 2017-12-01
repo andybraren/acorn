@@ -37,6 +37,7 @@ if (!isset($type)) {
   <?php else: ?>
     <div class="cards-makers">
       
+      <?php /*
       <style>
       <?php $options = array_merge($site->content()->affiliationoptions()->split(','), $site->content()->departmentoptions()->split('##'), $site->content()->majoroptions()->split('##'));
       ?>
@@ -44,8 +45,9 @@ if (!isset($type)) {
         <?php echo 'main[data-filters="' . str::slug($option,'-') . '"] article .cards-makers a:not([data-filters~="' . str::slug($option,'-') . '"]) { display: none; }' ?>
       <?php endforeach ?>
       </style>
+      */ ?>
       
-      <?php foreach ($site->users()->sortBy('registrationdate', 'desc') as $user): ?>
+      <?php foreach ($site->users()->sortBy('datedata', 'desc') as $user): ?>
       
       <?php $filters = str::slug($user->affiliation(),'-') . ' ' . str::slug($user->department(),'-') . ' ' . str::slug($user->major(),'-') . ' ' . str::slug($user->classyear(),'-');
         $filters = trim(preg_replace('/\s+/',' ',$filters));
@@ -163,8 +165,8 @@ if (!isset($type)) {
 <?php if ($site->user() and $type != 'users' or $items != '' and $type != 'users' or $page->isSubmissibleByUser()): ?>
 <div class="grid">
   
-  <?php $newhero = new Asset('/assets/images/hero-new.png'); ?>
-  <?php $defaulthero = new Asset('/assets/images/hero-1.jpg'); ?>
+  <?php $newhero = new Asset('site/assets/images/hero-new.png'); ?>
+  <?php $defaulthero = new Asset('site/assets/images/hero-1.jpg'); ?>
 
   
   <?php // New project card ?>
@@ -256,15 +258,29 @@ if (!isset($type)) {
         </a>
         <?php endif ?>
         
+        <?php /*
         <?php if($page->uid() != 'books'): ?>
           <?php // Grabs a 300-character chunk of text, removes Markdown headings, converts the remainder to HTML, strips tags and encoded characters, and removes any (completed) kirbytags ?>
-          <p><?php echo preg_replace("!(?=[^\]])\([a-z0-9_-]+:.*?\)!is", "", html::decode(markdown(preg_replace("/(#+)(.*)/", "", $item->text()->short(300))))); ?></p>
+            <p><?php echo $item->text()->excerpt(300) ?></p>
         <?php endif ?>
+        */ ?>
+        
+        <?php if($item->content()->description()->exists()): ?>
+          <p><?php echo $item->content()->description() ?></p>
+        <?php else: ?>
+          <p><?php echo $item->text()->excerpt(300) ?></p>
+        <?php endif ?>
+        
+        
       </div>
       
       <?php if($page->uid() != 'books'): ?>
         <div class="card-details">
-          <span><?php echo date('M j Y', $item->datePublished()) ?></span>
+          <?php if ($item->content()->started()->exists()): ?>
+            <span><?php echo $item->started() ?></span>
+          <?php else: ?>
+            <span><?php echo date('M j Y', $item->datePublished()) ?></span>
+          <?php endif ?>
           <a href="<?php echo $item->url() ?>">Read &rarr;</a>
         </div>
       <?php endif ?>

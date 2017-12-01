@@ -1,11 +1,12 @@
 <?php
-kirby()->routes(array(
 
-// API
-// https://getkirby.com/docs/cookbook/json
-array(
-	'pattern' => 'api',
-	'method'  => 'POST',
+// The order these are in is important, beware of changing it
+// This file appears before the routes loaded in acorn-routes.php as well, which is important too
+
+
+$kirby->set('route', array(
+  'pattern' => 'api',
+  'method'  => 'POST',
   'action'  => function() {
     
     $key = '';
@@ -163,17 +164,14 @@ array(
       $data['message'] = $error;
       echo json_encode($data);
     }
-    
-  }
-),
 
-// API
-// https://getkirby.com/docs/cookbook/json
-array(
-	'pattern' => 'apib',
-	'method'  => 'POST|GET',
+  }
+));
+
+$kirby->set('route', array(
+  'pattern' => 'apib',
+  'method'  => 'POST|GET',
   'action'  => function() {
-    
     $error = '';
         
     $name = (get('name')) ? get('name') : '';
@@ -244,62 +242,42 @@ array(
     //echo $key;
     
     //echo file_get_contents('php://input');
-    
-    $ip = (isset($_POST['ip'])) ? $_POST['ip'] : 'no';
-    
-    try {
-      site()->page('site')->update(array(
-        'SentIP'  => $ip,
-      ));
-      //echo 'success';
-    } catch(Exception $e) {
-      //echo 'error: ' . $targetpage->slug() . '<br>';
-    }
-    
   }
-),
-
-
-
-
-array(
-  'pattern' => array('(:num)'),
-  'method' => 'GET',
-  'action'  => function($uid) {
-    
-    $path = kirby()->request()->path();
-    $page = page($path);
-           
-    if (!$page) $page = page('posts/' . $path);
-    
-    return ($page) ? site()->visit($page) : site()->visit($uid);
-    
-  }
-),
-
-
-
-
-array(
-  'pattern' => array('(:any)', '(:any)/(:any)'),
-  'method' => 'GET',
-  'action'  => function($uid) {
-    
-    $path = kirby()->request()->path();
-    
-    $page = page($path);
-    
-    if (!$page) $page = page('users/' . $path);
-    if (!$page) $page = page('posts/' . $path);
-    
-    if ($page) {
-      return site()->visit($page);
-    } else {
-      return site()->visit($uid);
-    }
-    
-  }
-),
-
 ));
-?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

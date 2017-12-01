@@ -28,6 +28,7 @@
 2016-12-09 - Added (size:) support, same as images
 2016-12-19 - Playsinline support for YouTube embeds
 2017-02-21 - Figcaption only included if not empty
+2017-10-14 - Improved the downloadedImageURL function to include Vimeo and only download video thumbs to the primary page's directory
 */
 
 kirbytext::$tags['video'] = array(
@@ -62,12 +63,12 @@ kirbytext::$tags['video'] = array(
       $url = $file ? $file->url() : url($url);
     endif;
     
-    if (page()->id() != "feed"):
+    if (page()->id() != "feed") {
       
       // YouTube Videos
-      if (str::contains($url, 'youtu')):
+      if (str::contains($url, 'youtu')) {
 
-        if (preg_match("/^((https?:\/\/)?(w{0,3}\.)?youtu(\.be|(be|be-nocookie)\.\w{2,3}\/))((watch\?v=|v|embed)?[\/]?(?P<id>[a-zA-Z0-9-_]{11}))/si", $url, $matches)):
+        if (preg_match("/^((https?:\/\/)?(w{0,3}\.)?youtu(\.be|(be|be-nocookie)\.\w{2,3}\/))((watch\?v=|v|embed)?[\/]?(?P<id>[a-zA-Z0-9-_]{11}))/si", $url, $matches)) {
           $youtubeid = $matches['id'];
           $timestamp = "";
           
@@ -100,46 +101,63 @@ kirbytext::$tags['video'] = array(
             //echo $timestamp;
           endif;
           
-          $imageurl = downloadedImageURL('video-' . $youtubeid, 'youtube');
           
-          return '<figure><div class="video-container"><div class="youtube"><img class="b-lazy" src="" data-src="' . $imageurl . '"><div class="play"></div></div><iframe data-src="https://www.youtube.com/embed/' . $youtubeid . '?autoplay=1&playsinline=1&wmode=transparent&modestbranding=1&autohide=1&showinfo=0&rel=0' . $timestamp . '" data-orig="' . $url . '" frameborder="0" allowfullscreen></iframe></div>' . $htmlcaption . '</figure>';
+          $thepage = site()->page(page()->uri());
+          if ($tag->page() == $thepage) {
+            $imageurl = downloadedImageURL('video-' . $youtubeid, $thepage->uri(), 'youtube');
+          }
           
-        endif;
-
+          $blahurl = "/maker/assets/images/blank.gif"; // Added for b-lazy
+          $blahurl = "/site/assets/images/blank.gif";
+          
+          return '<figure><div class="video-container"><div class="youtube"><img class="b-lazy" src="' . $blahurl . '" data-src="' . $imageurl . '"><div class="play"></div></div><iframe data-src="https://www.youtube.com/embed/' . $youtubeid . '?autoplay=1&playsinline=1&wmode=transparent&modestbranding=1&autohide=1&showinfo=0&rel=0' . $timestamp . '" data-orig="' . $url . '" frameborder="0" allowfullscreen></iframe></div>' . $htmlcaption . '</figure>';
+        } 
+      }
+      
       // Vimeo Videos
-      elseif (str::contains($url, "vimeo.com")):
+      if (str::contains($url, "vimeo.com")) {
         
         $vimeoid = substr(parse_url($url, PHP_URL_PATH), 1);;
-        $vimeothumburl = "https://vimeo.com/api/v2/video/" . $vimeoid . ".php";
-        $hash = unserialize(@file_get_contents($vimeothumburl));
-        $vimeothumb = $hash[0]['thumbnail_large'];
-        $htmlimage = '<img class="b-lazy" src="" data-src="' . $vimeothumb . '">';
+        //$vimeothumburl = "https://vimeo.com/api/v2/video/" . $vimeoid . ".php";
+        //$hash = unserialize(@file_get_contents($vimeothumburl));
+        //$vimeothumb = $hash[0]['thumbnail_large'];
+        
+        $thepage = site()->page(page()->uri());
+        if ($tag->page() == $thepage) {
+          $imageurl = downloadedImageURL('video-' . $vimeoid, $thepage->uri(), 'vimeo');
+        }
+        
+        $htmlimage = '<img class="b-lazy" src="/site/assets/images/blank.gif" data-src="' . $imageurl . '">';
 
-        return '<figure><div class="video-container"><div class="vimeo" ' . $htmlimage . '"><div class="play"></div></div><iframe data-src="//player.vimeo.com/video/' . $vimeoid . '?autoplay=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;color=808080" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>' . $htmlcaption . '</figure>';
-
+        //return '<figure><div class="video-container"><div class="vimeo">' . $htmlimage . '<div class="play"></div></div><iframe data-src="//player.vimeo.com/video/' . $vimeoid . '?autoplay=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;color=808080" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>' . $htmlcaption . '</figure>';
+        return '<figure><div class="video-container"><div class="vimeo">' . $htmlimage . '<div class="play"></div></div><iframe data-src="//player.vimeo.com/video/' . $vimeoid . '?autoplay=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;color=808080" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>' . $htmlcaption . '</figure>';
+      }
+      
       // HTML5 "GIFs"
-      elseif ($autoplay == "on"):
+      elseif ($autoplay == "on") {
         return '<figure' . $size . '><video controls preload="metadata" autoplay loop muted playsinline class="b-lazy" ' . $posterimage . ' data-src="' . $url . '" data-file="' . $filename . '"></video>
         <noscript><span style="color:#AB2A2A">It looks like you have JavaScript disabled. <a href="' . $url . '">Click here</a> to view the video above.</span></noscript>' . $htmlcaption . '</figure>';
         
         // Attempted HTML5 video with noscript fallback, but there doesn't seem to be an easy way unfortunately
         //return '<figure><video controls preload="metadata" autoplay loop muted' . $posterimage . '><source  class="b-lazy" src="' . $url . '"></source><noscript><source src="' . $url . '"></source></noscript></video>' . $htmlcaption . '</figure>';
+      }
       
       // HTML5 embeds
-      else:
+      else {
         return '<figure' . $size . '><video controls preload="metadata" class="b-lazy" ' . $posterimage . ' data-src="' . $url . '" data-file="' . $filename . '"></video>
         <noscript><span style="color:#AB2A2A">It looks like you have JavaScript disabled. <a href="' . $url . '">Click here</a> to view the video above.</span></noscript>' . $htmlcaption . '</figure>';
-      endif;
+      }
+    }
     
-    elseif (page()->id() == "feed"):
-      if (str::contains($url, "vimeo.com")):
+    elseif (page()->id() == "feed") {
+      if (str::contains($url, "vimeo.com")) {
         $vimeoid = substr($url, -8 );
         return '<iframe src="http://player.vimeo.com/video/'. urlencode($vimeoid) . '"></iframe>';
-      elseif (str::contains($url, "youtube.com") || str::contains($url, "youtu.be")):
+      } elseif (str::contains($url, "youtube.com") || str::contains($url, "youtu.be")) {
         $youtubeid = substr($url, -11 );
         return '<iframe src="https://www.youtube.com/embed/' . $youtubeid . '"></iframe>';
-      endif;
-    endif;
+      }
+    }
   }
 );
 

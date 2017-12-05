@@ -71,9 +71,11 @@
     $color = $page->color();
   } elseif ($page->parent() == 'users' and $user = $site->user($page->slug()) and $user->color() != '') {
     $color = $user->color();
-  } else {
-    $color = $site->coloroptions()->split(',')[0];
+  } elseif ($site->setting('style/default-color')) {
+    /*$color = $site->coloroptions()->split(',')[0];*/
+    $color = $site->setting('style/default-color');
   }
+  
 ?>
 
 <?php $subnav = (hasSubMenu()) ? ' subnav' : ''; ?>

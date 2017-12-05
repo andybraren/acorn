@@ -985,16 +985,16 @@ turnOn = false;
 
 function toggleItems() { // Enable dragula and toggle each item's href to data-href
   
-  dragula([document.getElementById('authors')]);
-  dragula([document.getElementById('groups')]);
+  //dragula([document.getElementById('authors')]);
+  //dragula([document.getElementById('groups')]);
   
   //if (window.location.pathname == '/settings') {
-    dragula([document.getElementsByClassName('menu')[0]]);
-    dragula([document.getElementsByClassName('menu')[1]]);
-    dragula([document.getElementsByClassName('menu')[2]]);
+    //dragula([document.getElementsByClassName('menu')[0]]);
+    //([document.getElementsByClassName('menu')[1]]);
+    //dragula([document.getElementsByClassName('menu')[2]]);
   //}
   
-  dragula([document.getElementsByClassName('subnodes')[0]]);
+  // dragula([document.getElementsByClassName('subnodes')[0]]);
     
   /*
   var elem = document.querySelectorAll('.menu')[1];

@@ -48,13 +48,10 @@ class CSS extends \Kirby\Component\CSS {
       if (site()->setting('style/bg-color-primary') != null) {
         $replace = '--theme-bgcolor: ' . site()->setting('style/bg-color-primary') . ';';
       } else {
-        $replace = '--theme-bgcolor: white;';
+        $replace = '--theme-bgcolor: 255, 255, 255;';
       }
       $newcss = str_replace($search, $replace, $newcss);
       
-      
-      
-            
       $newfilename = f::name($url) . '.' . f::modified($file) . '.css';
       
       $newsrc = kirby()->roots()->index() . DS . 'cache/assets/css/' . $newfilename;

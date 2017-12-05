@@ -24,7 +24,7 @@ footer, header, hgroup, main, nav, section, summary {
 
 /* Max width */
 :root {
-  --theme-bgcolor: white;
+  --theme-bgcolor: /**/;
   --site-width: /**/;
 }
 
@@ -73,6 +73,7 @@ body {
   position: relative;
   margin-top: 53px;
   background-color: var(--theme-bgcolor);
+  background-color: rgba(var(--theme-bgcolor), 1);
 }
 
 .subnav {
@@ -141,14 +142,12 @@ header {
   /*
   -webkit-overflow-scrolling: touch; /* second necessary for scrollbars */
   
-    
-    /*background-color: rgba(98, 165, 240, 0.85);*/
-    background-color: var(--theme-opac1);
-    background-color: rgba(255, 255, 255, 0.85);
-    /*background-image: var(--theme-gradient);*/
-    
-    
-    border-top: 3px solid var(--theme-main);
+  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(var(--theme-bgcolor), 0.85);
+  /*background-image: var(--theme-gradient);*/
+  
+  
+  border-top: 3px solid var(--theme-main);
 }
 
 nav {
@@ -232,7 +231,7 @@ header .container {
   */
 }
 .boxed .container {
-  background-color: var(--theme-bgcolor);
+  background-color: rgba(var(--theme-bgcolor), 1);
 }
 .boxed header .container {
   background-color: initial;
@@ -832,7 +831,7 @@ body.white { background-color: white; }
 
 /* don't move this, it overrides all of the above if present */
 .night {
-  --theme-bgcolor: #2C2C2C;
+  --theme-bgcolor: 44, 44, 44;
   --theme-boxed-bgcolor: #2C2C2C;
 }
 
@@ -1204,7 +1203,7 @@ li a {
 }
 .menu li ul li {
   background-color: white;
-  background-color: var(--theme-bgcolor);
+  background-color: rgba(var(--theme-bgcolor), 1);
   white-space: nowrap;
 }
 
@@ -1704,7 +1703,7 @@ aside figure a img {
   */
   /*
   background-color: white;
-  background-color: var(--theme-bgcolor);
+  background-color: rgba(var(--theme-bgcolor), 1);
   */
   flex: 1;
   z-index: 1;
@@ -2196,7 +2195,7 @@ https://adactio.com/journal/10877 */
   overflow: auto;
   /*
   background-color: white;
-  background-color: var(--theme-bgcolor);
+  background-color: rgba(var(--theme-bgcolor), 1);
   */
 }
 
@@ -2496,7 +2495,7 @@ input {
 */
 input, select {
   color: inherit;
-  background-color: var(--theme-bgcolor);
+  background-color: rgba(var(--theme-bgcolor), 1);
 }
 
 
@@ -3215,7 +3214,7 @@ h1.ce-element--empty:after {
   width: 80%;
   max-width: 550px;
   transition: visibility 0.3s;
-  background-color: var(--theme-bgcolor);
+  background-color: rgba(var(--theme-bgcolor), 1);
   border: 1px solid #e0e0e0;
 }
 
@@ -3380,12 +3379,12 @@ hr {
 }
 
 .night #modal-reading {
-  background-color: var(--theme-bgcolor);
+  background-color: rgba(var(--theme-bgcolor), 1);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .night #modal-toc {
-  background-color: var(--theme-bgcolor);
+  background-color: rgba(var(--theme-bgcolor), 1);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
@@ -3843,7 +3842,7 @@ iframe.visible {
   background-position: center center;
   /*
   background-color: white;
-  background-color: var(--theme-bgcolor);
+  background-color: rgba(var(--theme-bgcolor), 1);
   */
   /*
   max-height: 500px;

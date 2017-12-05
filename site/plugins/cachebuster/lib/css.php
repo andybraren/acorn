@@ -42,6 +42,18 @@ class CSS extends \Kirby\Component\CSS {
       $search  = '--site-width: /**/;';
       $replace = '--site-width: ' . site()->setting('style/width') . 'px;';
       $newcss = str_replace($search, $replace, $newcss);
+      
+      // Add bg color
+      $search  = '--theme-bgcolor: /**/;';
+      if (site()->setting('style/bg-color-primary') != null) {
+        $replace = '--theme-bgcolor: ' . site()->setting('style/bg-color-primary') . ';';
+      } else {
+        $replace = '--theme-bgcolor: white;';
+      }
+      $newcss = str_replace($search, $replace, $newcss);
+      
+      
+      
             
       $newfilename = f::name($url) . '.' . f::modified($file) . '.css';
       

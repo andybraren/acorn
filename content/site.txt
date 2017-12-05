@@ -57,6 +57,8 @@ style:
   favicon: favicon.svg
   header: one-line, two-line-left, two-line-center
   width: 1240
+  bg-color-primary: ''
+  bg-color-secondary: ''
 menu:
   search:
     enabled: true

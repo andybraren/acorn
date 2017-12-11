@@ -17,12 +17,13 @@
     <title><?php echo $title . ' | ' . $site->title()->html() ?></title>
   <?php endif ?>
 
-  <meta name="description" content="<?php echo $site->description()->html() ?>">
+  <meta name="description" content="<?php echo $site->description() ?>">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   <meta property="og:title" content='<?php echo $page->title() ?>'>
+  <meta property="og:description" content="<?php echo $page->description() ?>">
   <meta property="og:site_name" content='<?php echo $site->title() ?>'>
   <meta property="og:type" content="article">
   <meta property="og:url" content="<?php echo $page->url() ?>">

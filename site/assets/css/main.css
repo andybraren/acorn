@@ -4184,6 +4184,12 @@ p {
     padding: 0 15px;
 }
 
+.toc:hover {
+  width: fit-content;
+  background-color: rgba(var(--theme-bgcolor), 1);
+  z-index: 1;
+}
+
 
 /* Other stuff
 ----------------------------------------------------------------------------- */
@@ -5283,7 +5289,7 @@ aside figcaption {
 
 /* CALENDAR
 ----------------------------------------------------------------------------- */
-
+/*
 #calendar-container {
 		margin: 0 auto;
 		max-width: 1000px;
@@ -5357,7 +5363,6 @@ aside figcaption {
 }
 
 #calendar-container #calendar-body .day-column .cal-event {
-  /* Added at the behest of /u/mr_bacon_pants */
   position: relative;
 	margin-left: 2px;
 	padding-left: 2px;
@@ -5392,6 +5397,7 @@ aside figcaption {
 #calendar-container #calendar-body .day-column .cal-event[data-days='7'] {
 	width: calc(700% + 3px);
 }
+*/
 
 /* GUGGENHEIM IMAGE GALLERIES
 ----------------------------------------------------------------------------- */

@@ -341,7 +341,7 @@
                   $sublist = 'none';
                 }
                 
-                echo '<li><a href="#' . str::slug($text) . '">' . $text . '</a></li>';
+                echo '<li><a href="#' . tocslugify($text) . '">' . $text . '</a></li>';
                 
               }
               if (preg_match('/(?<!#)#{3}([^#].*)\n/', $rawmatch)) { // H3
@@ -355,7 +355,7 @@
                   $sublist2 = 'none';
                 }
                 
-                echo '<li><a href="#' . str::slug($text) . '">' . $text . '</a></li>';
+                echo '<li><a href="#' . tocslugify($text) . '">' . $text . '</a></li>';
                 
               }
               if (preg_match('/(?<!#)#{4}([^#].*)\n/', $rawmatch)) { // H4
@@ -365,7 +365,7 @@
                   echo '<ul>';
                 }
                 
-                echo '<li><a href="#' . str::slug($text) . '">' . $text . '</a></li>';
+                echo '<li><a href="#' . tocslugify($text) . '">' . $text . '</a></li>';
                 
               }
               
@@ -378,6 +378,7 @@
             }
           ?>
         </div>
+
       <svg class="toc-marker" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
 				<path stroke="#444" stroke-width="3" fill="transparent" stroke-dasharray="0, 0, 0, 1000" stroke-linecap="round" stroke-linejoin="round" transform="translate(-0.5, -0.5)" />
 			</svg>

@@ -20,16 +20,27 @@ kirbytext::$post[] = function($kirbytext, $value) {
 
 function newID($match) {
   
-  $delete = array(':','(',')','?','.','!','$',',','%','^','&',"'",';','"','[',']','{','}','|','`','#');
-  $hyphenate = array(' ','~','@','*','+','=','/','>','<',' - ',' / ');
-  
   list($all, $h, $headingtext) = $match;
-  
-  $id = str_replace($delete, '', $headingtext);
-  $id = str_replace($hyphenate, '-', $id);
-  $id = strtolower($id);
     
-  return '<' . $h . ' id="' . $id . '">' . $headingtext . '</' . $h . '>';
+  return '<' . $h . ' id="' . tocslugify($headingtext) . '">' . $headingtext . '</' . $h . '>';
+}
+
+function tocslugify($string) {
+  
+  $hyphenate = array(' ','~','@','*','+','=','>','<',' - ','/',' / ');
+  $delete = array('&quot;',':','(',')','?','.','!','$',',','%','^','&',';','[',']','{','}','|','`','#','--','---',"'",'"');
+  // Need to delete HTML entities first, like &quot;, and there are probably more that should be added
+  
+  //$string = htmlspecialchars($string);
+  $string = str_replace($hyphenate, '-', $string);
+  $string = str_replace($delete, '', $string);
+  $string = strtolower($string);
+  
+  // Remove leading and trailing separators
+  $string = trim($string, '-');
+  
+  return $string;
+  
 }
 
 // Amazon affiliate links

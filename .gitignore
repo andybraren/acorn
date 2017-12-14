@@ -19,11 +19,11 @@ Icon
 # User info
 # ---------------
 
-/users/accounts/*
-!/users/accounts/.gitkeep
+/acorn/users/accounts/*
+!/acorn/users/accounts/.gitkeep
 
-/users/avatars/*
-!/users/avatars/.gitkeep
+/acorn/users/avatars/*
+!/acorn/users/avatars/.gitkeep
 
 # Content
 # ---------------

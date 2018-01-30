@@ -22,12 +22,6 @@ Multimedia and special chunks of content are stored as "tags" within Acorn's tex
 
 These are the currently-available tags. Ignore the backslash before the name of each tag - it's just there to prevent the tag from being transformed.
 
-### Audio
-
-(audio: music.mp3 caption: This is a piece of audio with a caption below it.)
-
-`(\audio: music.mp3 caption: This is a piece of audio with a caption below it.)`
-
 ### File
 
 (file: Simple Robotics Activity.pdf)
@@ -65,6 +59,10 @@ All images are automatically "lazy loaded" by the browser; they're only download
 `(\video: https://www.youtube.com/watch?v=PXkp4vmJth8 caption: Cute animals.)`
 
 The video tag takes a YouTube or Vimeo URL, downloads the highest-resolution thumbnail available, and creates a nice-looking, clickable embed without any of the bloat of iframes. Clicking the image will load the iframe and begin playing the video.
+
+You can also create a looping, silent-by-default MP4 video with the following:
+
+`(\video: file.mpg autoplay: on)`
 
 ## Text editing basics
 

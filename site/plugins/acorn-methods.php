@@ -1,9 +1,14 @@
 <?php
   
 //==================================================
-// SITE SETTING METHOD
-// Simplifies retrieval of site settings to just site()->setting('connections/twitter/key')
+// SITE METHODS
+// Simplifies retrieval of site settings and info
 //==================================================
+
+//--------------------------------------------------
+// Site Setting
+// site()->setting('connections/twitter/key')
+//--------------------------------------------------
 
 page::$methods['setting'] = function($page, $setting) {
   
@@ -13,6 +18,37 @@ page::$methods['setting'] = function($page, $setting) {
   } else {
     
     $settings = yaml(site()->content()->settings());
+    
+    $keys = explode('/', $setting);
+    foreach ($keys as $key) {
+      if (isset($settings[$key])) {
+        $settings = $settings[$key];
+      }
+    }
+    
+    $setting = $settings;
+    
+    if (isset($setting) && !is_array($setting)) {
+      return $setting;
+    } else {
+      return 'Incorrect setting syntax';
+    }
+  }
+  
+};
+
+//--------------------------------------------------
+// Site info
+// site()->info('acorn/version')
+//--------------------------------------------------
+
+page::$methods['info'] = function($page, $setting) {
+  
+  if ($page != site()) {
+    return $page->content()->info();
+  } else {
+    
+    $settings = yaml(site()->content()->info());
     
     $keys = explode('/', $setting);
     foreach ($keys as $key) {
@@ -136,18 +172,22 @@ page::$methods['dateEnd'] = function($page) {
 
 // Authors
 // returns an array of active author usernames (with roles separated by ~)
-page::$methods['authorsold'] = function($page) {
-  if ($page->content()->makers() != '') {
-    return $page->content()->makers()->split(',');
-  }
-  elseif ($page->content()->userdata() != '') {
-    if (isset(explode('///',$page->content()->userdata())[0])) {
-      return str::split(explode('///',$page->content()->userdata())[0],',');
+page::$methods['authorsAfterUpgrade'] = function($page) {
+  
+  $collection = new Collection();
+  
+  $authors = yaml($page->meta())['authors'];
+  
+  // Add each valid author to the collection and return them
+  foreach ($authors as $author) {
+    $username = $author['username'];
+    if (site()->user($username)) {
+      $collection->append($username, site()->user($username));
     }
   }
-  else {
-    return array();
-  }
+  
+  return $collection;
+  
 };
 
 
@@ -843,7 +883,9 @@ function downloadedImageURL($filename, $pageuri, $remoteURL) {
       $remoteURL = $vimeothumb;
     }
     
-    $imagepath = kirby()->roots()->content() . '/' . $page->diruri() . '/' . $filename . '.jpg';
+    $extension = pathinfo($remoteURL, PATHINFO_EXTENSION);
+    
+    $imagepath = kirby()->roots()->content() . '/' . $page->diruri() . '/' . $filename . '.' . strtolower($extension);
     copy($remoteURL, $imagepath);
   }
   

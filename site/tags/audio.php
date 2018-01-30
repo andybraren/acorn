@@ -10,12 +10,18 @@
 
 kirbytext::$tags['audio'] = array(
   'attr' => array(
+    'caption',
   ),
   'html' => function($tag) {
     
+    $caption = $tag->attr('caption');
+    $htmlcaption = ($caption) ? '<figcaption>' . $caption . '</figcaption>' : '';
+    
+    $caption = "hello";
+    
     if ($tag->page()->file($tag->attr('audio')) != null) {
       $url = $tag->page()->file($tag->attr('audio'))->url();
-      return '<audio controls src="' . $url . '"></audio>';
+      return '<figure><audio controls src="' . $url . '"></audio>' . $htmlcaption . '</figure>';
     }
     
   }

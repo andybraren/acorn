@@ -39,14 +39,24 @@ ini_set('session.gc_maxlifetime', 2628000); // 1 month
 // ini_set('session.gc_maxlifetime', 3600); // 1 hour
 //ini_set('session.gc_maxlifetime', 10); // 1 hour
 
-// Set session save directory
-/*
+// Create cache directory
+$cache_dir = kirby()->roots()->index() . DS . 'cache';
+if (!is_dir($cache_dir)) {
+  mkdir($cache_dir, 0775, true);
+}
+
+// Create session save directory
 $session_dir = kirby()->roots()->index() . DS . 'cache' . DS . 'sessions';
 if (!is_dir($session_dir)) {
   mkdir($session_dir, 0775, true);
 }
-ini_set('session.save_path', $session_dir);
-*/
+
+// Create users directory
+$users_dir = kirby()->roots()->content() . DS . 'users';
+if (!is_dir($users_dir)) {
+  mkdir($users_dir, 0775, true);
+}
+//ini_set('session.save_path', $session_dir);
 
 // Enable PHP's garbage collection method, even on Ubuntu/Debian, with a prob/divisor % chance of happening on each session_start()
 //ini_set('session.gc_probability', 1);

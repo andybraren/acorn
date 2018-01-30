@@ -1,0 +1,13 @@
+Title: About
+----
+Datedata: 2016-11-03 12:00:00, 2016-11-03 12:00:00, 2016-11-03 12:00:00
+----
+Userdata: 
+----
+Reldata: 
+----
+Settings: public, blue, comments == off, submissions == off, price == off
+----
+Hero: 
+----
+Text: This is the about page.

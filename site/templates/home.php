@@ -4,7 +4,6 @@
   <main class="main">
     <div class="container">
       
-      <?php /*
       <div class="section">
         <div class="subsection">
           <div class="text size-67">
@@ -14,19 +13,9 @@
           
             <div class="text size-33 card-join highlight">
               <h2>Create an account</h2>
-              <p>Start and share new projects and ideas with the community.</span></p>
+              <p>The first account will be an admin account.</p>
               <button class="button fullwidth button-signup" data-modal="signup">Create an account</button>
             </div>
-        </div>
-      </div>
-      */ ?>
-      
-      <div class="section">
-        <div class="subsection">
-          <div class="text">
-            <?php /* <h1><?php echo $page->title()->html() ?></h1> */ ?>
-            <?php echo $page->text()->kirbytext() ?>
-          </div>
         </div>
       </div>
       

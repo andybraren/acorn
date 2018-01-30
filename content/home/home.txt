@@ -11,3 +11,5 @@ Settings: public, red, comments == off, submissions == off, price == off
 Hero: 
 ----
 Text:
+
+Welcome to Acorn.

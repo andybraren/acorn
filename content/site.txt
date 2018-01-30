@@ -25,6 +25,10 @@ Menuprimary:
 - 
   title: About
   uid: about
+  sub:
+    - 
+      title: Sample Page
+      uid: sample-page
 ----
 Menusecondary: 
 

@@ -30,9 +30,13 @@ Icon
 
 /content/*
 
+!/content/logo-apple-touch.png
+!/content/logo-favicon.png
+!/content/logo-icon.svg
+!/content/logo.svg
+
 !/content/home/
 !/content/home/*
-/content/home/.DS_Store
 
 !/content/error/
 !/content/error/page.txt
@@ -40,6 +44,11 @@ Icon
 !/content/settings/
 !/content/settings/page.txt
 !/content/users/page.txt
+
+!/content/about/
+!/content/about/page.txt
+
+!/content/sample-page/
 
 # Unlicensed components
 # ---------------

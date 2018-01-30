@@ -1,0 +1,129 @@
+Title: Sample Page
+----
+Datedata: 2017-04-09 12:00:00, 2017-04-12 13:31:16, 2017-04-11 17:27:40
+----
+Userdata: 
+----
+Reldata: 
+----
+Settings: public, red, comments == off, submissions == off, price == off
+----
+Hero: 
+----
+Text:
+
+Click the "Edit" button on the left to edit this page. A tool palette will appear that allows you to manipulate and add new content.
+
+The editor is a work in progress and not every capability is included within the tool palette. Acorn stores page content as Markdown-formated text, so you can write with that as well.
+
+Multimedia and special chunks of content are stored as "tags" within Acorn's text file. A tag is a word with parameters surrounded by parentheses, like the ones seen below.
+
+## Tags
+
+These are the currently-available tags. Ignore the backslash before the name of each tag - it's just there to prevent the tag from being transformed.
+
+### Audio
+
+(audio: music.mp3 caption: This is a piece of audio with a caption below it.)
+
+`(\audio: music.mp3 caption: This is a piece of audio with a caption below it.)`
+
+### File
+
+(file: Simple Robotics Activity.pdf)
+
+`(\file: Simple Robotics Activity.pdf)`
+
+(file: Homework #1.docx text: Homework #1)
+
+`(\file: Homework #1.docx text: Homework #1)`
+
+### Gallery
+
+(gallery: building.jpg, bunny.jpg, hamster.jpg, squirrel.jpg, duck.jpg)
+
+`(\gallery: building.jpg, bunny.jpg, hamster.jpg, squirrel.jpg, duck.jpg)`
+
+Clicking any image in the gallery enlarges it and allows for swipe/click/keyboard navigation.
+
+### Image
+
+(image: squirrel.jpg caption: This is a squirrel.)
+
+`(\image: squirrel.jpg caption: This is a squirrel.)`
+
+The optional `size:` attribute can be set to either `medium` or `small`. Resized images are floated to the right-hand side of the page, allowing text to flow around them.
+
+Any image can be clicked to enlarge it in a photo viewer. If other images exist on the page, they can be accessed from the photo viewer.
+
+All images are automatically "lazy loaded" by the browser; they're only downloaded when the user scrolls down and is likely to see them. This saves a lot of bandwidth, particularly on image-heavy posts.
+
+### Video
+
+(video: https://www.youtube.com/watch?v=PXkp4vmJth8 caption: Cute animals.)
+
+`(\video: https://www.youtube.com/watch?v=PXkp4vmJth8 caption: Cute animals.)`
+
+The video tag takes a YouTube or Vimeo URL, downloads the highest-resolution thumbnail available, and creates a nice-looking, clickable embed without any of the bloat of iframes. Clicking the image will load the iframe and begin playing the video.
+
+## Text editing basics
+
+Clicking the edit button on any Acorn page brings up a tool palette that can be used to create all of the following. Markdown can also be used, but the new formatting will only appear after the page is saved and refreshed.
+
+### Formatting
+
+Text can be **bolded**, **italicized**, or [hyperlinked](https://acorn.blog).
+
+### Headings
+
+Headings like the one above are used to separate content, and are used to automatically generate a table of contents for each page on the left-hand side. The tool palette only allows H2 and H3 headings, but smaller ones are possible with Markdown.
+
+### Lists
+
+Here's a bulleted list:
+
+- First bullet item, with a [link](http://google.com/)
+- Second bullet item
+- Third
+- And a fourth
+- And a fifth
+- A sixth
+- A seventh
+- And a super long eighth one to demonstrate what a longer bullet would look like when it wraps onto a second line like it's doing right now.
+- And a ninth for good measure
+
+And here's a numbered list:
+
+1. First bullet item, with a [link](http://google.com/)
+2. Second bullet item
+3. Third
+4. And a fourth
+5. And a fifth
+6. A sixth
+7. A seventh
+
+### Tables
+
+Tables currently behave a bit weirdly when they're being edited, but they mostly work. Tweak the one below, or add a new one.
+
+<table>
+  <tr>
+    <th>Title 1</th>
+    <th>Title 2</th>
+    <th>Title 3</th>
+  </tr>
+  <tr>
+    <td>Stuff in here</td>
+    <td>And in here</td>
+    <td>And here too</td>
+  </tr>
+  <tr>
+    <td>More stuff</td>
+    <td>Some more</td>
+    <td>A bit more</td>
+  </tr>
+</table>
+
+### Images, videos, and files
+
+The UI for these components is a bit janky at the moment. Images and files work, but videos require the page to be saved refreshed before they appear properly.

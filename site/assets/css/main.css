@@ -59,7 +59,8 @@ html {
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
-  overflow-y: scroll;                   /* Forces scrollbar on desktop to prevent jumping */
+  overflow-y: scroll;
+  background-color: rgba(var(--theme-bgcolor), 1);
 }
 
 body {
@@ -72,7 +73,6 @@ body {
   
   position: relative;
   margin-top: 53px;
-  background-color: var(--theme-bgcolor);
   background-color: rgba(var(--theme-bgcolor), 1);
 }
 
@@ -281,6 +281,7 @@ body.boxed .main .container {
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
   grid-gap: 10px;
+  margin: .5rem 0;
 }
 
 /* Change the grid size at certain screen widths */
@@ -667,6 +668,16 @@ a {
   max-height: 110px;
   overflow: hidden;
 }
+
+.link img {
+  min-width: 170px;
+  width: 170px;
+  min-height: 110px;
+  height: 110px;
+  object-fit: cover;
+}
+
+
 .link.quote a {
   max-height: initial;
   border-left-width: 4px;
@@ -677,31 +688,50 @@ a {
 }
 
 .link strong {
+  display: inline-block;
+  display: -webkit-box;
+  overflow: hidden;
   line-height: 1.4rem;
+  max-height: 2.8rem;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
-.link div {
+.linkcontent {
+  max-height: 70px;
+  overflow: hidden;
+}
+
+.link > a > div {
   width: 100%;
   padding: 10px;
+  
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.link div span:nth-child(2) {
+.link .linkcontent span {
+  display: block;
+  color: #666;
+}
+
+.link .linkcontent span {
   max-height: 40px;
   overflow: hidden;
   color: #666;
   font-size: .9rem;
   line-height: 1.3rem;
 }
-.link.quote div span:nth-child(2) {
+.link.quote .linkcontent {
   max-height: initial;
 }
 
-.link div span:nth-child(3) {
+.link .info {
   color: #888;
   font-size: .8rem;
+  background-color: rgba(var(--theme-bgcolor), 1);
 }
 
 
@@ -742,15 +772,15 @@ a[class*="file-"] {
 	*/
 }
 
-.file-pdf { background-image: url(../../assets/images/file-pdf.svg); }
-.file-doc, .file-docx, .file-wpd, .file-wps { background-image: url(../../assets/images/file-doc.svg); }
-.file-ppt { background-image: url(../../assets/images/file-ppt.svg); }
-.file-csv, .file-xls { background-image: url(../../assets/images/file-xls.svg); }
-.file-zip { background-image: url(../../assets/images/file-zip.svg); }
-.file-vi { background-image: url(../../assets/images/file-vi.svg); }
-.file-img { background-image: url(../../assets/images/file-img.svg);}
-.file-rtf { background-image: url(../../assets/images/file-rtf.svg);}
-.file-mp3, .file-m4a, .file-wav { background-image: url(../../assets/images/file-mp3.svg);}
+.file-pdf { background-image: url(/site/assets/images/file-pdf.svg); }
+.file-doc, .file-docx, .file-wpd, .file-wps { background-image: url(/site/assets/images/file-doc.svg); }
+.file-ppt { background-image: url(/site/assets/images/file-ppt.svg); }
+.file-csv, .file-xls { background-image: url(/site/assets/images/file-xls.svg); }
+.file-zip { background-image: url(/site/assets/images/file-zip.svg); }
+.file-vi { background-image: url(/site/assets/images/file-vi.svg); }
+.file-img { background-image: url(/site/assets/images/file-img.svg);}
+.file-rtf { background-image: url(/site/assets/images/file-rtf.svg);}
+.file-mp3, .file-m4a, .file-wav { background-image: url(/site/assets/images/file-mp3.svg);}
 
 /* Page Themes / Colors
 ----------------------------------------------------------------------------- */
@@ -1614,8 +1644,10 @@ article a {
 
 /* List items, making sure that URLs don't wrap, and long words don't */
 article li {
+  /*
   word-wrap: break-word;
   overflow-wrap: break-word;
+  */
   -webkit-hyphens: auto;
   hyphens: auto;
 }
@@ -1623,9 +1655,11 @@ article li {
 /* Workaround for bug in Safari 10.1+ that prevents word-wrap: break-word from working as expected on extremely long words.
    Hyphens also don't always work properly in Safari either, weird.
    All other browsers are fine, just not Safari for some reason. */
+/*
 @media not all and (min-resolution:.001dpcm) { @media {
   article li { word-break: break-all; }
 }}
+*/
 
 h2 a:hover {
  color: inherit;
@@ -2525,7 +2559,7 @@ form div[role='group'] h3 {
 }
 
 
-/* Signup form color picket (abandoned)
+/* Signup form color picker (abandoned)
 ----------------------------------------------------------------------------- */
 
 #colorselector input[type=radio] {
@@ -3691,10 +3725,15 @@ video {
   width: 100%;
   background-color: black;
 }
+
 audio {
   display: inline-block;
   width: 100%;
-  margin: 0.5rem auto;
+  /*margin: 0.5rem auto;*/
+}
+audio + figcaption {
+  margin: initial;
+  margin-top: -5px;
 }
 
 iframe {
@@ -3759,6 +3798,7 @@ iframe {
 
 iframe.visible {
   z-index: 1;
+  background-color: black;
 }
 
 .youtube .play {
@@ -3928,8 +3968,8 @@ iframe.visible {
   */
   height: 25vh;
   max-height: 30vh;
+  min-height: 150px;
 }
-
 
 #hero figcaption {
   position: absolute;
@@ -3946,6 +3986,27 @@ iframe.visible {
   margin: 0;
   font-size: 5vh;
 }
+
+#hero figcaption span:nth-child(3) {
+  font-size: 4vh;
+}
+@media (min-height: 1000px) {
+  #hero figcaption {
+    font-size: 50px;
+  }
+  #hero figcaption span:nth-child(3) {
+    font-size: 4vh;
+  }
+}
+@media (max-height: 600px) {
+  #hero figcaption {
+    font-size: 36px;
+  }
+  #hero figcaption span:nth-child(3) {
+    font-size: 30px;
+  }
+}
+
 
 /*
 #hero figure {

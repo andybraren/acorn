@@ -32,10 +32,14 @@
   <?php endif ?>
 	
 	<?php $favicon = site()->images()->findBy('name', 'logo-favicon') ?>
+	<?php if ($favicon): ?>
 	<link rel="shortcut icon" type="image/png" href="<?php echo $favicon->url() ?>">
+	<?php endif ?>
 	
 	<?php $appletouch = site()->images()->findBy('name', 'logo-apple-touch') ?>
+	<?php if ($appletouch): ?>
 	<link rel="apple-touch-icon" href="<?php echo $appletouch->url() ?>">
+	<?php endif ?>
 	
   <?php echo css('site/assets/css/main.css') ?>
 

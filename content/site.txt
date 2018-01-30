@@ -10,7 +10,7 @@ Usertypes: user, admin
 ----
 Grouptypes: 
 ----
-Footerleft: © 2017-(date: Year)
+Footerleft: © 2018-(date: Year)
 ----
 Footerright: 
 ----
@@ -153,7 +153,7 @@ analytics:
     id: ''
   google:
     enabled: false
-    id: ''
+    id: ""
 memberships:
   memberships: false
   perks:
@@ -161,9 +161,10 @@ memberships:
     dis-google-analytics: false
     dis-affiliates: false
 commerce:
-  commerce: true
-  coupons: true
+  commerce: false
+  coupons: false
   stripe:
+    testmode: true
     pk-test: ''
     sk-test: ''
     pk-live: ''
@@ -172,6 +173,6 @@ commerce:
   authorize-key: ''
   paypal-key: ''
 advanced:
-  cdn: true
+  cdn: false
   cache: false
   debug: true

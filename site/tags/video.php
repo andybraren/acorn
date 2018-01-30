@@ -117,7 +117,7 @@ kirbytext::$tags['video'] = array(
       // Vimeo Videos
       if (str::contains($url, "vimeo.com")) {
         
-        $vimeoid = substr(parse_url($url, PHP_URL_PATH), 1);;
+        $vimeoid = substr(parse_url($url, PHP_URL_PATH), 1);
         //$vimeothumburl = "https://vimeo.com/api/v2/video/" . $vimeoid . ".php";
         //$hash = unserialize(@file_get_contents($vimeothumburl));
         //$vimeothumb = $hash[0]['thumbnail_large'];

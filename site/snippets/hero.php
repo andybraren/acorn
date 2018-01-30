@@ -1,7 +1,7 @@
 <?php $imagesold = $page->images()->filter(function($image){ return str::contains($image->filename(), 'hero'); }); ?>
 <?php $images = $page->images()->filterBy('name', '*=', 'hero'); ?>
 
-<?php if (in_array($page->uid(), array('articles','projects','equipment'))): ?>
+<?php if (in_array($page->uid(), array('articles','equipment'))): ?>
   <?php $images = $page->children()->filterBy('visibility','public')->sortBy('dateCreated','desc')->images()->filterBy('name', '*=', 'hero')->limit(3) ?>
   
   <?php

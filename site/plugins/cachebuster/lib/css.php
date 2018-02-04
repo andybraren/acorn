@@ -4,6 +4,8 @@ namespace Kirby\Cachebuster;
 
 use F;
 
+use MatthiasMullie\Minify;
+
 /**
  * Kirby Cachebuster CSS Component
  * 
@@ -16,32 +18,28 @@ class CSS extends \Kirby\Component\CSS {
   /**
    * Builds the html link tag for the given css file
    * 
-   * @param string $url
+   * @param string $src
    * @param null|string $media
    * @return string
    */
-  public function tag($url, $media = null) {
+  public function tag($src, $media = null) {
 
-    if(is_array($url)) {
+    if (is_array($src)) {
       $css = array();
-      foreach($url as $u) $css[] = $this->tag($u, $media);
+      foreach($src as $s) $css[] = $this->tag($s, $media);
       return implode(PHP_EOL, $css) . PHP_EOL;
     }
 
-    $file = kirby()->roots()->index() . DS . $url;
+    $file = kirby()->roots()->index() . DS . $src;
 
-    if(file_exists($file)) {
-      /*
-      $mod = f::modified($file);
-      $url = dirname($url) . '/' . f::name($url) . '.' . $mod . '.css';
-      */
+    if (file_exists($file)) {
       
-      $newcss = file_get_contents($file);
+      $new = file_get_contents($file);
       
       // Add site width
       $search  = '--site-width: /**/;';
       $replace = '--site-width: ' . site()->setting('style/width') . 'px;';
-      $newcss = str_replace($search, $replace, $newcss);
+      $new = str_replace($search, $replace, $new);
       
       // Add bg color
       $search  = '--theme-bgcolor: /**/;';
@@ -50,9 +48,16 @@ class CSS extends \Kirby\Component\CSS {
       } else {
         $replace = '--theme-bgcolor: 255, 255, 255;';
       }
-      $newcss = str_replace($search, $replace, $newcss);
+      $new = str_replace($search, $replace, $new);
       
-      $newfilename = f::name($url) . '.' . f::modified($file) . '.css';
+      // Minify
+      if (site()->setting('advanced/debug') == false) {
+        $minifier = new Minify\CSS;
+        $minifier->add($new);
+        $new = $minifier->minify();
+      }
+      
+      $newfilename = f::name($src) . '.' . f::modified($file) . '.css';
       
       $newsrc = kirby()->roots()->index() . DS . 'cache/assets/css/' . $newfilename;
       $newsrc = 'cache/assets/css/' . $newfilename;
@@ -61,11 +66,10 @@ class CSS extends \Kirby\Component\CSS {
       if (!is_dir(kirby()->roots()->index() . DS . 'cache/assets/css/')) {
         mkdir(kirby()->roots()->index() . DS . 'cache/assets/css/', 0775, true);
       }
-      file_put_contents($newfile, $newcss);
+      file_put_contents($newfile, $new);
       
     }
 
-    //return parent::tag($url, $media);
     return parent::tag($newsrc, $media);
 
   }

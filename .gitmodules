@@ -4,3 +4,9 @@
 [submodule "stripe-php"]
 	path = site/plugins/acorn-commerce/vendor/stripe-php
 	url = https://github.com/stripe/stripe-php.git
+[submodule "site/plugins/cachebuster/vendor/minify"]
+	path = site/plugins/cachebuster/vendor/minify
+	url = https://github.com/matthiasmullie/minify.git
+[submodule "site/plugins/cachebuster/vendor/path-converter"]
+	path = site/plugins/cachebuster/vendor/path-converter
+	url = https://github.com/matthiasmullie/path-converter.git

@@ -14,3 +14,14 @@ load([
 
 kirby()->set('component', 'css', 'Kirby\\Cachebuster\\CSS');
 kirby()->set('component', 'js',  'Kirby\\Cachebuster\\JS');
+
+// Load the Minify files when debugging mode is off
+require_once(kirby()->roots()->plugins() . DS . 'cachebuster/vendor/minify/src/Minify.php');
+require_once(kirby()->roots()->plugins() . DS . 'cachebuster/vendor/minify/src/CSS.php');
+require_once(kirby()->roots()->plugins() . DS . 'cachebuster/vendor/minify/src/JS.php');
+require_once(kirby()->roots()->plugins() . DS . 'cachebuster/vendor/minify/src/Exception.php');
+require_once(kirby()->roots()->plugins() . DS . 'cachebuster/vendor/minify/src/Exceptions/BasicException.php');
+require_once(kirby()->roots()->plugins() . DS . 'cachebuster/vendor/minify/src/Exceptions/FileImportException.php');
+require_once(kirby()->roots()->plugins() . DS . 'cachebuster/vendor/minify/src/Exceptions/IOException.php');
+require_once(kirby()->roots()->plugins() . DS . 'cachebuster/vendor/path-converter/src/ConverterInterface.php');
+require_once(kirby()->roots()->plugins() . DS . 'cachebuster/vendor/path-converter/src/Converter.php');

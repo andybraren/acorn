@@ -50,7 +50,9 @@ kirbytext::$post[] = function($kirbytext, $value) {
   //$value = preg_replace_callback('/https?:\/\/(www\.)?amazon\.com\/([a-zA-Z0-9\/]*)/', 'add_affiliate', $value);
   //$value = preg_replace_callback('#https:\/\/(www\.)?amazon\.com\/(.*?)\/(dp\/|gp\/)?([a-zA-Z0-9\/]*)\/(.*?)"#', 'add_affiliate', $value);
   
-  $value = preg_replace_callback('/"https:\/\/(www\.)?amazon\.com\/(.*)"/', 'add_amazon_affiliate', $value);
+  if (site()->setting('monetization/affiliate/enabled') === true) {
+    $value = preg_replace_callback('/"https:\/\/(www\.)?amazon\.com\/(.*)"/', 'add_amazon_affiliate', $value);
+  }
   
   return $value;
 };

@@ -76,21 +76,32 @@ if (!isset($type)) {
   
   if (isset($type)) {
     if ($type != 'users') {
+      
       if (isset($type)) { // Collect all items of the given type
         //$items = $site->page($type)->children()->sortBy('created','desc');
         //$items = $site->page($type)->children()->sortBy('datedata','desc');
         //$items = $site->page($type)->children()->sortBy('dateCreated','desc');
         //$items = $site->page($type)->children()->dateCreated();
         
-        if ($type == 'none') {
-          $items = page()->children()->sortBy('datePublished','desc');
+        if (isset($items2)) {
+          $items = new Pages();
+          foreach ($items2 as $item) {
+            $items->add($type . '/' . $item);
+          }
         } else {
-          if ($site->page($type)) {
-            if ($site->page($type)->children()) {
-              $items = $site->page($type)->children()->sortBy('datePublished','desc');
+          
+          if ($type == 'none') {
+            $items = page()->children()->sortBy('datePublished','desc');
+          } else {
+            if ($site->page($type)) {
+              if ($site->page($type)->children()) {
+                $items = $site->page($type)->children()->sortBy('datePublished','desc');
+              }
             }
           }
+          
         }
+        
       }
       if (isset($maker)) {
         $filtered = new Pages();
@@ -265,10 +276,12 @@ if (!isset($type)) {
         <?php endif ?>
         */ ?>
         
-        <?php if($item->content()->description()->exists()): ?>
-          <p><?php echo $item->content()->description() ?></p>
+        <?php if($item->excerpt()->exists()): ?>
+          <p><?php echo $item->excerpt() ?></p>
         <?php else: ?>
+          <?php /*
           <p><?php echo $item->text()->excerpt(300) ?></p>
+          */ ?>
         <?php endif ?>
         
         

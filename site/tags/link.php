@@ -58,7 +58,7 @@ kirbytext::$tags['link'] = array(
       
       $title = $internalpage->title();
       $date = date('M j Y', $internalpage->datePublished());
-      $excerpt = $internalpage->content()->description();
+      $excerpt = $internalpage->excerpt();
       $image = ($internalpage->heroImage()) ? $internalpage->heroImage()->crop(170, 110) : '';
             
       $author = $internalpage->authors()->first(); // Get the first (primary) author of a page

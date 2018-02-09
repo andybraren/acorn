@@ -120,6 +120,7 @@
 
 
 <?php // RELATED SPACES AND HANDBOOKS ?>
+<?php /*
 <?php if ($type == 'spaces' or $type == 'handbooks'): ?>
   
   <?php $divechoed = false; ?>
@@ -163,6 +164,7 @@
   <?php endif ?>
     
 <?php endif ?>
+*/ ?>
 
 
 
@@ -213,33 +215,20 @@
 
 
 <?php // LINKS ?>
+<?php /*
 <?php if ($type == 'links' and $page->links() != null): ?>
   
   <div class="widget">
     <span class="heading">LINKS</span>
     <ul>
       <?php foreach ($page->links() as $link): ?>
-        <?php $part = str::split($link, '==') ?>
-        <?php
-          switch (true) {
-            case str::contains($part[1],'facebook'):
-              $linkid = 'link-facebook'; break;
-            case str::contains($part[1],'twitter'):
-              $linkid = 'link-twitter'; break;
-            case str::contains($part[1],'github'):
-              $linkid = 'link-github'; break;
-            case str::contains($part[1],'drive'):
-              $linkid = 'link-drive'; break;
-            default:
-              $linkid = null;
-          }
-        ?>
-        <li <?php echo ($linkid) ? 'id="' . $linkid . '"' : ''?>><a href="<?php echo $part[1] ?>"><?php echo $part[0] ?></a></li>
+        <li <?php echo ($link['icon']) ? 'id="' . $link['icon'] . '"' : ''?>><a href="<?php echo $link['url'] ?>"><?php echo $link['label'] ?></a></li>
       <?php endforeach ?>
     </ul>
   </div>
   
 <?php endif ?>
+*/ ?>
 
 <?php // AUTHORS ?>
 <?php if ($type == 'authorss'): ?>
@@ -404,11 +393,17 @@
 
 
 <?php // Related Groups, Events, and Authors ?>
+<?php /*
 <?php if ($type == 'authors' or $type == 'groups' or $type == 'events' or $type == 'projects'): ?>
   
   <?php
     if ($type == 'authors') {
-      $items    = $page->authors();
+      
+      if ($page->authors()) {
+        $items = $page->authors();
+      } else {
+        $items = null;
+      }
       $singular = 'author';
       $plural   = 'authors';
       $id       = 'users';
@@ -428,6 +423,7 @@
           $plural = $plural;
       }
     }
+    
     if ($type == 'groups') {
       $items    = $page->relatedGroups();
       $singular = 'group';
@@ -447,11 +443,12 @@
       $id       = 'projects';
     }
     
-    $heading = ($items->count() > 1) ? strtoupper($plural) : strtoupper($singular);
+    //$heading = ($items->count() > 1) ? strtoupper($plural) : strtoupper($singular);
+    $heading = '';
   ?>
   
   <?php if (isset($items) and !is_null($items) and $items != '' or $page->isEditableByUser()): ?>
-    <div class="widget<?php echo ($items == '' and $page->isEditableByUser()) ? ' hidden' : '' ?>">
+    <div class="widget">
       
       <div class="row">
         <span class="heading"><?php echo $heading ?></span>
@@ -502,8 +499,8 @@
                     
                     <?php if ($type == 'authors'): ?>
                       <span><?php echo $item->firstname() . ' ' . $item->lastname() ?></span>
-                      <?php if ($item->major() != null): ?>
-                        <span><?php echo $item->major() ?></span>
+                      <?php if ($description = authorDescription($page, $item->username())): ?>
+                        <span><?php echo $description ?></span>
                       <?php endif ?>
                     <?php else: ?>
                       <span><?php echo $item->title() ?></span>
@@ -524,7 +521,7 @@
   <?php endif ?>
 <?php endif ?>
 
-
+*/ ?>
 
 
 

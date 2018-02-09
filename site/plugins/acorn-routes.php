@@ -214,7 +214,6 @@ $kirby->set('route', array(
   'pattern' => 'robots.txt',
   'method'  => 'GET',
   'action'  => function() {
-    echo '<pre style="word-wrap: break-word; white-space: pre-wrap;">';
     
     if (site()->setting('general/indexable')) {
       echo 'User-agent: *<br>Disallow: /thumbs/<br>Disallow: /users<br>Disallow: /drafts/<br>Sitemap: ' . site()->url() . '/sitemap';
@@ -222,10 +221,9 @@ $kirby->set('route', array(
         echo '<br>Disallow: /' . $hiddenpage->uri();
       }
     } else {
-      echo 'User-agent: *<br>Disallow: /';
+      echo 'User-agent: *' . "\r\n" . 'Disallow: /';
     }
     
-    echo '</pre>';
   }
 ));
 

@@ -474,187 +474,171 @@ $kirby->set('route', array(
     //$newpage = $parenturi . '/' . date('His');
     $newpage = $parenturi . '/' . date('YmdHis') . milliseconds();
     
-    //$pagetype = preg_replace('/s\b/', '', strtolower(site()->page($parenturi)->title()));
-    $pagetype = '';
-    if ($pagetype == 'forum') {
-      $pagetype = 'forum thread';
-    }
+    $user = site()->user();
     
-    $related = (kirby()->request()->has('related')) ? get('related') : '';
-    
-    if ($related != '') {
-      $visibility = 'public';
-    } else {
-      $visibility = 'private';
-    }
-    
-    /* If this new page is coming from an event page, inherit the event page's visibility setting */
-    $originpage = null;
-    if ($related != '') {
-      $originpage = site()->index()->findBy('uid', $related);
-    }
-    if ($originpage) {
-      if ($originpage->parent() == 'events') {
-        $visibility = $originpage->visibility();
-      }
-    }
-    
-    $color = (site()->user()) ? site()->user()->color() : site()->coloroptions()->split(',')[0];
-    
-    $username = (site()->user()) ? site()->user()->username() : 'anonymous-kangaroo-' . date('YmdHis') . milliseconds();
-    
-    /* If the user is anonymous, give them a cookie with an assigned username */
-    if (!site()->user()) {
-      cookie::set('anonymousID', $username, $expires = 60*24*30, $path = '/', $domain = null, $secure = true);
-    }
-    
-    try {
-      page()->create($newpage, 'page', array(
-        'Title' => '',
-        'DateData'  => date('Y-m-d H:i:s') . ', ' . date('Y-m-d H:i:s'),
-        'UserData' => $username,
-        'RelData' => $related,
-        'Settings' => $visibility . ', ' . $color . ', comments == off, submissions == off, price == off',
-        'Hero' => '',
-        'Text' => '',
-      ));
-      return go($newpage);
-    } catch(Exception $e) {
-      return page('error');
-    }
+    pageWizard($newpage, $user, $_POST);
     
   }
 ));
 
-
-
-
-// Save Pages
-$kirby->set('route', array(
-  'pattern' => array('save', '(.+save)'),
-  'method' => 'POST',
-  'action'  => function() {
-    
-		// Formatting
-		// ----------
-		// $_POST['page'] = /directory/slug
-		
-    if (isset($_POST['page'])) {
-      $string = site()->homePage()->url();
-      $blah = parse_url($string, PHP_URL_PATH);
-      $tweakedpostpage = str_replace($blah,'', strtolower($_POST['page']));
+function pageWizard($targetpageuri, $user, $data) {
+  
+  $_POST = $data;
+  $user = $user;
+  
+  if (!site()->find($targetpageuri)) {
+    $targetpage = site()->page('site/contentfile');
+    $exists = false;
+  } else {
+    $targetpage = site()->page($targetpageuri);
+    $exists = true;
+  }
+  
+  // TITLE FIELD
+  $originaltitle = $targetpage->content()->title();
+  //$newTitle = esc($_POST['title']) ? $targetpage->content()->title() : '';
+  $newTitle = (isset($_POST['title'])) ? ($_POST['title']) : yaml($targetpage->title());
+  /*
+  if (isset($_POST['title'])) {
+    $originaltitle = $targetpage->content()->title();
+    $newTitle = esc($_POST['title']) ? $targetpage->content()->title() : '';
+  } else {
+    $newTitle = '';
+  }
+  */
+  
+  // META FIELD
+  $newMeta = array();
+  $newMeta = yaml($targetpage->meta());
+  
+  function getAuthors($string) { // 'abraren, pbraren'
+    $authors = array();
+    foreach (array_unique(str::split(esc($_POST['authors']),',')) as $author) {
+      if (site()->user($author)) {
+        $new = array();
+        $user = site()->user($author);
+        $new['username'] = $user->username();
+        $new['description'] = "";
+        array_push($authors, $new);
+      }
     }
-		
-		$targetpage = site()->page($tweakedpostpage);
-		
-		// Account for custom routes
-		if (!$targetpage) $targetpage = page('posts' . $tweakedpostpage);
-		if (!$targetpage) $targetpage = page('users' . $tweakedpostpage);
-		
-		//$originaltitle = $targetpage->title();
-		$originaltitle = ($targetpage->title()) ? $targetpage->title() : '';
-		
-		$title = (isset($_POST['title'])) ? $_POST['title'] : $targetpage->title();
-		$text  = (isset($_POST['text'])) ? $_POST['text'] : $targetpage->text();
-		$text = strip_tags($text);
-		
-		/* DateData */
-		$dateCreated = date('Y-m-d H:i:s', $targetpage->dateCreated());
-		$dateModified  = date('Y-m-d H:i:s');
-		//$modifiedBy = site()->user(get('username'));
-		if ($targetpage->datePublished()) {
-  		$datePublished = date('Y-m-d H:i:s', $targetpage->datePublished());
-		} else {
-  		if (isset($_POST['visibility'])) {
-    		if ($_POST['visibility'] == 'public' or $_POST['visibility'] == 'groups') {
-      		$datePublished = date('Y-m-d H:i:s');
-    		} else {
-      		$datePublished = null;
-    		}
-  		} else {
-    		$datePublished = null;
-  		}
-		}
-		$datedata = implode(', ', array_filter(array($dateCreated, $dateModified, $datePublished)));
-		
-		/* UserData */
-		$authors = (isset($_POST['users'])) ? $_POST['users'] : implode(', ', $targetpage->authors()->toArray());
-		
-		if (empty($_POST['users'])) {
-  		$authors = $targetpage->authorsRaw();
-		}
-		$oldauthors = '';
-		$subscribers = '';
-		$subscriberEmails = '';
-		$registrants = '';
-		$attendees = '';
-		  $requests = (isset($_POST['requests'])) ? $_POST['requests'] : implode(', ', $targetpage->requests());
-		  $requests = (isset($_POST['join'])) ? implode(', ', array_merge($targetpage->requests(), array($_POST['join']))) : $requests;
-		$userdata = implode(' ///', array_filter(array($authors, $oldauthors, $subscribers, $subscriberEmails, $registrants, $attendees, $requests)));
-		
-		/* RelData */
-		$relatedProjects = (isset($_POST['projects'])) ? $_POST['projects'] : $targetpage->relatedProjects();
-		$relatedGroups   = (isset($_POST['groups'])) ? $_POST['groups'] : $targetpage->relatedGroups();
-		$relatedEvents   = (isset($_POST['events'])) ? $_POST['events'] : $targetpage->relatedEvents();
-		$reldata         = implode(', ', array_filter(array($relatedProjects, $relatedGroups, $relatedEvents)));
-		
-		/* Settings */
-		$visibility  = (isset($_POST['visibility'])) ? $_POST['visibility'] : $targetpage->visibility();
-		$color       = (isset($_POST['color'])) ? $_POST['color'] : $targetpage->color();
-    $comments    = 'comments == '    . ((isset($_POST['comments']))    ? $_POST['comments']    : $targetpage->comments());
-		$submissions = 'submissions == ' . ((isset($_POST['submissions'])) ? $_POST['submissions'] : $targetpage->submissions());
-		$price       = 'price == ' . 'off';
-		$settings    = implode(', ', array_filter(array($visibility, $color, $comments, $submissions, $price)));
-		
-		/* Hero */
-		$hero = (isset($_POST['hero'])) ? $_POST['hero'] : $targetpage->hero();
-		
-		/* Menu */
-		$menuPrimary = (isset($_POST['menuprimary'])) ? $_POST['menuprimary'] : '';
-		
-		$menuPrimary = yaml::encode(str::parse($menuPrimary));
-		
-		if ($menuPrimary) {
-      site()->update(array(
-        'menuprimary'  => $menuPrimary,
-      ));
-		}
-		
-		
-		// NEED TO CREATE EXCERPT AFTER EVERY PAGE SAVE
-		//$excerpt = preg_replace("!(?=[^\]])\([a-z0-9_-]+:.*?\)!is", "", html::decode(markdown(preg_replace("/(#+)(.*)/", "", $page->text()->short(300)))));
-		
-		
+    return $authors;
+  }
+  $newMeta['authors'] = (isset($_POST['authors'])) ? getAuthors($_POST['authors']) : $newMeta['authors'];
+  
+  $newMeta['date']['created']     = (isset($_POST['created']))   ? (esc($_POST['created'])) : $newMeta['date']['created'];
+  $newMeta['date']['modified']    = date('Y-m-d H:i:s', time());
+  $newMeta['date']['modifiedby']  = $user->username();
+  $newMeta['date']['published']   = (isset($_POST['published'])) ? (esc($_POST['published'])) : $newMeta['date']['published'];
+  $newMeta['date']['updated']     = (isset($_POST['updated']))   ? (esc($_POST['updated'])) : $newMeta['date']['updated'];
+  $newMeta['date']['start']       = (isset($_POST['start']))     ? (esc($_POST['start'])) : $newMeta['date']['start'];
+  $newMeta['date']['end']         = (isset($_POST['end']))       ? (esc($_POST['end'])) : $newMeta['date']['end'];
+  
+  $newMeta['related']['tags']     = (isset($_POST['tags']))      ? (esc($_POST['tags'])) : $newMeta['related']['tags'];
+  $newMeta['related']['internal'] = (isset($_POST['internal']))  ? (esc($_POST['internal'])) : $newMeta['related']['internal'];
+  $newMeta['related']['external'] = (isset($_POST['external']))  ? (esc($_POST['external'])) : $newMeta['related']['external'];
+  
+  $newMeta['info']['subtitle']    = (isset($_POST['subtitle']))    ? (esc($_POST['subtitle'])) : $newMeta['info']['subtitle'];
+  $newMeta['info']['description'] = (isset($_POST['description'])) ? (esc($_POST['description'])) : $newMeta['info']['description'];
+  $newMeta['info']['excerpt']     = (isset($_POST['text'])) ? (stringToExcerpt(esc($_POST['text']))) : $newMeta['info']['excerpt'];
+  
+  $newMeta['data']['likes']       = (isset($_POST['likes'])) ? (esc($_POST['likes'])) : $newMeta['data']['likes'];
+  $newMeta['data']['dislikes']    = (isset($_POST['dislikes'])) ? (esc($_POST['dislikes'])) : $newMeta['data']['dislikes'];
+  $newMeta['data']['requests']    = (isset($_POST['requests'])) ? (esc($_POST['requests'])) : $newMeta['data']['requests'];
+  $newMeta['data']['subscribers'] = (isset($_POST['subscribers'])) ? (esc($_POST['subscribers'])) : $newMeta['data']['subscribers'];
+  $newMeta['data']['registrants'] = (isset($_POST['registrants'])) ? (esc($_POST['registrants'])) : $newMeta['data']['registrants'];
+  $newMeta['data']['attendees']   = (isset($_POST['attendees'])) ? (esc($_POST['attendees'])) : $newMeta['data']['attendees'];
+  $newMeta['data']['address']     = (isset($_POST['address'])) ? (esc($_POST['address'])) : $newMeta['data']['address'];
+  $newMeta['data']['addressinfo'] = (isset($_POST['addressinfo'])) ? (esc($_POST['addressinfo'])) : $newMeta['data']['addressinfo'];
+  $newMeta['data']['hours']       = (isset($_POST['hours'])) ? (esc($_POST['hours'])) : $newMeta['data']['hours'];
+  $newMeta['data']['hoursinfo']   = (isset($_POST['hoursinfo'])) ? (esc($_POST['hoursinfo'])) : $newMeta['data']['hoursinfo'];
+  $newMeta['data']['rating']      = (isset($_POST['rating'])) ? (esc($_POST['rating'])) : $newMeta['data']['rating'];
+  $newMeta['data']['hero']        = (isset($_POST['hero'])) ? (esc($_POST['hero'])) : $newMeta['data']['hero'];
+  $newMeta['data']['icon']        = (isset($_POST['icon'])) ? (esc($_POST['icon'])) : $newMeta['data']['icon'];
+  $newMeta['data']['price']       = (isset($_POST['price'])) ? (esc($_POST['price'])) : $newMeta['data']['price'];
+  $newMeta['data']['audio']       = (isset($_POST['audio'])) ? (esc($_POST['audio'])) : $newMeta['data']['audio'];
+  
+  // SETTINGS FIELD
+  $newSettings = array();
+  $newSettings = yaml($targetpage->settings());
+  
+  $newSettings['visibility']  = (isset($_POST['visibility'])) ? (esc($_POST['visibility'])) : $newSettings['visibility'];
+  $newSettings['color']       = (isset($_POST['color'])) ? (esc($_POST['color'])) : $newSettings['color'];
+  $newSettings['hero-color']  = (isset($_POST['hero-color'])) ? (esc($_POST['hero-color'])) : $newSettings['hero-color'];
+  $newSettings['hero-style']  = (isset($_POST['hero-style'])) ? (esc($_POST['hero-style'])) : $newSettings['hero-style'];
+  $newSettings['toc']         = (isset($_POST['toc'])) ? (esc($_POST['toc'])) : $newSettings['toc'];
+  $newSettings['discussion']  = (isset($_POST['discussion'])) ? (esc($_POST['discussion'])) : $newSettings['discussion'];
+  $newSettings['submissions'] = (isset($_POST['submissions'])) ? (esc($_POST['submissions'])) : $newSettings['submissions'];
+  
+  // TEXT FIELD
+  $newText = (isset($_POST['text'])) ? (strip_tags($_POST['text'])) : $targetpage->content()->text();
+  
+  // Set the new fields
+  $newTitle = $newTitle;
+  $newMeta = yaml::encode($newMeta);
+  $newSettings = yaml::encode($newSettings);
+  $newText = $newText;
+  
+  if (!$exists) { // CREATE THE NEW PAGE
+    
     try {
-      site()->page($targetpage)->update(array(
-        'Title'    => $title,
-        'DateData' => $datedata,
-        'UserData' => $userdata,
-        'RelData' => $reldata,
-        'Settings' => $settings,
-        'Hero' => $hero,
-        'Text'  => $text,
+      /*
+      site()->page($targetpage)->create(array(
+        'Title'    => $newTitle,
+        'Meta'     => $newMeta,
+        'Settings' => $newSettings,
+        'Text'     => $newText,
       ));
-      //echo var_dump($_POST);
-
-      if ($title != $originaltitle and $targetpage->parent() != 'forum' and $targetpage->parent() != 'users') {
+      */
+      
+      site()->page()->create($targetpageuri, 'page', array(
+        'Title'    => $newTitle,
+        'Meta'     => $newMeta,
+        'Settings' => $newSettings,
+        'Text'     => $newText,
+      ));
+      
+      return go($targetpageuri);
+      //echo "yo";
+    } catch(Exception $e) {
+      //return page('error');
+      echo $e->getMessage();
+      //echo "blah";
+    }
+    
+  } else { // UPDATE THE EXISTING PAGE
+    
+    try {
+      
+      site()->page($targetpage)->update(array(
+        'Title'    => $newTitle,
+        'Meta'     => $newMeta,
+        'Settings' => $newSettings,
+        'Text'     => $newText,
+      ));
+      
+      if ($newTitle != $originaltitle and $targetpage->parent() != 'forum' and $targetpage->parent() != 'users') {
         $currentlocation = kirby()->roots()->content() . '/' . $targetpage->diruri();
-        $newlocation = kirby()->roots()->content() . '/' . $targetpage->parent()->diruri() . '/' . str::slug($title);
+        $newslug = acornSlugify($newTitle);
+        $newlocation = kirby()->roots()->content() . '/' . $targetpage->parent()->diruri() . '/' . $newslug;
         rename($currentlocation, $newlocation);
         
-        $changeurl = site()->url() . '/' . $targetpage->parent()->diruri() . '/' . str::slug($title);
-        $changeurl = str_replace('/posts','',$changeurl);
+        $changeurl = site()->url() . '/' . $targetpage->parent()->diruri() . '/' . $newslug;
+        $changeurl = str_replace('/posts', '', $changeurl);
         
         $response = array('changeurl' => $changeurl); // redirect to new url
         echo json_encode($response);
       }
+      
+      //echo "successfully updated";
       
     } catch(Exception $e) {
       echo $e->getMessage();
     }
     
   }
-));
+  
+}
 
 
 

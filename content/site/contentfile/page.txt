@@ -1,0 +1,52 @@
+Title: 
+----
+Meta: 
+
+authors: [ ]
+date:
+  created: ""
+  modified: 2018-03-13 20:17:47
+  modifiedby: abraren
+  published: ""
+  updated: ""
+  start: ""
+  end: ""
+related:
+  tags: ""
+  internal: ""
+  external: ""
+info:
+  subtitle: ""
+  description: ""
+  excerpt: ""
+data:
+  likes: ""
+  dislikes: ""
+  requests: ""
+  subscribers: ""
+  registrants: ""
+  attendees: ""
+  address: ""
+  addressinfo: ""
+  hours: ""
+  hoursinfo: ""
+  rating: ""
+  hero: ""
+  icon: ""
+  price: ""
+  audio: ""
+----
+Settings: 
+
+visibility: public
+title: visible
+sidebar-left: default
+sidebar-right: default
+color: default
+hero-color: ""
+hero-style: ""
+toc: default
+discussion: default
+submissions: default
+----
+Text: 

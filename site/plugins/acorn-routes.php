@@ -1248,6 +1248,68 @@ $kirby->set('route', array(
 
 
 
+
+$kirby->set('route', array(
+  'pattern' => 'search',
+  'method' => 'GET',
+  'action'  => function() {
+    
+    // I should probably just use this: https://getkirby.com/docs/cookbook/search
+    
+    $pages = site()->index();
+    
+    // If I ever want to do subdirectory-specific searches, this would be how
+    // $subpage = explode('/', $_SERVER['REQUEST_URI'])[1];
+    // echo $uid;
+    
+    // This should probably be turned into a snippet too?
+    // Just like I did with the content snippet, this woould pass values in and
+    // the snippet would return just the HTML that's needed.
+    
+    $results = new Pages();
+    
+    // filter by tags
+    if (isset($_GET['tags'])) {
+      
+      $tags = filter_var($_GET['tags'], FILTER_SANITIZE_STRING);
+      $tags = explode(',', $tags);
+      //print_r($tags);
+      
+      $pages->filter(function($page) use($tags, $results)  {
+        if (array_intersect($page->tags(), $tags)) {
+          $results->add($page);
+        }
+      });
+      
+    }
+    
+    // filter by text
+    if (isset($_GET['q'])) {
+      
+      $query = filter_var($_GET['q'], FILTER_SANITIZE_STRING);
+      
+      $pages->filter(function($page) use($query, $results)  {
+        if (stripos($page->text(), $query)) {
+          $results->add($page);
+        }
+      });
+      
+    }
+    
+    // sort by date
+    $results = $results->sortBy('dateCreated','desc');
+    
+    //tpl::load( kirby()->roots()->templates() . DS . 'default.php' );
+    
+    // return results
+    foreach ($results as $result) {
+      $item_date = date('M d Y', $result->dateCreated());
+      echo '<span style="font-family:monospace;">' . $item_date . ' - </span>' . '<a href="' . $result->url() . '">' . $result->title() . '</a>';
+      echo '<br>';
+    }
+    
+  }
+));
 $kirby->set('route', array(
   'pattern' => array('(:any)', '(:any)/(:any)'),
   'method'  => 'GET',

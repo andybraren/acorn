@@ -24,12 +24,12 @@ page::$methods['theme'] = function($page) {
     $setting = yaml($page->settings())['theme'];
     
     if ($setting == 'default' OR $setting == '') {
-      return site()->setting('style/default-color');
+      return 'default';
     } else {
       return $setting;
     }
   } else {
-    return site()->setting('style/default-color');
+    return 'default';
   }
   
 };

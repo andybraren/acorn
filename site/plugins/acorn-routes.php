@@ -123,7 +123,22 @@ $kirby->set('route', array(
 ));
 
 
-
+$kirby->set('route', array(
+  'pattern' => array('cleanuptime', '(.+cleanuptime)'),
+  'method' => 'GET',
+  'action'  => function() {
+    /*
+    foreach (site()->page('thinkerbitlinks')->children() as $item) {
+      
+      $oldpath = kirby()->roots()->content() . DS . $item->diruri();
+      $newpath = kirby()->roots()->content() . DS . $item->parent()->diruri() . DS . $item->uid();
+      
+      rename($oldpath, $newpath);
+      
+    }
+    */
+  }
+));
 
 
 
@@ -135,12 +150,12 @@ $kirby->set('route', array(
   'action'  => function() {
     
     try {
-  		
-  		$name = get('desiredname');
-  		
-  		dir::copy('subdomains/link/versions/v0.6/', 'demo/' . $name . '/');
-  		f::copy('subdomains/link/versions/v0.6/.htaccess', 'demo/' . $name . '/.htaccess');
-  		  		
+      
+      $name = get('desiredname');
+      
+      dir::copy('subdomains/link/versions/v0.6/', 'demo/' . $name . '/');
+      f::copy('subdomains/link/versions/v0.6/.htaccess', 'demo/' . $name . '/.htaccess');
+            
       $response = array('redirecturl' => 'https://tufts.makernetwork.org/demo/' . $name);
       echo json_encode($response);
       
@@ -154,20 +169,6 @@ $kirby->set('route', array(
   }
 ));
 
-
-
-
-$kirby->set('route', array(
-  'pattern' => '.well-known/apple-developer-merchantid-domain-association',
-  'method' => 'GET',
-  'action'  => function() {
-    
-    if (site()->setting('commerce/stripe/apple-merchant-id')) {
-      echo site()->setting('commerce/stripe/apple-merchantid');
-    }
-    
-  }
-));
 
 
 
@@ -209,33 +210,7 @@ $kirby->set('route', array(
   }
 ));
 
-// Virtual robots.txt file
-$kirby->set('route', array(
-  'pattern' => 'robots.txt',
-  'method'  => 'GET',
-  'action'  => function() {
-    
-    if (site()->setting('general/indexable')) {
-      echo 'User-agent: *<br>Disallow: /thumbs/<br>Disallow: /users<br>Disallow: /drafts/<br>Sitemap: ' . site()->url() . '/sitemap';
-      foreach (site()->index()->filterBy('visibility','unlisted') as $hiddenpage) {
-        echo '<br>Disallow: /' . $hiddenpage->uri();
-      }
-    } else {
-      echo 'User-agent: *' . "\r\n" . 'Disallow: /';
-    }
-    
-  }
-));
 
-// Virtual humans.txt file
-$kirby->set('route', array(
-  'pattern' => 'humans.txt',
-  'method'  => 'GET',
-  'action'  => function() {
-    $blah = kirby()->roots()->plugins() . '/' . 'humans.txt';
-    echo file_get_contents($blah);
-  }
-));
 
 
 
@@ -292,39 +267,39 @@ $kirby->set('route', array(
         $usertype = (page('users')->hasChildren()) ? 'user' : 'admin';
         
         // create the new user.php file
-      	try {
-  			  $user = $site->users()->create(array(
-  			    'username'    => get('username'),
-  				  'firstname'   => get('firstname'),
-  			    'lastname'    => get('lastname'),
-  			    'email'       => strtolower(get('email')),
-  			    'password'    => get('password'),
-  			    'datedata'    => date('Y-m-d H:i:s'),
-  			    'language'    => 'en',
-  			    'usertype'    => $usertype,
-  			    'color'       => strtolower(get('color')),
-  			  ));
-  			} catch(Exception $e) {
-  			  $e->getMessage();
-  			}
-  			
-  			// create the new maker profile page
-  			try {
-  				$firstandlast = get('firstname') . " " . get('lastname');
-  			  $newPage = page('users')->children()->create(get('username'), 'user', array(
-  			    'title' => $firstandlast,
-  			    'datedata' => date('Y-m-d H:i:s') . ', ' . date('Y-m-d H:i:s'),
+        try {
+          $user = $site->users()->create(array(
+            'username'    => get('username'),
+            'firstname'   => get('firstname'),
+            'lastname'    => get('lastname'),
+            'email'       => strtolower(get('email')),
+            'password'    => get('password'),
+            'datedata'    => date('Y-m-d H:i:s'),
+            'language'    => 'en',
+            'usertype'    => $usertype,
+            'color'       => strtolower(get('color')),
+          ));
+        } catch(Exception $e) {
+          $e->getMessage();
+        }
+        
+        // create the new maker profile page
+        try {
+          $firstandlast = get('firstname') . " " . get('lastname');
+          $newPage = page('users')->children()->create(get('username'), 'user', array(
+            'title' => $firstandlast,
+            'datedata' => date('Y-m-d H:i:s') . ', ' . date('Y-m-d H:i:s'),
             'userdata' => get('username'),
             'reldata' => '',
             'settings' => 'public, ' . strtolower(get('color')),
             'hero' => '',
-  			    'text'  => '',
-  			  ));
-  			} catch(Exception $e) {
-  			  echo $e->getMessage();
-  			}
-  			
-  			// log the user in and redirect them to their new profile page
+            'text'  => '',
+          ));
+        } catch(Exception $e) {
+          echo $e->getMessage();
+        }
+        
+        // log the user in and redirect them to their new profile page
         try {
           $user->login(get('password'));
           go('/users/' . get('username'));
@@ -332,7 +307,7 @@ $kirby->set('route', array(
           $error = true;
         }
   
-  		} else {
+      } else {
         $error = true;
         echo "Username is taken";
       }
@@ -402,7 +377,7 @@ $kirby->set('route', array(
           //return go($currentpath . '/forgot:failed');
           return go('/forgot:failed');
         }
-      	
+        
       } catch(Exception $e) {
         echo $e->getMessage();
       }
@@ -429,33 +404,91 @@ $kirby->set('route', array(
     $newpassword = get('newpassword');
     
     if($user = site()->users()->findBy('username', $username)) {
-    	if($user->resetkey() == $key) {                                      // If the keys match...
-    		if(strtotime($user->resetdate()) > (time() - 86400)) {               // And if the time period is right
-	        site()->user($user->username())->update(array(                   // Then reset the password and wipe the key
-	        	'resetkey' => null,
-	        	'resetdate' => null,
-	          'password' => $newpassword,
-	        ));
+      if($user->resetkey() == $key) {                                      // If the keys match...
+        if(strtotime($user->resetdate()) > (time() - 86400)) {               // And if the time period is right
+          site()->user($user->username())->update(array(                   // Then reset the password and wipe the key
+            'resetkey' => null,
+            'resetdate' => null,
+            'password' => $newpassword,
+          ));
           if($user = site()->user($username) and $user->login(get('newpassword'))) { // And log them in for convenience
             return go(site()->url().'/reset:success');
           } else {
             return go(site()->url().'/reset:failed');
           }
-    		}
-    		else {
-		      $error = true;
-		      echo "Sorry, this link seems to have expired. Submit a new password reset request. Error 1";
-    		}
-    	}
-    	else {
-	      $error = true;
-	      echo "Sorry, this link seems to have expired. Submit a new password reset request. Error 2";
-    	}
+        }
+        else {
+          $error = true;
+          echo "Sorry, this link seems to have expired. Submit a new password reset request. Error 1";
+        }
+      }
+      else {
+        $error = true;
+        echo "Sorry, this link seems to have expired. Submit a new password reset request. Error 2";
+      }
     }
     else {
       $error = true;
       echo "Sorry, something weird seems to be going on. Email the web admin, andybraren. Error 3";
     }
+  }
+));
+
+
+
+
+
+
+
+
+
+
+// Save Site Settings
+$kirby->set('route', array(
+  'pattern' => array('savesettings', '(.+savesettings)'),
+  'method' => 'POST',
+  'action'  => function() {
+    $settings = $site->settings()->yaml();
+    
+    // Style
+    if ($_POST['theme']) $settings['style']['theme'] = $_POST['theme'];
+    
+    // Monetization
+    if ($_POST['ads']) $settings['monetization']['ads'] = $_POST['ads'];
+    
+    // Update settings
+    site()->update(['settings' => yaml::encode($settings)]);
+    
+    //echo $settings['style']['theme'];
+  }
+));
+
+// Save Pages
+$kirby->set('route', array(
+  'pattern' => array('save', '(.+save)'),
+  'method' => 'POST',
+  'action'  => function() {
+    
+    // Formatting
+    // ----------
+    // $_POST['page'] = /directory/slug
+    
+    if (isset($_POST['page'])) {
+      $string = site()->homePage()->url();
+      $blah = parse_url($string, PHP_URL_PATH);
+      $tweakedpostpage = str_replace($blah,'', strtolower($_POST['page']));
+    }
+    
+    $targetpage = site()->page($tweakedpostpage);
+    
+    // Account for custom routes
+    if (!$targetpage) $targetpage = page('posts' . $tweakedpostpage);
+    if (!$targetpage) $targetpage = page('users' . $tweakedpostpage);
+    
+    
+    $user = site()->user();
+    pageWizard($targetpage, $user, $_POST);
+    
   }
 ));
 
@@ -643,6 +676,7 @@ function pageWizard($targetpageuri, $user, $data) {
 
 
 // Save comments
+/*
 $kirby->set('route', array(
   'pattern' => array('saveblah', '(.+saveblah)'),
   'method' => 'POST',
@@ -654,7 +688,7 @@ $kirby->set('route', array(
       $tweakedpostpage = str_replace($blah,'', strtolower($_POST['page']));
     }
     
-		$targetpage = site()->page($tweakedpostpage);
+    $targetpage = site()->page($tweakedpostpage);
           
     $slug = date('YmdHis') . milliseconds();
     
@@ -683,7 +717,7 @@ $kirby->set('route', array(
       
   }
 ));
-
+*/
 
 
 
@@ -695,21 +729,21 @@ $kirby->set('route', array(
   'method' => 'POST',
   'action'  => function() {
     
-		
-		//$redirecturl = site()->url() . '/' . $targetpage->parent()->diruri();
-		
+    
+    //$redirecturl = site()->url() . '/' . $targetpage->parent()->diruri();
+    
     if (isset($_POST['page'])) {
       $string = site()->homePage()->url();
       $blah = parse_url($string, PHP_URL_PATH);
       $tweakedpostpage = str_replace($blah,'', strtolower($_POST['page']));
     }
-		
-		if (site()->page($tweakedpostpage)) {
-  		$targetpage = site()->page($tweakedpostpage);
-		} elseif (site()->page('posts' . $tweakedpostpage)) {
-  		$targetpage = site()->page('posts' . $tweakedpostpage);
-		}
-		
+    
+    if (site()->page($tweakedpostpage)) {
+      $targetpage = site()->page($tweakedpostpage);
+    } elseif (site()->page('posts' . $tweakedpostpage)) {
+      $targetpage = site()->page('posts' . $tweakedpostpage);
+    }
+    
     try {
       
       $targetpage->delete(true); // Force page to be deleted, even if it has subpages
@@ -726,14 +760,16 @@ $kirby->set('route', array(
 ));
 
 // Purge Cache
+/*
 $kirby->set('route', array(
   'pattern' => array('purgeCache', '(.+purgeCache)'),
   'method' => 'POST',
   'action'  => function() {
-		kirby()->cache()->flush();
-		return true;
+    kirby()->cache()->flush();
+    return true;
   }
 ));
+*/
 
 // Regenerate page cache
 // Visit example.com/whatever/flush to surgically excise and regenerate that page's cache file within /site/cache
@@ -757,17 +793,17 @@ $kirby->set('route', array(
       }
       echo 'The entire site\'s cache was successfully regenerated.';
     } else {
-    	if (file_exists($cache_file)) {
-      	if (unlink($cache_file)) { // delete the singular cache file
+      if (file_exists($cache_file)) {
+        if (unlink($cache_file)) { // delete the singular cache file
           if (ping($url)) {
             echo 'The page\'s cache file was successfully regenerated.';
           } else {
             echo 'The page\'s cache file was deleted, but a connection error to the page is preventing a new one from being generated.';
           }
-      	} else {
-        	echo 'The page\'s cache file exists, but could not be deleted.';
-      	}
-    	} else {
+        } else {
+          echo 'The page\'s cache file exists, but could not be deleted.';
+        }
+      } else {
         if(!in_array($uri, c::get('cache.ignore'))) {
           if (ping($url)) {
             echo 'The page\'s cache file did not already exist, so a new one was successfully generated.';
@@ -777,7 +813,7 @@ $kirby->set('route', array(
         } else {
           echo 'This page is being ignored, so a cache file was not generated.';
         }
-    	}
+      }
     }
   }
 ));
@@ -870,36 +906,7 @@ $kirby->set('route', array(
 ));
 
 
-// Sitemap
-// Based on https://getkirby.com/docs/cookbook/xmlsitemap
-// Currently lists every single folder, regardless of whether a page.txt is present
-$kirby->set('route', array(
-  'pattern' => array('sitemap', '(.+sitemap)'),
-  'method' => 'GET',
-  'action'  => function() {
-    $ignore = array('sitemap', 'error', 'drafts', '_gsdata_');
-    
-    // send the right header
-    header('Content-type: text/xml; charset="utf-8"');
-    
-    // echo the doctype
-    echo '<?xml version="1.0" encoding="utf-8"?>';
-    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-    
-    if (site()->setting('general/indexable')) {
-      foreach (site()->pages()->index() as $p) {
-        if (!in_array($p->uid(), $ignore)) {
-          echo '<url>';
-            echo '<loc>' . html(site()->url() . '/' . $p->uri()) . '</loc>';
-            echo '<lastmod>' . $p->modified('c') . '</lastmod>';
-            echo '<priority>' . (($p->isHomePage()) ? 1 : number_format(0.5/$p->depth(), 1)) . '</priority>';
-          echo '</url>';
-        }
-      }
-    }
-    echo '</urlset>';
-  }
-));
+
 
 
 
@@ -909,59 +916,59 @@ $kirby->set('route', array(
   'method' => 'POST',
   'action'  => function() {
     
-		//var_dump($_FILES);
-		
+    //var_dump($_FILES);
+    
     if (isset($_POST['type'])) {
-  		$type = $_POST['type']; // e.g. 'avatar'
-		} else {
-  		$type = '';
-		}
-		
+      $type = $_POST['type']; // e.g. 'avatar'
+    } else {
+      $type = '';
+    }
+    
     if (isset($_POST['page'])) {
       $string = site()->homePage()->url();
       $blah = parse_url($string, PHP_URL_PATH);
       $tweakedpostpage = str_replace($blah,'', strtolower($_POST['page']));
     }
-		
-		$targetpage = page($tweakedpostpage); // Account for custom routes
-		if (!$targetpage) $targetpage = page('posts' . $tweakedpostpage);
-		if (!$targetpage) $targetpage = page('users' . $tweakedpostpage);
-		
+    
+    $targetpage = page($tweakedpostpage); // Account for custom routes
+    if (!$targetpage) $targetpage = page('posts' . $tweakedpostpage);
+    if (!$targetpage) $targetpage = page('users' . $tweakedpostpage);
     
     
-		if ($type == 'avatar') {
+    
+    if ($type == 'avatar') {
       $target_dir = kirby()->roots()->avatars() . '/';
     } else {
       $target_dir = kirby()->roots()->content() . '/' . $targetpage->uri() . '/';
     }
     
-		$name = key($_FILES); // The name attribute of the input that was uploaded
+    $name = key($_FILES); // The name attribute of the input that was uploaded
 
-		if ($type == 'avatar') {
+    if ($type == 'avatar') {
       $file_name = str_replace('/','', strtolower($tweakedpostpage));
-		} else {
-  		$file_name = pathinfo($_FILES[$name]['name'], PATHINFO_FILENAME);
-		}
-		
-		$file_extension = str_replace('jpeg','jpg',strtolower(pathinfo($_FILES[$name]['name'], PATHINFO_EXTENSION)));
-		$file = $file_name . '.' . $file_extension;
+    } else {
+      $file_name = pathinfo($_FILES[$name]['name'], PATHINFO_FILENAME);
+    }
     
-		$file_type = $_FILES[$name]['type'];
-		$file_size = $_FILES[$name]['size'];
-		
-		if ($type == 'avatar') {
+    $file_extension = str_replace('jpeg','jpg',strtolower(pathinfo($_FILES[$name]['name'], PATHINFO_EXTENSION)));
+    $file = $file_name . '.' . $file_extension;
+    
+    $file_type = $_FILES[$name]['type'];
+    $file_size = $_FILES[$name]['size'];
+    
+    if ($type == 'avatar') {
       $file_url = str_replace(' ', '%20', kirby()->roots()->avatars() . '/' . $file);
-		} else {
-  		$file_url = str_replace(' ', '%20', site()->contentURL() . '/' . $targetpage->uri() . '/' . $file);
-		}
-		
-		
-		//$file_extension = end(explode('.', $file));
-		//$file_extension = substr(strrchr($file,'.'),1);
-		
-		// Lowercase extension
-		$target_file = $target_dir . $file;
-		
+    } else {
+      $file_url = str_replace(' ', '%20', site()->contentURL() . '/' . $targetpage->uri() . '/' . $file);
+    }
+    
+    
+    //$file_extension = end(explode('.', $file));
+    //$file_extension = substr(strrchr($file,'.'),1);
+    
+    // Lowercase extension
+    $target_file = $target_dir . $file;
+    
     
     if ($file_type == 'image/jpg' or $file_type == 'image/jpeg' or $file_type == 'image/png') {
       $file_type = 'image';
@@ -978,21 +985,21 @@ $kirby->set('route', array(
     }
     
     // Replace old files with the same name, of any extension
-  	$oldfile = $target_dir . $file;
-  	if (file_exists($oldfile)) {
-    	unlink($oldfile);
-  	}
-  	
-  	if ($type == 'avatar') {
-    	$oldfile = $target_dir . $file_name;
-    	$todelete = glob($target_dir . $file_name . '*');
-    	foreach ($todelete as $delete) {
-      	unlink($delete);
-    	}
-  	}
-  	
-  	$type = (isset($_POST['type'])) ? $_POST['type'] : null;
-  	
+    $oldfile = $target_dir . $file;
+    if (file_exists($oldfile)) {
+      unlink($oldfile);
+    }
+    
+    if ($type == 'avatar') {
+      $oldfile = $target_dir . $file_name;
+      $todelete = glob($target_dir . $file_name . '*');
+      foreach ($todelete as $delete) {
+        unlink($delete);
+      }
+    }
+    
+    $type = (isset($_POST['type'])) ? $_POST['type'] : null;
+    
     // Save the file in the right place
     if ($uploadOk = 1) {
       try {
@@ -1012,11 +1019,11 @@ $kirby->set('route', array(
               echo "Error rotating image";
             }
             
-        		if ($type == 'avatar') {
+            if ($type == 'avatar') {
               $file_url = (string)site()->user($file_name)->avatar()->crop(300, 300)->url();
-        		} else {
-          		$file_url = (string)kirbytag(array('image' => $file, 'targetpage' => $targetpage, 'output' => 'url'));
-        		}
+            } else {
+              $file_url = (string)kirbytag(array('image' => $file, 'targetpage' => $targetpage, 'output' => 'url'));
+            }
             
           }
           
@@ -1210,25 +1217,7 @@ $kirby->set('route', array(
 ));
 
 
-// Save Site Settings
-$kirby->set('route', array(
-  'pattern' => array('savesettings', '(.+savesettings)'),
-  'method' => 'POST',
-  'action'  => function() {
-    $settings = $site->settings()->yaml();
-    
-    // Style
-    if ($_POST['theme']) $settings['style']['theme'] = $_POST['theme'];
-    
-    // Monetization
-    if ($_POST['ads']) $settings['monetization']['ads'] = $_POST['ads'];
-    
-    // Update settings
-    site()->update(['settings' => yaml::encode($settings)]);
-    
-    //echo $settings['style']['theme'];
-  }
-));
+
 
 
 
@@ -1242,6 +1231,146 @@ $kirby->set('route', array(
   }
 ));
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//==============================================================================
+// VIRTUAL FILES
+//==============================================================================
+
+// Apple Developer Merchant ID route
+// Used during Stripe setup
+// Should only temporarily reveal the Merchant ID until the user confirms that
+// they've completed Stripe's setup process, at which point the ID can be deleted
+$kirby->set('route', array(
+  'pattern' => '.well-known/apple-developer-merchantid-domain-association',
+  'method' => 'GET',
+  'action'  => function() {
+    
+    if (site()->setting('commerce/stripe/apple-merchant-id')) {
+      echo site()->setting('commerce/stripe/apple-merchantid');
+    }
+    
+  }
+));
+
+// Virtual robots.txt file
+$kirby->set('route', array(
+  'pattern' => 'robots.txt',
+  'method'  => 'GET',
+  'action'  => function() {
+    
+    header('Content-type: text/plain; charset=UTF-8');
+    
+    if (site()->setting('general/indexable')) {
+      echo 'User-agent: *<br>Disallow: /thumbs/<br>Disallow: /users<br>Disallow: /drafts/<br>Sitemap: ' . site()->url() . '/sitemap';
+      foreach (site()->index()->filterBy('visibility','unlisted') as $hiddenpage) {
+        echo '<br>Disallow: /' . $hiddenpage->uri();
+      }
+    } else {
+      //echo 'User-agent: *' . "\r\n" . 'Disallow: /';
+    }
+    
+  }
+));
+
+// Virtual humans.txt file
+$kirby->set('route', array(
+  'pattern' => 'humans.txt',
+  'method'  => 'GET',
+  'action'  => function() {
+    
+    $br = "\r\n"; // double quotes required
+    
+    header('Content-type: text/plain; charset=UTF-8');
+    
+    echo 'HUMANS' . $br;
+    echo '------' . $br . $br;
+    
+    echo 'Andy Braren' . $br;
+    echo '@andybraren' . $br;
+    echo 'Connecticut, USA' . $br . $br . $br;
+    
+    echo 'TECH' . $br;
+    echo '----' . $br . $br;
+    
+    echo 'Acorn - content management system' . $br;
+    echo 'acorn.blog' . $br . $br;
+    
+    echo 'Kirby CMS - content management system' . $br;
+    echo 'getkirby.com' . $br . $br . $br;
+    
+    echo 'TOOLS' . $br;
+    echo '-----' . $br . $br;
+    
+    echo 'Sketch - vector assets' . $br;
+    echo 'sketchapp.com' . $br . $br;
+    
+    echo 'Coda 2 - text editor, SFTP, SSH client' . $br;
+    echo 'panic.com/coda' . $br . $br;
+    
+    echo 'Sublime Text 3 - text editor' . $br;
+    echo 'sublimetext.com';
+    
+  }
+));
+
+// Sitemap
+// Based on https://getkirby.com/docs/cookbook/xmlsitemap
+// Currently lists every single folder, regardless of whether a page.txt is present
+$kirby->set('route', array(
+  'pattern' => array('sitemap', '(.+sitemap)'),
+  'method' => 'GET',
+  'action'  => function() {
+    
+    $ignore = array('sitemap', 'error', 'drafts', '_gsdata_');
+    
+    $generate = false;
+    
+    if (site()->setting('general/indexable')) { // If the site shouldn't be indexed, no sitemap is generated
+      $generate = true;
+    }
+    
+    $generate = true;
+    
+    if ($generate == true) {
+      
+      // send the right header
+      header('Content-type: text/xml; charset="utf-8"');
+      
+      // echo the doctype
+      echo '<?xml version="1.0" encoding="utf-8"?>';
+      echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+      
+      foreach (site()->pages()->index() as $p) {
+        if (!in_array($p->uid(), $ignore) AND $p->visibility() == 'public') {
+          echo '<url>';
+            echo '<loc>' . html(site()->url() . '/' . $p->uri()) . '</loc>';
+            echo '<lastmod>' . $p->modified('c') . '</lastmod>';
+            echo '<priority>' . (($p->isHomePage()) ? 1 : number_format(0.5/$p->depth(), 1)) . '</priority>';
+          echo '</url>';
+        }
+      }
+      
+      echo '</urlset>';
+      
+    }
+    
+  }
+));
 
 
 
@@ -1310,6 +1439,15 @@ $kirby->set('route', array(
     
   }
 ));
+
+
+
+//==============================================================================
+// CATCHALL
+// Always keep this route at the bottom
+// This allows user profiles to be viewable from the base URL, along with posts
+//==============================================================================
+
 $kirby->set('route', array(
   'pattern' => array('(:any)', '(:any)/(:any)'),
   'method'  => 'GET',
@@ -1334,3 +1472,4 @@ $kirby->set('route', array(
     
   }
 ));
+

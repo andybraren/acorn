@@ -38,6 +38,9 @@ Icon
 !/content/home/
 !/content/home/*
 
+!/content/site/
+!/content/site/*
+
 !/content/error/
 !/content/error/page.txt
 

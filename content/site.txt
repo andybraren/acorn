@@ -55,6 +55,7 @@ general:
 style:
   theme: original
   default-color: blue
+  default-toc: true
   logo: logo.svg
   logo-icon: logo-icon.svg
   favicon: favicon.svg
@@ -62,6 +63,12 @@ style:
   width: 1240
   bg-color-primary: ''
   bg-color-secondary: ''
+layout:
+  title: true
+  sidebar-left: true
+  sidebar-right: true
+  cta: false
+  share: false
 menu:
   search:
     enabled: true
@@ -172,10 +179,12 @@ commerce:
     sk-test: ''
     pk-live: ''
     sk-live: ''
+    apple-merchantid: ''
   braintree-key: ''
   authorize-key: ''
   paypal-key: ''
 advanced:
   cdn: false
   cache: false
-  debug: true
+  debug: false
+  lockdown: false

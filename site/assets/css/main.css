@@ -108,6 +108,18 @@ body.noscroll > header > .container {
   display: none !important;
 }
 
+
+
+
+/* Text and formatting
+----------------------------------------------------------------------------- */
+
+mark {
+  background-color: #FFFF00;
+}
+
+
+
 /* Header
 ----------------------------------------------------------------------------- */
 /*

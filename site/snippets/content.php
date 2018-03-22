@@ -14,6 +14,7 @@
 // $number   - the number of items that should be returned, without pagination
 // $paginate - the number of items that should be returned, with pagination
 
+/*
 // Get items if not already set
 if (!isset($items)) {
   echo 'Error: items not defined';
@@ -133,7 +134,8 @@ if ($format == 'card') {
     
   }
   
-  echo '<div class="grid">' . $html . '</div>';        
+  $blab = '<div class="grid">' . $html . '</div>';
+  echo $blab;
 }
 
 // full format
@@ -229,7 +231,7 @@ if (isset($pagination)) {
   }
 
 }
-
+*/
 
 
 

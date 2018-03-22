@@ -247,6 +247,93 @@ page::$methods['attendees'] = function($page) {
   return yaml($page->meta())['data']['attendees'];
 };
 
+// Hero
+// returns the hero content
+page::$methods['hero'] = function($page) {
+  
+  if (!empty(yaml($page->meta())['data']['hero'])) {
+    $hero = yaml($page->meta())['data']['hero'];
+  }
+  
+  if ($page->heroType() == 'image') {
+    return kirbytag(array('image' => $hero));
+  }
+  
+  if ($page->heroType() == 'video-native' or $page->heroType() == 'video-embed') {
+    return kirbytag(array('video' => $hero));
+  }
+  
+};
+
+// Hero type
+// returns the type of the hero
+page::$methods['heroType'] = function($page) {
+  
+  if (!empty(yaml($page->meta())['data']['hero'])) {
+    $hero = yaml($page->meta())['data']['hero'];
+  } else {
+    $hero = '';
+  }
+  
+  if ($file = $page->file($hero)) {
+    if ($file->type() == 'image') {
+      return 'image';
+    }
+  }
+    
+  if (str::contains($hero, 'mp4')) {
+    return 'video-native';
+  }
+  
+  if (str::contains($hero, 'youtu')) {
+    return 'video-embed';
+  }
+  
+  if (str::contains($hero, 'vimeo.com')) {
+    return 'video-embed';
+  }
+  
+};
+
+// Hero image
+// returns the first hero image (or first image) of a page
+page::$methods['heroImage'] = function($page) {
+  
+  if (!empty(yaml($page->meta())['data']['hero'])) {
+    $hero = yaml($page->meta())['data']['hero'];
+  } else {
+    $hero = '';
+  }
+
+  if ($file = $page->file($hero)) {
+    if ($file->type() == 'image') {
+      return $file;
+    } else {
+      return null;
+    }
+  } elseif ($hero = $page->images()->findBy('name', 'hero')) {
+    return $hero;
+  } elseif ($page->hasImages()) {
+    //return $page->images()->not('location.jpg')->sortBy('sort', 'asc')->first();
+  } else {
+    return null;
+  }
+  
+};
+
+// Hero images
+// returns a collection of the page's hero images
+page::$methods['heroImages'] = function($page) {
+
+  if ($hero = $page->images()->findBy('name', 'hero')) {
+    return $hero;
+  } elseif ($page->hasImages()) {
+    return $page->images()->sortBy('sort', 'asc')->first();
+  } else {
+    return null;
+  }
+  
+};
 //==============================================================================
 // PAGE SETTINGS METHODS
 //==============================================================================

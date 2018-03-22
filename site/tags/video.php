@@ -35,9 +35,16 @@ kirbytext::$tags['video'] = array(
   'attr' => array(
     'caption',
     'autoplay',
-    'size'
+    'size',
+    'uri'
   ),
   'html' => function($tag) {
+    
+    if ($tag->attr('uri')) {
+      $page = site()->page($tag->attr('uri'));
+    } else {
+      $page = $tag->page();
+    }
     
     $caption = $tag->attr('caption');
     $htmlcaption = ($caption) ? '<figcaption>' . $caption . '</figcaption>' : '';
@@ -53,9 +60,9 @@ kirbytext::$tags['video'] = array(
     $posterimage = "";
     $filename = "";
     
-    if ($video = $tag->page()->file($url)):
+    if ($video = $page->file($url)):
       $url = $video->url();
-      if ($poster = $tag->page()->file($video->name() . ".png") OR $poster = $tag->page()->file($video->name() . ".jpg")):
+      if ($poster = $page->file($video->name() . ".png") OR $poster = $page->file($video->name() . ".jpg")):
         $posterimage = 'poster="' . thumb($poster, array('width' => 700))->url() . '"';
       endif;
       $filename = $video->filename();
@@ -102,8 +109,8 @@ kirbytext::$tags['video'] = array(
           endif;
           
           
-          $thepage = site()->page(page()->uri());
-          if ($tag->page() == $thepage) {
+          $thepage = $page;
+          if ($page == $thepage) {
             $imageurl = downloadedImageURL('video-' . $youtubeid, $thepage->uri(), 'youtube');
           }
           
@@ -127,8 +134,8 @@ kirbytext::$tags['video'] = array(
         //$hash = unserialize(@file_get_contents($vimeothumburl));
         //$vimeothumb = $hash[0]['thumbnail_large'];
         
-        $thepage = site()->page(page()->uri());
-        if ($tag->page() == $thepage) {
+        $thepage = $page;
+        if ($page == $thepage) {
           $imageurl = downloadedImageURL('video-' . $vimeoid, $thepage->uri(), 'vimeo');
         }
         

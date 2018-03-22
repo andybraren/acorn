@@ -43,31 +43,58 @@
 <?php endif ?>
 
 
+
+
+<?php /*
 <?php if ($page->hero() != ''): ?>
   
-  <?php // YouTube Videos ?>
-  <?php if (str::contains($page->hero(), 'youtu')): ?>
-    <div id="hero" class="hero fullwidth video">
-      <?php echo kirbytag(array('video' => $page->hero())) ?>
-    </div>
-  <?php endif ?>
-  
-  <?php if (str::contains($page->hero(), 'vimeo.com')): ?>
-    <div id="hero" class="hero fullwidth video">
-      <?php echo kirbytag(array('video' => $page->hero())) ?>
-    </div>
-  <?php endif ?>
-  
+  <?php if (is_string($page->hero())): ?>
     
+    <?php // YouTube Videos ?>
+    <?php if (str::contains($page->hero(), 'youtu')): ?>
+      <div id="hero" class="hero fullwidth video">
+        <?php echo kirbytag(array('video' => $page->hero())) ?>
+      </div>
+    <?php endif ?>
+    
+    <?php // Vimeo videos ?>
+    <?php if (str::contains($page->hero(), 'vimeo.com')): ?>
+      <div id="hero" class="hero fullwidth video">
+        <?php echo kirbytag(array('video' => $page->hero())) ?>
+      </div>
+    <?php endif ?>
+    
+  <?php else: ?>
+    
+    <?php // Video files ?>
+    <?php if ($page->hero()->type()): ?>
+      <?php if ($page->hero()->type() == 'video'): ?>
+        <div id="hero" class="hero fullwidth video">
+          <?php echo kirbytag(array('video' => $page->hero()->filename())) ?>
+        </div>
+      <?php endif ?>
+    <?php endif ?>
+    
+  <?php endif ?>
   
-  
+<?php endif ?>
+*/ ?>
+
+<?php if ($page->heroType() == 'video-embed' or $page->heroType() == 'video-native'): ?>
+  <div id="hero" class="hero fullwidth video">
+    <?php echo $page->hero(); ?>
+  </div>
+<?php endif ?>
+
+<?php if ($page->heroType() == 'image'): ?>
+  <div id="hero" class="hero fullwidth">
+    <?php echo $page->hero(); ?>
+  </div>
 <?php endif ?>
 
 
-
-
 <?php // Local Files ?>
-<?php if ($file = $page->file($page->hero())): ?>
+<?php if ($file = $page->heroImage()): ?>
 
   <?php // Image File ?>
   <?php if ($file->type() == 'image'): ?>
@@ -115,6 +142,7 @@
   <?php endif ?>
 
 <?php // HERO SINGULAR IMAGE ?>
+<?php /*
 <?php elseif ($image = $page->images()->filterBy('name', '==', 'hero')->first() and $page->hero()->isEmpty()): ?>
 
   <div id="hero" class="<?php echo ($image->ratio() >= 3.5) ? 'fullwidth' : '' ?>">
@@ -122,6 +150,7 @@
       <?php echo kirbytag(array('image' => $image->filename(), 'type' => 'hero')) ?>
     </div>
   </div>
+*/ ?>
   
 <?php // NO HERO ?>
 <?php else: ?>

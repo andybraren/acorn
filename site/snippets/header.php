@@ -1,7 +1,17 @@
 <?php echo (c::get('cache') == true) ? '<!-- Cached ' . date('Y-m-d H:i:s e') . ' ' . site()->url() . $_SERVER['REQUEST_URI'] . ' -->' : '' ?>
 
+<?php
+  if ($site->setting('style/theme') == 'boxed') {
+    $classes = ' class="boxed"';
+    $shiv = true;
+  } else {
+    $classes = '';
+    $shiv = false;
+  }
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"<?php echo $classes ?>>
 <head>
 
   <meta charset="utf-8" />
@@ -85,7 +95,12 @@
 
 <?php $subnav = (hasSubMenu()) ? ' subnav' : ''; ?>
 
-<body class="<?php echo $page->theme() . $subnav ?>">
+<body class="<?php echo $page->color() . $subnav ?>">
+  
+  
+  <?php if ($shiv): ?>
+    <div id="shiv" class="container"></div>
+  <?php endif ?>
   
   <header id="top" class="headroom">
     

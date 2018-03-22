@@ -1160,16 +1160,16 @@ function savePage() {
   
   data = new FormData();
   
-  /* Users */
-  var users = document.getElementById('users');
+  /* Authors */
+  var users = document.getElementById('authors');
   if (users != null) {
     var users = Array.prototype.slice.call(users.children);
     var arr = [];
     for (var i = users.length - 1; i >= 0; i--) {
-      arr.push(users[i].getAttribute('data-slug'));
+      arr.push(users[i].getAttribute('data-username'));
     }
     var users = arr.reverse().join(', ');
-    data.append('users', users);
+    data.append('authors', users);
   }
   
   /* Requests */
@@ -1475,9 +1475,10 @@ if (authorfield != null) {
     } else {
       var major = '';
     }
-    var resultHTML = '<a data-slug="' + this.getAttribute('data-slug') + '" data-href="' + this.getAttribute('data-profileURL') + '" ><div class="item-delete"></div><div class="row"><img src="' + this.getAttribute('data-avatar') + '" class="' + this.getAttribute('data-color') + '" width="40" height="40"><div class="column"><span>' + this.getAttribute('data-name') + '</span>' + major + '</div></div></a>';
+    var resultHTML = '<a data-username="' + this.getAttribute('data-slug') + '" data-href="' + this.getAttribute('data-profileURL') + '" ><div class="item-delete"></div><div class="row"><img src="' + this.getAttribute('data-avatar') + '" class="' + this.getAttribute('data-color') + '" width="40" height="40"><div class="column"><span>' + this.getAttribute('data-name') + '</span>' + major + '</div></div></a>';
     authorwidget.insertAdjacentHTML('beforeend', resultHTML);
     itemDeleteButtons();
+    
   }
   
 }

@@ -231,19 +231,20 @@
 */ ?>
 
 <?php // AUTHORS ?>
-<?php if ($type == 'authorss'): ?>
+<?php if ($type == 'authors'): ?>
   
   <?php
     $plural = false;
     $authors = $page->authors();
+    /*
     if (isset($authors[1])) { // if the array has a second element, then there are multiple authors
       $plural = true;
     }
+    */
+    $plural = true;
   ?>
 
   <?php if(!empty($authors) or $page->isEditableByUser()): ?>
-    <div class="widget">
-
     <div class="widget"<?php if(!$page->hasAuthors()) { echo ' data-editor="hidden"'; } ?>>
       <?php /* Set the widget title */
         switch ($page->parent()) {
@@ -252,12 +253,12 @@
           case 'spaces':
             $title = 'STAFF'; break;
           case 'handbooks':
-          case 'articles':
-            $title = ($plural) ? 'AUTHORS' : 'AUTHOR'; break;
+          case 'projects':
+            $title = ($plural) ? 'MAKERS' : 'MAKER'; break;
           case 'courses':
             $title = ($plural) ? 'INSTRUCTORS' : 'INSTRUCTOR'; break;
           default:
-            $title = ($plural) ? 'MAKERS' : 'MAKER'; break;
+            $title = ($plural) ? 'AUTHORS' : 'AUTHOR'; break;
         }
       ?>
       
@@ -265,54 +266,31 @@
       
       <div class="items" id="authors">
         <?php if (isset($authors)): ?>
-          <?php foreach(str::split($authors) as $author): ?>
-  
-            <?php
-              $part = str::split($author, '~');
-              $username = (isset($part[0])) ? $part[0] : '';
-              $role     = (isset($part[1])) ? $part[1] : '';
-            ?>
-  
-            <?php if($site->user($username)): ?>
-              <a class="item" href="<?php echo $site->url() . "/users/" . $username ?>" data-username="<?php echo $site->user($username)->username() ?>">
-                
-                <?php if ($page->isEditableByUser()): ?>
-                  <div class="item-delete"></div>
-                <?php endif ?>
-                
-                <div class="row">
-                  <img src="<?php echo userAvatar($username, 40) ?>" width="40" height="40" class="<?php echo userColor($username) ?>">
-                  <div class="column">
-                    <span><?php echo $site->user($username)->firstname() . ' ' . $site->user($username)->lastname() ?></span>
-                    <?php if($role): ?>
-                      <span><?php echo $role ?></span>
-                    <?php /*
-                    <?php elseif(preg_match("/" . $page->slug() . " == (.*?) ~~/", $site->user($username)->roles(), $matches)): ?>
-                      <span><?php echo $matches[1]; ?></span>
-                    */ ?>
-                    <?php elseif($site->user($username)->major() != null): ?>
-                      <span><?php echo $site->user($username)->major() ?></span>
-                    <?php endif ?>
-                  </div>
-                </div>
-                
-              </a>
-              <?php /* Eventually display a name with no associated user account. Not needed for now. */ ?>
-              <?php /*
-              <?php else: ?>
-                <a>
-                  <div class="author-delete"></div>
-                  <div class="row">
-                    <img src="<?php echo userAvatar($username, 40) ?>" width="40" height="40" class="blue">
-                    <div class="column">
-                      <span><?php echo $username ?></span>
-                    </div>
-                  </div>
-                </a>
-              */ ?>
-            <?php endif ?>
+          
+          <?php foreach ($authors as $author): ?>
             
+            <?php $username = $author->username(); ?>
+            
+            <a class="item" href="<?php echo $site->url() . "/users/" . $username ?>" data-username="<?php echo $username ?>">
+              
+              <?php if ($page->isEditableByUser()): ?>
+                <div class="item-delete"></div>
+              <?php endif ?>
+              
+              <div class="row">
+                <img src="<?php echo userAvatar($username, 40) ?>" width="40" height="40" class="<?php echo userColor($username) ?>">
+                <div class="column">
+                  <span><?php echo $author->firstname() . ' ' . $author->lastname() ?></span>
+                  <?php if ($description = authorDescription($page, $username)): ?>
+                    <span><?php echo $description ?></span>
+                  <?php endif ?>
+                </div>
+              </div>
+              
+            </a>
+          
           <?php endforeach ?>
+          
         <?php endif ?>
       </div>
       
@@ -346,7 +324,7 @@
       
       <?php if ($page->isEditableByUser()): ?>
         <?php $image = new Asset('site/assets/images/hero-add.png'); ?>
-        <form id="form-author-add">
+        <form id="form-author-add" data-editor="hidden">
           <div>
             <input type="text" id="author-add" autocomplete="off">
             <label>Add an author</label>

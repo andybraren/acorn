@@ -83,12 +83,16 @@ kirby()->set('site::method', 'setting', function($page, $setting) {
 //--------------------------------------------------
 
 // Authors
-// returns an array of active author usernames (with roles separated by ~)
+// returns a collection of valid page authors
 page::$methods['authors'] = function($page) {
   
   $collection = new Collection();
   
-  $authors = yaml($page->meta())['authors'];
+  if (!empty(yaml($page->meta())['authors'])) {
+    $authors = yaml($page->meta())['authors'];
+  } else {
+    return $collection;
+  }
   
   // Add each valid author to the collection and return them
   foreach ($authors as $author) {
@@ -99,6 +103,26 @@ page::$methods['authors'] = function($page) {
   }
   
   return $collection;
+  
+};
+
+// Has Authors
+// returns whether or not the page has valid authors
+page::$methods['hasAuthors'] = function($page) {
+    
+  if (!empty(yaml($page->meta())['authors'])) {
+    return true;
+  } else {
+    return false;
+  }
+    
+};
+
+page::$methods['visibility'] = function($page) {
+  
+  if (!empty(yaml($page->settings())['visibility'])) {
+    return yaml($page->settings())['visibility'];
+  }
   
 };
 
@@ -128,13 +152,21 @@ function authorDescription($page, $username) {
 // Date Created
 // returns the date a page was first created
 page::$methods['dateCreated'] = function($page) {
-  return strtotime(yaml($page->meta())['date']['created']);
+  if (!empty(yaml($page->meta())['date'])) {
+    return strtotime(yaml($page->meta())['date']['created']);
+  } else {
+    return null;
+  }
 };
 
 // Date Modified
 // returns the most recent date the page was modified
 page::$methods['dateModified'] = function($page) {
-  return strtotime(yaml($page->meta())['date']['modified']);
+  if (!empty(yaml($page->meta())['date']['modified'])) {
+    return strtotime(yaml($page->meta())['date']['modified']);
+  } else {
+    return null;
+  }
 };
 
 // Modified By
@@ -146,13 +178,21 @@ page::$methods['modifiedBy'] = function($page) {
 // Date Published
 // returns the date the page was first made non-private
 page::$methods['datePublished'] = function($page) {
-  return strtotime(yaml($page->meta())['date']['published']);
+  if (!empty(yaml($page->meta())['date'])) {
+    return strtotime(yaml($page->meta())['date']['published']);
+  } else {
+    return null;
+  }
 };
 
 // Date Updated
 // returns the date the page was significantly updated
 page::$methods['dateUpdated'] = function($page) {
-  return strtotime(yaml($page->meta())['date']['updated']);
+  if (!empty(yaml($page->meta())['date']['updated'])) {
+    return strtotime(yaml($page->meta())['date']['updated']);
+  } else {
+    return null;
+  }
 };
 
 // Start Date
@@ -174,6 +214,13 @@ page::$methods['dateEnd'] = function($page) {
 // Tags
 // returns an array of tags
 page::$methods['tags'] = function($page) {
+  if (!empty(yaml($page->meta())['related'])) {
+    return str::split(yaml($page->meta())['related']['tags'],',');
+  } else {
+    return array();
+  }
+};
+page::$methods['tagsraw'] = function($page) {
   return yaml($page->meta())['related']['tags'];
 };
 
@@ -186,7 +233,11 @@ page::$methods['related'] = function($page) {
 // Related "external" links
 // returns an array of all related "external" links
 page::$methods['links'] = function($page) {
-  return yaml($page->meta())['related']['external'];
+  if (!empty(yaml($page->meta())['related']['external'])) {
+    return yaml($page->meta())['related']['external'];
+  } else {
+    return array();
+  }
 };
 
 //--------------------------------------------------
@@ -203,7 +254,11 @@ page::$methods['pagedescription'] = function($page) {
 };
 
 page::$methods['excerpt'] = function($page) {
-  return yaml($page->meta())['info']['excerpt'];
+  if (!empty(yaml($page->meta())['info'])) {
+    return yaml($page->meta())['info']['excerpt'];
+  } else {
+    return '';
+  }
 };
 
 
@@ -245,6 +300,40 @@ page::$methods['registrants'] = function($page) {
 // returns an array of event attendees
 page::$methods['attendees'] = function($page) {
   return yaml($page->meta())['data']['attendees'];
+};
+
+// Address
+// returns the address
+page::$methods['address'] = function($page) {
+  return yaml($page->meta())['data']['address'];
+};
+
+// Address Info
+// returns the address info
+page::$methods['addressInfo'] = function($page) {
+  return yaml($page->meta())['data']['addressinfo'];
+};
+
+// Hours
+// returns the hours
+page::$methods['hours'] = function($page) {
+  if (!empty(yaml($page->meta())['data'])) {
+    return yaml($page->meta())['data']['hours'];
+  } else {
+    return '';
+  }
+};
+
+// Hours Info
+// returns the hours info
+page::$methods['hoursInfo'] = function($page) {
+  return yaml($page->meta())['data']['hoursinfo'];
+};
+
+// Rating
+// returns the rating
+page::$methods['rating'] = function($page) {
+  return yaml($page->meta())['data']['rating'];
 };
 
 // Hero
@@ -334,6 +423,27 @@ page::$methods['heroImages'] = function($page) {
   }
   
 };
+
+// Icon
+// returns the icon
+page::$methods['icon'] = function($page) {
+  return yaml($page->meta())['data']['icon'];
+};
+
+// Price
+// returns the price
+page::$methods['price'] = function($page) {
+  if (!empty(yaml($page->meta())['data']['price'])) {
+    return yaml($page->meta())['data']['price'];
+  }
+};
+
+// Audio
+// returns the audio
+page::$methods['audio'] = function($page) {
+  return yaml($page->meta())['data']['audio'];
+};
+
 //==============================================================================
 // PAGE SETTINGS METHODS
 //==============================================================================
@@ -341,20 +451,155 @@ page::$methods['heroImages'] = function($page) {
 // Visibility setting
 // returns the page's visibility setting
 page::$methods['visibility'] = function($page) {
-  return yaml($page->settings())['visibility'];
+  
+  if (!empty(yaml($page->settings())['visibility'])) {
+    return yaml($page->settings())['visibility'];
+  } else {
+    return null;
+  }
+  
 };
 
-// Theme setting
-// returns the page's theme color
-page::$methods['theme'] = function($page) {
+// Title setting
+// returns the page's title visibility setting
+// can be visible, hidden
+page::$methods['titleVisible'] = function($page) {
   
-  $setting = yaml($page->settings())['theme'];
-  
-  if ($setting == 'default' OR $setting == '') {
-    return site()->setting('style/default-color');
+  if (!empty(yaml($page->settings())['title'])) {
+    
+    $setting = yaml($page->settings())['title'];
+    
+    if ($setting == 'default') {
+      return site()->setting('layout/title');
+    } elseif ($setting == 'visible') {
+      return true;
+    } elseif ($setting == 'hidden') {
+      return false;
+    } else {
+      return false;
+    }
+    
   } else {
-    return $setting;
+    return site()->setting('layout/title');
   }
+  
+};
+
+// Sidebar Left setting
+// returns the page's left sidebar setting
+// can be default, enabled, disabled
+page::$methods['sidebarLeft'] = function($page) {
+    
+  if (!empty(yaml($page->settings())['sidebar-left'])) {
+    
+    $setting = yaml($page->settings())['sidebar-left'];
+    
+    if ($setting == 'default') {
+      return site()->setting('layout/sidebar-left');
+    } elseif ($setting == 'enabled') {
+      return true;
+    } elseif ($setting == 'disabled') {
+      return false;
+    } else {
+      return false;
+    }
+    
+  } else {
+    return site()->setting('layout/sidebar-left');
+  }
+  
+};
+
+// Sidebar Right setting
+// returns the page's right sidebar setting
+// can be default, enabled, disabled
+page::$methods['sidebarRight'] = function($page) {
+  
+  if (!empty(yaml($page->settings())['sidebar-right'])) {
+    
+    $setting = yaml($page->settings())['sidebar-right'];
+    
+    if ($setting == 'default') {
+      return site()->setting('layout/sidebar-right');
+    } elseif ($setting == 'enabled') {
+      return true;
+    } elseif ($setting == 'disabled') {
+      return false;
+    } else {
+      return false;
+    }
+    
+  } else {
+    return site()->setting('layout/sidebar-right');
+  }
+  
+};
+
+// Call To Action setting
+// returns the page's call to action if available
+// can be default, off, or a cta slug
+page::$methods['cta'] = function($page) {
+  
+  if (!empty(yaml($page->settings())['sidebar-right'])) {
+    
+    $setting = yaml($page->settings())['sidebar-right'];
+    
+    if ($setting == 'default') {
+      return site()->setting('layout/cta');
+    } elseif ($setting == 'on') {
+      return true;
+    } elseif ($setting == 'off') {
+      return false;
+    } else {
+      return false;
+    }
+    
+  } else {
+    return site()->setting('layout/cta');
+  }
+  
+};
+
+// Share setting
+// returns the page's social media share icon setting
+// can be default, on, off
+page::$methods['share'] = function($page) {
+  
+  if (!empty(yaml($page->settings())['share'])) {
+    
+    $setting = yaml($page->settings())['share'];
+    
+    if ($setting == 'default') {
+      return site()->setting('layout/share');
+    } elseif ($setting == 'on') {
+      return true;
+    } elseif ($setting == 'off') {
+      return false;
+    } else {
+      return false;
+    }
+    
+  } else {
+    return site()->setting('layout/share');
+  }
+  
+};
+
+// Color setting
+// returns the page's color
+page::$methods['color'] = function($page) {
+  
+  if (!empty(yaml($page->settings())['color'])) {
+    $setting = yaml($page->settings())['color'];
+    if ($setting == 'default' OR $setting == '') {
+      return site()->setting('style/default-color');
+    } else {
+      return $setting;
+    }
+  } else {
+    return site()->setting('style/default-color');
+  }
+  
 };
 
 // TOC setting
@@ -405,65 +650,9 @@ page::$methods['submissions'] = function($page) {
   }
 };
 
-// Price setting
-// returns the item's price
-// (integer)
-page::$methods['price'] = function($page) {
-  $setting = yaml($page->settings())['price'];
-};
-
-// Price setting
-// returns the item's price
-// (integer)
-page::$methods['price'] = function($page) {
-  $setting = yaml($page->settings())['price'];
-};
-
-// Hero image
-// returns the first hero image (or first image) of a page
-page::$methods['heroImage'] = function($page) {
-
-  if ($file = $page->file($page->content()->hero())) {
-    if ($file->type() == 'image') {
-      return $file;
-    } else {
-      return null;
-    }    
-  } elseif ($hero = $page->images()->findBy('name', 'hero')) {
-    return $hero;
-  } elseif ($page->hasImages()) {
-    return $page->images()->not('location.jpg')->sortBy('sort', 'asc')->first();
-  } else {
-    return null;
-  }
-  
-};
-
-// Hero images
-// returns a collection of the page's hero images
-page::$methods['heroImages'] = function($page) {
-
-  if ($hero = $page->images()->findBy('name', 'hero')) {
-    return $hero;
-  } elseif ($page->hasImages()) {
-    return $page->images()->sortBy('sort', 'asc')->first();
-  } else {
-    return null;
-  }
-  
-};
-
 //==============================================================================
 // PERMISSIONS
 //==============================================================================
-
-page::$methods['isVisibleToUser'] = function($page) {
-  if ($page->visibility() == 'unlisted') {
-    return true;
-  } else {
-    return isVisibleToUser($page);
-  }
-};
 
 page::$methods['isEditableByUser'] = function($page) {
   return isEditableByUser($page);
@@ -471,6 +660,14 @@ page::$methods['isEditableByUser'] = function($page) {
 
 page::$methods['isSubmissibleByUser'] = function($page) {
   return isSubmissibleByUser($page);
+};
+
+page::$methods['isVisibleToUser'] = function($page) {
+  if ($page->visibility() == 'unlisted') {
+    return true;
+  } else {
+    return isVisibleToUser($page);
+  }
 };
 
 pages::$methods['visibleToUser'] = function($pages) {  
@@ -510,6 +707,11 @@ function isVisibleToUser($page) {
       $isvisible = true;
     }
   }
+  
+  if (site()->setting('advanced/lockdown') == true AND !site()->user()) {
+    $isvisible = false;
+  }
+  
   return $isvisible;
 }
 

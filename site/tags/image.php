@@ -298,7 +298,7 @@ kirbytext::$tags['image'] = array(
         $figure->addClass($tag->attr('size'));                                    // Added by Andy
         $figure->append($image);
         if(!empty($caption)) {
-          $figure->append('<figcaption>' . html($caption) . '</figcaption>');
+          $figure->append('<figcaption>' . $caption . '</figcaption>');
           $figure->attr('style',$stylecalc);
         }
         if(empty($caption)) {

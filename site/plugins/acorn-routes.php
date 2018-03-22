@@ -1289,6 +1289,22 @@ $kirby->set('route', array(
   }
 ));
 
+// Virtual favicon
+// Used by RSS readers
+$kirby->set('route', array(
+  'pattern' => 'favicon.ico',
+  'method' => 'GET',
+  'action'  => function() {
+    
+    if (site()->images()->findBy('name', 'logo-favicon')) {
+      header('Content-type: image/png');
+      $favicon = site()->images()->findBy('name', 'logo-favicon');
+      echo file_get_contents($favicon->dir() . DS . $favicon->filename());
+    }
+    
+  }
+));
+
 // Virtual robots.txt file
 $kirby->set('route', array(
   'pattern' => 'robots.txt',

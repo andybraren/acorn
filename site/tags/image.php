@@ -167,6 +167,11 @@ kirbytext::$tags['image'] = array(
         }
       }
       
+      // Return a simple img tag for RSS and JSON Feed pages
+      if (isFeedRequest()) {
+        return '<img src="' . $thumb->url() . '">';
+      }
+      
       // link builder
       $_link = function($image) use($tag, $url, $link, $file, $datasize, $type, $output) {
         

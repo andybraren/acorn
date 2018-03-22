@@ -533,6 +533,16 @@ page::$methods['comments'] = function($page) {
   
 };
 
+// Is Feed Request
+// Returns whether or not the request is coming from a JSON or RSS Feed, allowing
+// tags like (image:) or (video:) to react accordingly
+function isFeedRequest() {
+  if (strpos($_SERVER['REQUEST_URI'], 'feed?')) { // this isn't the most reliable but good enough for now
+    return true;
+  } else {
+    return false;
+  }
+}
 
 
 

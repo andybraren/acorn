@@ -1372,69 +1372,111 @@ $kirby->set('route', array(
   }
 ));
 
+//==============================================================================
+// FEEDS
+// RSS, JSON, etc.
+//
+// Eventually this should be customizable 
+//
+//==============================================================================
+// .com/feeds                displays all of the possible feeds available
+// .com/slug/feeds           displays all of the possible feeds for this article (discussion, updates, etc.)
+// .com/slug/feed?format=rss
+// .com/slug/feed?format=json
+// .com/slug/feed?format=json&tags=acorn
+// .com/slug/feed?format=json&type=discussion
 
-
-
-
+// This seems better than doing something like this, because eventually if
+// I want to allow tag-based feeds or string-based feeds then I'm going to have
+// to move to queries eventually, so may as well do the above and keep it more
+// consistent at the expense of a little bit of niceness for the main feed
+// .com/feeds/all/rss
+// .com/slug/feeds/rss
+// .com/slug/feeds/json
+// .com/slug/feeds/json?tags=acorn
+// .com/slug/feeds/updates/json
 
 
 $kirby->set('route', array(
-  'pattern' => 'search',
-  'method' => 'GET',
+  'pattern' => array('feed', '(.+feed)'),
+  'method'  => 'GET',
   'action'  => function() {
     
-    // I should probably just use this: https://getkirby.com/docs/cookbook/search
-    
-    $pages = site()->index();
-    
-    // If I ever want to do subdirectory-specific searches, this would be how
-    // $subpage = explode('/', $_SERVER['REQUEST_URI'])[1];
-    // echo $uid;
-    
-    // This should probably be turned into a snippet too?
-    // Just like I did with the content snippet, this woould pass values in and
-    // the snippet would return just the HTML that's needed.
-    
-    $results = new Pages();
-    
-    // filter by tags
-    if (isset($_GET['tags'])) {
-      
-      $tags = filter_var($_GET['tags'], FILTER_SANITIZE_STRING);
-      $tags = explode(',', $tags);
-      //print_r($tags);
-      
-      $pages->filter(function($page) use($tags, $results)  {
-        if (array_intersect($page->tags(), $tags)) {
-          $results->add($page);
-        }
-      });
-      
+    // Get the page based on the request path
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    if ($path == '/feed') {
+      $page = site()->page('home');
+    } else {
+      $page = site()->page(str_replace('/feed','',$path));
     }
     
-    // filter by text
-    if (isset($_GET['q'])) {
-      
-      $query = filter_var($_GET['q'], FILTER_SANITIZE_STRING);
-      
-      $pages->filter(function($page) use($query, $results)  {
-        if (stripos($page->text(), $query)) {
-          $results->add($page);
-        }
-      });
-      
+    // Get the format
+    if (isset($_GET['format'])) {
+      $format = filter_var($_GET['format'], FILTER_SANITIZE_STRING);
+    } else {
+      //$html = "List of feed options here.";
+      //$format = null;
+      go(site()->url() . '/feed?format=rss', 301);
     }
     
-    // sort by date
-    $results = $results->sortBy('dateCreated','desc');
-    
-    //tpl::load( kirby()->roots()->templates() . DS . 'default.php' );
-    
-    // return results
-    foreach ($results as $result) {
-      $item_date = date('M d Y', $result->dateCreated());
-      echo '<span style="font-family:monospace;">' . $item_date . ' - </span>' . '<a href="' . $result->url() . '">' . $result->title() . '</a>';
-      echo '<br>';
+    if ($format) {
+      
+      // Get the items
+      if ($page->isHomePage()) {
+        $items = $page = site()->index();
+      } else {
+        $items = $page->children();
+      }
+      
+      // Sort items
+      $items = $items->sortBy('datePublished','desc');
+      
+      // Filter and limit the items
+      // This loop method reduces the processing time to 1.5s compared to 6s for filters
+      // which is roughly the same as the limit() method alone
+      $filtered = new Pages();
+      $limit = 10;
+      $count = 0;
+      foreach ($items as $item) {
+        if ($item->visibility() == 'public') {
+          $filtered->add($item);
+          $count++;
+        }
+        if ($count == $limit) {
+          break;
+        }
+      }
+      $items = $filtered;
+      
+      $html = '';
+      
+      // RSS feed
+      if ($format == 'rss') {
+        //$html = 'rss feed';
+        
+        foreach ($items as $item) {
+          //echo $item->uid() . '<br>';
+        }
+        
+        $options = array(
+          'page'  => $page,
+          'items' => $items,
+          'description' => site()->description()
+        );
+        
+        header::type('text/xml');
+        //header('Content-Type: text/xml; charset=utf-8');  
+        $html .= tpl::load(kirby()->roots()->plugins() . DS . 'acorn-feed' . DS . 'rss' . DS . 'html.php', $options);
+        
+      }
+      
+      // JSON feed
+      elseif ($format == 'json') {
+        $html = 'A JSON-formatted feed will be here in the future.';
+      }
+      
+      echo $html;
+      
     }
     
   }

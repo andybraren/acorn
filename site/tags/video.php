@@ -110,6 +110,11 @@ kirbytext::$tags['video'] = array(
           $blahurl = "/maker/assets/images/blank.gif"; // Added for b-lazy
           $blahurl = "/site/assets/images/blank.gif";
           
+          // Return a simple iframe for RSS and JSON Feed pages
+          if (isFeedRequest()) {
+            return '<iframe width="560" height="315" src="https://www.youtube.com/embed/' . $youtubeid . '?playsinline=1&wmode=transparent&modestbranding=1&autohide=1&showinfo=0&rel=0' . $timestamp . '" data-orig="' . $url . '" frameborder="0" allowfullscreen></iframe>';
+          }
+          
           return '<figure><div class="video-container"><div class="youtube"><img class="b-lazy" src="' . $blahurl . '" data-src="' . $imageurl . '"><div class="play"></div></div><iframe data-src="https://www.youtube.com/embed/' . $youtubeid . '?autoplay=1&playsinline=1&wmode=transparent&modestbranding=1&autohide=1&showinfo=0&rel=0' . $timestamp . '" data-orig="' . $url . '" frameborder="0" allowfullscreen></iframe></div>' . $htmlcaption . '</figure>';
         } 
       }
@@ -128,13 +133,22 @@ kirbytext::$tags['video'] = array(
         }
         
         $htmlimage = '<img class="b-lazy" src="/site/assets/images/blank.gif" data-src="' . $imageurl . '">';
-
-        //return '<figure><div class="video-container"><div class="vimeo">' . $htmlimage . '<div class="play"></div></div><iframe data-src="//player.vimeo.com/video/' . $vimeoid . '?autoplay=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;color=808080" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>' . $htmlcaption . '</figure>';
+        
+        // Return a simple iframe for RSS and JSON Feed pages
+        if (isFeedRequest()) {
+          return '<iframe width="560" height="315" src="//player.vimeo.com/video/' . $vimeoid . '?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;color=808080" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+        }
+        
         return '<figure><div class="video-container"><div class="vimeo">' . $htmlimage . '<div class="play"></div></div><iframe data-src="//player.vimeo.com/video/' . $vimeoid . '?autoplay=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;color=808080" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>' . $htmlcaption . '</figure>';
       }
       
       // HTML5 "GIFs"
       elseif ($autoplay == "on") {
+        
+        if (isFeedRequest()) {
+          return '<video controls preload="metadata" autoplay loop muted playsinline src="' . $url . '"></video>';
+        }
+        
         return '<figure' . $size . '><video controls preload="metadata" autoplay loop muted playsinline class="b-lazy" ' . $posterimage . ' data-src="' . $url . '" data-file="' . $filename . '"></video>
         <noscript><span style="color:#AB2A2A">It looks like you have JavaScript disabled. <a href="' . $url . '">Click here</a> to view the video above.</span></noscript>' . $htmlcaption . '</figure>';
         

@@ -159,6 +159,9 @@ kirbytext::$tags['link'] = array(
     $quote = isset($quote) ? '<blockquote>' . kirbytext($quote) . '</blockquote>' : '';
     
     $html = '<div class="' . $classes . '"><a href="' . $url . '">' . $image . '<div>' . '<div class="linkcontent">' . $title . $excerpt . '</div>'. $info . '</div></a>' . $quote . '</div>';
+    if (isFeedRequest()) {
+      return '<a href="' . $url . '">' . 'Link: ' . $title . '</a>';
+    }
     
     return $html;
     

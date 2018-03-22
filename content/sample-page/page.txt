@@ -1,16 +1,63 @@
 Title: Sample Page
 ----
-Datedata: 2017-04-09 12:00:00, 2017-04-12 13:31:16, 2017-04-11 17:27:40
+Meta: 
+
+authors: [ ]
+date:
+  created: 2017-04-09 12:00:00
+  modified: 2018-03-10 18:53:20
+  modifiedby: acorn
+  published: 2017-04-11 17:27:40
+  updated: ""
+  start: ""
+  end: ""
+related:
+  tags: ""
+  internal: ""
+  external: ""
+info:
+  subtitle: ""
+  description: ""
+  excerpt: >
+    Click the "Edit" button on the left to
+    edit this page. A tool palette will
+    appear that allows you to manipulate and
+    add new content. The editor is a work in
+    progress and not every capability is
+    included within the tool palette. Acorn
+    stores page content as Markdown-formated
+    text, so you can write with
+data:
+  likes: ""
+  dislikes: ""
+  requests: ""
+  subscribers: ""
+  registrants: ""
+  attendees: ""
+  address: ""
+  addressinfo: ""
+  hours: ""
+  hoursinfo: ""
+  rating: ""
+  hero: ""
+  icon: ""
+  price: ""
+  audio: ""
 ----
-Userdata: 
+Settings: 
+
+visibility: public
+title: visible
+sidebar-left: default
+sidebar-right: default
+color: green
+hero-color: ""
+hero-style: ""
+toc: default
+discussion: default
+submissions: 'off'
 ----
-Reldata: 
-----
-Settings: public, red, comments == off, submissions == off, price == off
-----
-Hero: 
-----
-Text:
+Text: 
 
 Click the "Edit" button on the left to edit this page. A tool palette will appear that allows you to manipulate and add new content.
 

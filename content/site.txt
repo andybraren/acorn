@@ -4,7 +4,7 @@ Description:
 ----
 Coloroptions: red, blue, green, purple, orange, silver, gold
 ----
-Visibilityoptions: public, unlisted, groups, private
+Visibilityoptions: private, unlisted, groups, public
 ----
 Usertypes: user, admin
 ----
@@ -23,12 +23,8 @@ Majoroptions:
 Menuprimary: 
 
 - 
-  title: About
-  uid: about
-  sub:
-    - 
-      title: Sample Page
-      uid: sample-page
+  title: Sample Page
+  uid: sample-page
 ----
 Menusecondary: 
 

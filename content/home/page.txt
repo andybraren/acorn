@@ -1,0 +1,52 @@
+Title: Acorn
+----
+Meta: 
+
+authors: [ ]
+date:
+  created: 2017-04-28 03:59:43
+  modified: 2018-03-10 18:53:17
+  modifiedby: acorn
+  published: 2017-04-28 03:59:43
+  updated: ""
+  start: ""
+  end: ""
+related:
+  tags: ""
+  internal: ""
+  external: ""
+info:
+  subtitle: ""
+  description: ""
+  excerpt: ""
+data:
+  likes: ""
+  dislikes: ""
+  requests: ""
+  subscribers: ""
+  registrants: ""
+  attendees: ""
+  address: ""
+  addressinfo: ""
+  hours: ""
+  hoursinfo: ""
+  rating: ""
+  hero: "hero.jpg"
+  icon: ""
+  price: ""
+  audio: ""
+----
+Settings: 
+
+visibility: public
+title: visible
+sidebar-left: default
+sidebar-right: default
+color: green
+hero-color: ""
+hero-style: ""
+toc: default
+discussion: default
+submissions: 'off'
+----
+Text: Welcome to Acorn.

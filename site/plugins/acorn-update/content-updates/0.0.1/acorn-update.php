@@ -2,8 +2,6 @@
 
 // ACORN v0.0.1 UPDATE
 
-$updatePage = false;
-
 // Bring in the deprecated methods one last time
 require('methods-deprecated.php');
 
@@ -60,7 +58,7 @@ $newMeta['data'] = $data;
 // SETTINGS FIELD
 
 $setting = array();
-$setting['visibility'] = $page->visibility();
+$setting['visibility'] = getPageVisibility($page);
 $setting['theme'] = getTheme($page);
 $setting['toc'] = 'default';
 $setting['discussion'] = 'default';
@@ -73,39 +71,46 @@ $newSettings = $setting;
 // TEXT FIELD
 $newText = $page->content()->text();
 
-$allClear = true;
+// UPDATE THE PAGE
 
-if ($allClear) {
+// Delete all existing fields and add the new ones
+$keys = array();
+foreach ($page->content()->toArray() as $key => $item ) {
+  $keys[$key] = null;
+}
+$page->update($keys);
+
+$newMeta = yaml::encode(str::parse($newMeta));
+$newSettings = yaml::encode(str::parse($newSettings));
+
+$page->update(array(
+  'title' => $newTitle,
+  'meta'  => $newMeta,
+  'settings' => $newSettings,
+  'text' => $newText
+));
+
+// Change the filename if it's anything other than page.txt
+if ($page->name() != 'page') {
+  rename($page->textfile(), $page->root() . DS . 'page.txt');
+}
+
+function getPageVisibility($page) {
   
-  /* Delete all existing fields and add the new ones */
-  $keys = array();
-  foreach ($page->content()->toArray() as $key => $item ) {
-    $keys[$key] = null;
+  if ($page->visibility() != null) {
+    return $page->visibility();
   }
-  $page->update($keys);
   
-  //$newstuff = yaml::encode($newMeta);
-  $newMeta = yaml::encode(str::parse($newMeta));
-  $newSettings = yaml::encode(str::parse($newSettings));
+  // TinkerTry and Thinkerbit drafts and posts
+  elseif (strpos($page->uri(), 'drafts')) {
+    return 'private';
+  }
   
-  $page->update(array(
-    'title' => $newTitle,
-    'meta'  => $newMeta,
-    'settings' => $newSettings,
-    'text' => $newText
-  ));
-  
-  // Change the filename if it's anything other than page.txt
-  if ($page->name() != 'page') {
-    rename($page->textfile(), $page->root() . DS . 'page.txt');
+  else {
+    return 'public';
   }
   
 }
-
-
-
-
-
 
 function pageHours($page) {
   if ($page->content()->hours()) {
@@ -273,26 +278,53 @@ function getNewDateCreated($page) {
 }
 
 function getNewDatePublished($page) {
+  
   if ($page->datePublished()) {
     return date('Y-m-d H:i:s', $page->datePublished());
-  } else {
-    return '';
+  }
+  
+  // TinkerTry and Thinkerbit drafts and posts
+  if ($page->content()->date() != '' and !strpos($page->uri(), 'drafts')) {
+    $tempdate = str_replace(' at ','', $page->content()->date()); // Strip any "at" left over from IFTTT on Thinkerbit pages
+    $date = strtotime($tempdate);
+    return date('Y-m-d H:i:s', $date);
+  }
+  
+  else {
+    return "";
   }
 }
 
 function getDateStart($page) {
   if ($page->dateStart()) {
     return date('Y-m-d H:i:s', strtotime($page->dateStart()));
-  } else {
-    return '';
+  }
+  
+  // Andy Braren site
+  elseif ($page->content()->started() != '') {
+    return $page->content()->started() . '-01-01 00:00:00';
+  }
+  
+  else {
+    return "";
   }
 }
 
 function getDateEnd($page) {
   if ($page->dateEnd()) {
     return date('Y-m-d H:i:s', strtotime($page->dateEnd()));
-  } else {
-    return '';
+  }
+  
+  // Andy Braren site
+  elseif ($page->content()->ended() == 'Present') {
+    return "";
+  }
+  elseif ($page->content()->ended() != '') {
+    return $page->content()->ended() . '-01-01 00:00:00';
+  }
+  
+  else {
+    return "";
   }
 }
 
@@ -309,18 +341,3 @@ function getNewDateUpdated($page) {
   
   
 }
-
-
-
-
-
-
-
-
-
-
-
-//require(dirname(__DIR__) . '/0.0.2/acorn-update.php');
-
-
-

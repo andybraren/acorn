@@ -128,6 +128,7 @@ if (!isset($type)) {
         $items = $filtered;
       }  
       if (isset($event)) {
+        /*
         $filtered = new Pages();
         foreach ($items as $item) {
           if ($item->relatedEvents() != null) {
@@ -139,6 +140,7 @@ if (!isset($type)) {
           }
         }
         $items = $filtered;
+        */
       }
       if (isset($time)) {
         if ($time == 'upcoming') {
@@ -154,9 +156,11 @@ if (!isset($type)) {
         
         $filtered = new Pages();
         foreach ($items as $item) {
+          /*
           if (in_array($uid, $item->related())) {
             $filtered->add($item);
           }
+          */
         }
         $items = $filtered;
       }
@@ -276,7 +280,7 @@ if (!isset($type)) {
         <?php endif ?>
         */ ?>
         
-        <?php if($item->excerpt()->exists()): ?>
+        <?php if($item->excerpt() != null): ?>
           <p><?php echo $item->excerpt() ?></p>
         <?php else: ?>
           <?php /*

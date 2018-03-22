@@ -145,7 +145,7 @@
         <li class="search">
           <form class="search-container" action="<?php echo $site->url() . '/search'?>">
             <?php echo (new Asset('/site/assets/images/menu-search.svg'))->content() ?>
-            <input id="search-box" type="text" class="search-box" name="s">
+            <input id="search-box" type="text" class="search-box" name="q">
             <input type="submit" id="search-submit">
           </form>
         </li>

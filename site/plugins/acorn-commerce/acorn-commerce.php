@@ -24,6 +24,7 @@ function initiateStripe() {
 }
 
 // Stripe testing
+/*
 $kirby->set('route', array(
   'pattern' => 'stripecheckoutcharge',
   'method' => 'POST',
@@ -58,6 +59,7 @@ $kirby->set('route', array(
     
   }
 ));
+*/
 
 // Stripe testing
 $kirby->set('route', array(
@@ -66,15 +68,18 @@ $kirby->set('route', array(
   'action'  => function() {
     
     initiateStripe();
-        
+    
     $request_body = file_get_contents('php://input');
     $data = json_decode($request_body, true);
     $token = $data['token']; // Get the Stripe token passed from Stripe.js
+    $page = parse_url($data['page'], PHP_URL_PATH);
+    
+    $amount = site()->page($page)->price() * 100;
     
     try { // Charge the card
       
       $charge = \Stripe\Charge::create(array(
-        "amount" => 100,
+        "amount" => $amount,
         "currency" => "usd",
         "description" => "Example charge",
         "statement_descriptor" => "Custom descriptor",

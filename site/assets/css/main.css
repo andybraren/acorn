@@ -562,7 +562,20 @@ body #hero .container {
 
 
 
+/* Content Items
+----------------------------------------------------------------------------- */
 
+.content-full > div, .content-excerpt > div {
+  margin-bottom: 30px;
+}
+
+.content-full h4, .content-excerpt h4 {
+  margin: initial;
+}
+
+.content-full .meta, .content-excerpt .meta {
+  font-size: .9rem;
+}
 
 /* Images
 ----------------------------------------------------------------------------- */
@@ -959,12 +972,7 @@ footer .container {
 
 
 
-blockquote {
-  border-left-color: #62A5F0;
-  background-color: rgba(98, 165, 240, 0.05);
-  border-left-color: var(--theme-main);
-  background-color: var(--theme-opac3);
-}
+
 .highlight {
   background-color: var(--theme-opac3);
   box-shadow: 0px 0px 1px rgb(225, 225, 225);
@@ -1010,6 +1018,9 @@ blockquote {
   */
   padding-top: 1rem;
   padding-bottom: 4rem;
+  
+  width: 100%;
+  flex-grow: 1;
 }
 
 
@@ -1664,7 +1675,9 @@ h2 {
   font-weight: initial;
   clear: both;
   margin: 0.5rem 0;
+  /*
   transition: background-color 0.2s, color 0.2s;
+  */
 }
 article h2, article h3 {
   margin: 1rem 0 .5rem 0;
@@ -1685,6 +1698,7 @@ article li {
   */
   -webkit-hyphens: auto;
   hyphens: auto;
+  overflow-wrap: break-word;
 }
 
 /* Workaround for bug in Safari 10.1+ that prevents word-wrap: break-word from working as expected on extremely long words.
@@ -1704,7 +1718,9 @@ h3 {
   line-height: 1.5rem;
   font-weight: 400;
   clear: both;
+  /*
   transition: background-color 0.2s, color 0.2s;
+  */
 }
 h4, h5 {
   font-size: 1.1rem;
@@ -1716,11 +1732,12 @@ h4, h5 {
 h5 {
   font-size: 1rem;
 }
+/*
 h1 a, h2 a, h3 a, h4 a {
   color: inherit;
   border: 0 !important;
 }
-
+*/
 
 
 
@@ -1766,17 +1783,12 @@ aside figure a img {
 ----------------------------------------------------------------------------- */
 
 .main {
-  /*
-  padding: 1rem 1rem 0 1rem;
-  padding: 0 1rem;
-  */
-  /*
-  background-color: white;
-  background-color: rgba(var(--theme-bgcolor), 1);
-  */
   flex: 1;
   z-index: 1;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
+  
+  display: flex;
+  flex-direction: column;
 }
 
 .main hr {
@@ -1823,22 +1835,21 @@ article hr {
 }
 */
 
+
+
 blockquote {
+  border-left-color: var(--theme-main);
   border-left-width: 4px;
   border-left-style: solid;
+  background-color: var(--theme-opac3);
   padding: .5rem 1rem;
   color: #666;
 }
 
-/*
-blockquote p {
-  margin-bottom: 0px !important;
+.night blockquote {
+  color: inherit;
+  background-color: var(--theme-opac2);
 }
-*/
-
-
-
-
 
 
 
@@ -1971,6 +1982,7 @@ textarea {
 /* Project meta
 ----------------------------------------------------------------------------- */
 
+/*
 .meta {
   margin-bottom: 1.5em;
 }
@@ -1985,7 +1997,7 @@ textarea {
   color: #000;
   padding-right: .25em;
 }
-
+*/
 
 
 
@@ -4522,9 +4534,11 @@ p {
   background-color: var(--theme-main);
 }
 
-.sidebar span {
+.sidebar span, .sidebar a, .sidebar p {
   max-width: 100%;
+  /*
   overflow: hidden;
+  */
   text-overflow: ellipsis;
   font-size: .8rem;
   line-height: 1rem;
@@ -4733,16 +4747,11 @@ article {
   width: 100%;
   margin: 0 auto;
 }
-
-
-.sidebar {
-  order: 1;
-  flex: 0 0 14rem;
-}
-
+/*
 .sidebar ~ .content {
   margin-right: auto;
 }
+*/
 /*
 .rightsidebar ~ .content {
   max-width: 700px;
@@ -5229,17 +5238,21 @@ aside figcaption {
     margin-left: 1rem;
   }
   */
+  /*
   .sidebar .widget {
     margin-right: 1rem;
     max-width: 28vw;
     min-width: 12rem;
   }
+  */
   .sidebar div {
     /*
     margin-left: 1rem;
     */
     margin-bottom: initial;
     min-width: 150px;
+    width: 100%;
+    height: 100%;
     overflow-y: auto;
     
     -webkit-overflow-scrolling: touch;
@@ -5370,7 +5383,15 @@ aside figcaption {
 
 
 
+/* ACORN EDITOR
+----------------------------------------------------------------------------- */
 
+[data-editor="hidden"] {
+  display: none;
+}
+[data-editor="visible"] {
+  display: block;
+}
 
 
 /* DRAGULA
@@ -5492,8 +5513,12 @@ aside figcaption {
 
 #calendar-container #calendar-body .day-column .cal-event[data-days='7'] {
 	width: calc(700% + 3px);
+/* DRAGULA
+----------------------------------------------------------------------------- */
+
+.gu-transit {
+  opacity: 0.2;
 }
-*/
 
 /* GUGGENHEIM IMAGE GALLERIES
 ----------------------------------------------------------------------------- */

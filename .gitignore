@@ -36,7 +36,7 @@ Icon
 !/content/logo.svg
 
 !/content/home/
-!/content/home/*
+!/content/home/page.txt
 
 !/content/site/
 !/content/site/*
@@ -47,9 +47,6 @@ Icon
 !/content/settings/
 !/content/settings/page.txt
 !/content/users/page.txt
-
-!/content/about/
-!/content/about/page.txt
 
 !/content/sample-page/
 

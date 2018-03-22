@@ -1,7 +1,7 @@
 <?php
   
   // Specify the price in cents. Accounts for decimal places if they're included.
-  $amount = (float)((string)$page->content()->price()) * 100;
+  $amount = (float)((string)$page->price()) * 100;
     
   if (site()->setting('commerce/stripe/testmode') == true) {
     $stripekey_public = site()->setting('commerce/stripe/pk-test');

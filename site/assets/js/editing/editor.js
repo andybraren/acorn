@@ -357,7 +357,7 @@ function replaceFigures() {
         
         // newImg.src = figures[i].childNodes[0].href;
         
-        var datasrc = figures[i].childNodes[0].childNodes[0].getAttribute('data-src');
+        var datasrc = figures[i].childNodes[0].childNodes[0].getAttribute('src');
         if (datasrc) {
           newImg.src = datasrc; // try getting data-src first, if it still exists
         } else {

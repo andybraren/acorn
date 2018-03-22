@@ -26,24 +26,30 @@
 <div class="main">
   <div class="container">
     
-    <?php if (!empty($page->authors())): ?>
-      <?php snippet('sidebar') ?>
-    <?php endif ?>
+    <div class="sidebar">
+      <?php if ($page->sidebarLeft()): ?>
+        <?php snippet('sidebar') ?>
+      <?php endif ?>
+    </div>
     
+    <div class="sidebar rightsidebar">
+      
+      <?php snippet('widget', array('type' => 'discussion')) ?>
+      
     <?php if ($page->parent() != '' AND $_SERVER['SERVER_NAME'] != 'dev.andybraren.com' AND $_SERVER['SERVER_NAME'] != 'andybraren.com'): ?>
-      <div class="sidebar rightsidebar">
-        <?php snippet('widget', array('type' => 'links')) ?>
-        <?php if ($page->parent() == "handbooks"): ?>
-          <?php snippet('widget', array('type' => 'equipment')) ?>
-        <?php endif ?>
-        <?php snippet('widget', array('type' => 'handbooks')) ?>
-        <?php
-          if ($page->visibility() == 'unlisted') {
-            echo kirbytag(array('callout' => 'notice', 'text' => 'The author has marked this page as unlisted and hidden from Google. Please think twice before sharing it with others.'));
-          }
-        ?>
-      </div>
+            
+      <?php snippet('widget', array('type' => 'links')) ?>
+      <?php if ($page->parent() == "handbooks"): ?>
+        <?php snippet('widget', array('type' => 'equipment')) ?>
+      <?php endif ?>
+      <?php snippet('widget', array('type' => 'handbooks')) ?>
+      <?php
+        if ($page->visibility() == 'unlisted') {
+          echo kirbytag(array('callout' => 'notice', 'text' => 'The author has marked this page as unlisted and hidden from Google. Please think twice before sharing it with others.'));
+        }
+      ?>
     <?php endif ?>
+    </div>
     
     <main class="content">
       <article>
@@ -127,9 +133,11 @@
         <?php snippet('cards', array('type' => 'articles', 'group' => $page->uid())) ?>
       <?php endif ?>
       
+      <?php /*
       <?php if($page->uid() == 'articles'): ?>
         <?php snippet('cards', array('type' => 'articles')) ?>
       <?php endif ?>
+      */ ?>
       
       <?php if($page->uid() == 'courses'): ?>
         <?php snippet('cards', array('type' => 'courses')) ?>
@@ -140,59 +148,11 @@
         <?php snippet('cards', array('type' => 'projects', 'group' => $page->uid())) ?>
       <?php endif ?>
       <?php endif ?>
-      
-      <?php if($page->uid() == 'learn'): ?>
-            
-      <?php endif ?>
-      
-      <?php if($page->uid() == 'make'): ?>
-        
-      <?php endif ?>
-      
-      <?php if($page->uid() == 'connect'): ?>
-        
-      <?php endif ?>
-      
-      <?php if($page->uid() == 'projects'): ?>
-        <?php snippet('cards', array('type' => 'projects')) ?>
-      <?php endif ?>
-      
-      <?php if($page->uid() == 'bugs'): ?>
-        <?php snippet('cards', array('type' => 'bugs')) ?>
-      <?php endif ?>
-      
-      <?php if($page->uid() == 'spaces'): ?>
-        <?php snippet('cards', array('type' => 'spaces')) ?>
-      <?php endif ?>
-      
+                  
       <?php if($page->uid() == 'handbooks'): ?>
         <?php snippet('cards', array('type' => 'handbooks')) ?>
       <?php endif ?>
-      
-      <?php if($page->uid() == 'equipment'): ?>
-        <?php snippet('cards', array('type' => 'equipment')) ?>
-      <?php endif ?>
-      
-      <?php if($page->uid() == 'books'): ?>
-        <?php snippet('cards', array('type' => 'books')) ?>
-      <?php endif ?>
-      
-      <?php if (site()->page('books')): ?>
-      <?php if (site()->page('books')->isOpen()): ?>
-        <hr>
-        <h2>Case Studies</h2>
-        <?php snippet('cards') ?>
-      <?php endif ?>
-      <?php endif ?>
-      
-      <?php if($page->uid() == 'challenges'): ?>
-        <?php snippet('cards', array('type' => 'challenges')) ?>
-      <?php endif ?>
-      
-      <?php if($page->uid() == 'posts'): ?>
-        <?php snippet('cards', array('type' => 'posts')) ?>
-      <?php endif ?>
-      
+            
       <?php if($page->parent() == 'events' && $page->hasChildren()): ?>
         <?php snippet('cards', array('type' => 'projects')) ?>
       <?php endif ?>
@@ -202,13 +162,6 @@
         <?php snippet('cards', array('type' => 'projects', 'event' => $page->uid())) ?>
       <?php endif ?>
       
-      <!--
-      <?php if($page->parent() == 'projects'): ?>
-        <h2>Updates</h2>
-        <?php snippet('cards', array('type' => 'posts', 'relatedto' => $page->uid())) ?>
-      <?php endif ?>
-      -->
-            
       <?php if($page->uid() == 'forum'): ?>
         <?php snippet('forum') ?>
       <?php endif ?>
@@ -217,22 +170,6 @@
         <?php snippet('comments') ?>
       <?php endif ?>
       
-      <?php /*
-      <?php if($page->parent() == 'events'): ?>
-        <?php echo guggenheim($page->images(), array('width' => 800, 'height' => 200, 'border' => 10)); ?>
-      <?php endif ?>
-      */ ?>
-      
-      <?php if($page->uid() == 'events'): ?>
-        <!--
-        <h2>Upcoming Events</h2>
-        <?php snippet('cards', array('type' => 'events', 'time' => 'upcoming')) ?>
-        
-        <h2>Past Events</h2>
-        -->
-        <?php snippet('cards', array('type' => 'events', 'time' => 'past')) ?>
-        <?php snippet('events') ?>
-      <?php endif ?>
       
     </main>
     

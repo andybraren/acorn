@@ -1483,8 +1483,7 @@ if (authorfield != null) {
   
 }
 
-/* Add group widget
-*/
+/* Add group widget */
 var groupwidget = document.getElementById('groups');
 var groupfield = document.getElementById('group-add');
 var groupresults = document.getElementById('group-results');
@@ -1962,6 +1961,7 @@ window.addEventListener('load', function(event) {
   checkIfNewPage();
 });
 
+
 // Theme Checker
 document.addEventListener('DOMContentLoaded', function(event) {
   if (localStorage.getItem('theme') != null) {
@@ -2209,7 +2209,7 @@ function checkStripe() {
       // Send the token to your server to charge it!
       fetch('/stripecharge', {
         method: 'POST',
-        body: JSON.stringify({token: ev.token.id}),
+        body: JSON.stringify({token: ev.token.id, page: window.location.href}),
       })
       .then(function(response) {
         if (response.ok) {

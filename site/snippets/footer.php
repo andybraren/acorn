@@ -21,12 +21,12 @@
   
 </footer>
 
-<?php if ($page->content()->price() != null && $page->content()->price() != ''): ?>
+<?php if ($page->price() != null && $page->price() != ''): ?>
   <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
 <?php endif ?>
 
 <?php // if (is_dir('site/assets/js/photoswipe') and kirby()->get('option', 'photoswipe') == 'on' and page()->hasImages()): ?>
-<?php if (is_dir('site/assets/js/photoswipe') and strpos($page->content()->text(), 'image:')): ?>
+<?php if (is_dir('site/assets/js/photoswipe') and strpos($page->content()->text(), 'image:') or strpos($page->content()->text(), 'format: full')): ?>
   <?php // Load image scrapers for photoswipe, eventually these should be combined ?>
   <?php echo js('site/assets/js/photoswipe/photoswipe-scraper.js', true) ?>
   <?php echo js('site/assets/js/photoswipe/photoswipe-gallery-scraper.js', true) ?>

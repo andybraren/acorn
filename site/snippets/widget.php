@@ -29,6 +29,14 @@
         <div class="size-full">
           <?php $class = ($page->color() != '') ? "hasbeenclicked clicked" : "neverclicked"; ?>
           <select name="color" id="color" class="<?php echo $class ?>">
+            <?php
+              if ($page->color() == 'default') {
+                $selected = 'selected ';
+              } else {
+                $selected = '';
+              }
+              echo '<option ' . $selected . 'value="default">Default</option>';
+            ?>
             <?php foreach ($site->content()->coloroptions()->split(',') as $color): ?>
               <?php $selected = ($color == $page->color()) ? "selected " : ""; ?>
               <?php echo '<option ' . $selected . 'value="' . $color . '">' . ucfirst($color) . '</option>' ?>
@@ -215,7 +223,6 @@
 
 
 <?php // LINKS ?>
-<?php /*
 <?php if ($type == 'links' and $page->links() != null): ?>
   
   <div class="widget">
@@ -228,7 +235,6 @@
   </div>
   
 <?php endif ?>
-*/ ?>
 
 <?php // AUTHORS ?>
 <?php if ($type == 'authors'): ?>
@@ -345,10 +351,9 @@
 
 
 <?php // META ?>
-
 <?php if ($type == 'meta'): ?>
+  
   <div class="widget">
-    
     <?php if ($page->content()->started()->exists()): ?>
       <span class="heading">INFO</span>
       <span>Started:</span>
@@ -359,11 +364,57 @@
       <?php endif ?>
     <?php else: ?>
       <span class="heading">META</span>
-      <span>Published:</span>
-      <span><?php echo date('M j, Y', $page->datePublished()) ?></span>
+      <span>Created:</span>
+      <span><?php echo date('M j, Y', $page->dateCreated()) ?></span>
       <br>
       <span>Modified:</span>
       <span><?php echo humanDate($page->dateModified()) ?></span>
+      <br>
+      <span>Published:</span>
+      <?php if ($page->datePublished()): ?>
+        <span><?php echo date('M j, Y', $page->datePublished()) ?></span>
+      <?php else: ?>
+        <span>Unpublished</span>
+      <?php endif ?>
+      <br>
+      <span>Updated:</span>
+      <?php if ($page->dateUpdated()): ?>
+        <span><?php echo date('M j, Y H:i:s', $page->dateUpdated()) ?></span>
+      <?php else: ?>
+        <span>Never</span>
+      <?php endif ?>
+    <?php endif ?>
+  </div>
+  
+<?php endif ?>
+
+
+
+
+<?php // META ?>
+<?php if ($type == 'discussion'): ?>
+  
+  <div class="widget">
+    <div id="disquswidget" data-url="https://tinkertry.disqus.com/combination_widget.js?num_items=8&hide_mods=1&default_tab=recent&excerpt_length=200">
+      <script type="text/javascript" src="https://tinkertry.disqus.com/combination_widget.js?num_items=8&hide_mods=1&default_tab=recent&excerpt_length=200"></script>
+    </div>
+  </div>
+  
+<?php endif ?>
+
+
+
+
+
+<?php // TAGS ?>
+<?php if ($type == 'tags'): ?>
+  
+  <div class="widget"<?php if(empty($page->tags())) { echo ' data-editor="hidden"'; } ?>>    
+    <?php if ($page->tags() != ''): ?>
+      <span class="heading">TAGS</span>
+      <?php foreach ($page->tags() as $tag): ?>
+        <a href="<?php echo site()->url() . DS . 'search?tags=' . urlencode($tag) ?>"><?php echo $tag ?></a>
+      <?php endforeach ?>
     <?php endif ?>
   </div>
   

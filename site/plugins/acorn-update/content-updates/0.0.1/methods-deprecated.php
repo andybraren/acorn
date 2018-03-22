@@ -380,7 +380,7 @@ page::$methods['visibility'] = function($page) {
       return trim(explode(',',$page->content()->settings())[0]);
     }
   } else {
-    return 'private';
+    return null;
   }
 };
 

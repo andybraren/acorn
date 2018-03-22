@@ -32,6 +32,10 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
+  <?php if (site()->setting('advanced/lockdown') == true): ?>
+  <meta name="robots" content="noindex, noimageindex, nofollow, noarchive, noimageindex">
+  <?php endif ?>
+  
   <meta property="og:title" content='<?php echo $page->title() ?>'>
   <meta property="og:description" content="<?php echo $page->description() ?>">
   <meta property="og:site_name" content='<?php echo $site->title() ?>'>
@@ -52,7 +56,7 @@
 	<?php endif ?>
 	
   <?php echo css('site/assets/css/main.css') ?>
-
+  
   <?php // Load page-specific css ?>
   <?php foreach($page->files()->filterBy('extension', 'css') as $css): ?>
   <?php echo css($css->url()) ?>

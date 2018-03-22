@@ -1,8 +1,6 @@
 <?php
 
 // ACORN v0.0.2 UPDATE
-
-$updatePage = false;
   
 // Bring in the deprecated methods one last time
 require('methods-deprecated.php');
@@ -56,33 +54,28 @@ $newSettings = $setting;
 $newText = $page->content()->text();
 
 // UPDATE THE PAGE
-$allClear = true;
-if ($allClear) {
-  
-  // Delete all existing fields and add the new ones
-  $keys = array();
-  foreach ($page->content()->toArray() as $key => $item ) {
-    $keys[$key] = null;
-  }
-  $page->update($keys);
-  
-  // Set the new fields
-  $newTitle = $newTitle;
-  $newMeta = yaml::encode(str::parse($newMeta));
-  $newSettings = yaml::encode(str::parse($newSettings));
-  $newText = $newText;
-  
-  // Update the page with the new fields
-  $page->update(array(
-    'title' => $newTitle,
-    'meta'  => $newMeta,
-    'settings' => $newSettings,
-    'text' => $newText
-  ));
-  
-  // Change the filename if it's anything other than page.txt
-  if ($page->name() != 'page') {
-    rename($page->textfile(), $page->root() . DS . 'page.txt');
-  }
-  
+// Delete all existing fields and add the new ones
+$keys = array();
+foreach ($page->content()->toArray() as $key => $item ) {
+  $keys[$key] = null;
+}
+$page->update($keys);
+
+// Set the new fields
+$newTitle = $newTitle;
+$newMeta = yaml::encode(str::parse($newMeta));
+$newSettings = yaml::encode(str::parse($newSettings));
+$newText = $newText;
+
+// Update the page with the new fields
+$page->update(array(
+  'title' => $newTitle,
+  'meta'  => $newMeta,
+  'settings' => $newSettings,
+  'text' => $newText
+));
+
+// Change the filename if it's anything other than page.txt
+if ($page->name() != 'page') {
+  rename($page->textfile(), $page->root() . DS . 'page.txt');
 }

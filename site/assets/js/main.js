@@ -95,6 +95,20 @@ window.onload = function() {
 clickcount = 0;
 function toggleEdit() {
   
+  // Reveal all editor UI components
+  
+  if (clickcount == 0) {
+    let editorComponents = document.querySelectorAll('[data-editor="hidden"]');
+    for (var i = 0; i < editorComponents.length; i++) {
+      editorComponents[i].setAttribute('data-editor', 'visible');
+    }
+  } else {
+    let editorComponents = document.querySelectorAll('[data-editor="visible"]');
+    for (var i = 0; i < editorComponents.length; i++) {
+      editorComponents[i].setAttribute('data-editor', 'hidden');
+    }
+  }
+  
   /* Avoiding anonymous functions, so that the eventListener can be removed, while still passing parameters to the function
       https://toddmotto.com/avoiding-anonymous-javascript-functions/
       Turns out that bind can't be used, because using it creates a sort of virtual function every time it's called, which makes it different
@@ -1448,6 +1462,10 @@ if (authorfield != null) {
   }
   
   function selectResult() {
+    
+    // Mark the parent widget as changed, preventing it from hiding itself
+    event.target.closest(".widget").setAttribute('data-editor', "changed");
+    
     clearSearch(authorresults);
     authorfield.value = '';
     authorfield.classList.remove('clicked');

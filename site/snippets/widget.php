@@ -244,6 +244,7 @@
   <?php if(!empty($authors) or $page->isEditableByUser()): ?>
     <div class="widget">
 
+    <div class="widget"<?php if(!$page->hasAuthors()) { echo ' data-editor="hidden"'; } ?>>
       <?php /* Set the widget title */
         switch ($page->parent()) {
           case 'clubs':

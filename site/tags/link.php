@@ -15,7 +15,6 @@ kirbytext::$tags['link'] = array(
     'author',
     'date',
     'excerpt',
-    'quote',
     'image',
   ),
   'html' => function($tag) {
@@ -25,7 +24,7 @@ kirbytext::$tags['link'] = array(
     $author    = $tag->attr('author');
     $date      = $tag->attr('date');
     $excerpt   = $tag->attr('excerpt');
-    $quote     = $tag->attr('quote');
+    $quote     = $tag->attr('quote'); // Not used for anything
     $image     = $tag->attr('image');
     
     
@@ -151,17 +150,18 @@ kirbytext::$tags['link'] = array(
     }
     
     // Generate and return the HTML
-    $classes = ($quote) ? 'link quote' : 'link';
+    //$classes = ($quote) ? 'link quote' : 'link';
+    $classes = 'link';
     $title = '<strong>' . $title . '</strong>';
     $excerpt = '<span>' . $excerpt . '</span>';
     $sitename = isset($sitename) ? $sitename : '';
     $info = '<span class="info">' . $author . $sitename . $date . '</span>';
-    $quote = isset($quote) ? '<blockquote>' . kirbytext($quote) . '</blockquote>' : '';
     
-    $html = '<div class="' . $classes . '"><a href="' . $url . '">' . $image . '<div>' . '<div class="linkcontent">' . $title . $excerpt . '</div>'. $info . '</div></a>' . $quote . '</div>';
     if (isFeedRequest()) {
       return '<a href="' . $url . '">' . 'Link: ' . $title . '</a>';
     }
+    
+    $html = '<div class="' . $classes . '"><a href="' . $url . '">' . $image . '<div>' . '<div class="linkcontent">' . $title . $excerpt . '</div>'. $info . '</div></a>' . '</div>';
     
     return $html;
     

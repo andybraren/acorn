@@ -56,9 +56,26 @@
           }
         ?>
         
-        <div class="title" data-editable data-name="title">
-          <h1><?php echo $title ?></h1>
-        </div>
+        <?php if ($page->titleVisible() == true): ?>
+          <?php
+            if ($page->links()) {
+              if (count($page->links()) === 1) {
+                if ($page->links()[0]['label'] == '') {
+                  $linked = true;
+                } else {
+                  $linked = false;
+                }
+              } else {
+                $linked = false;
+              }
+            } else {
+              $linked = false;
+            }
+          ?>
+          <div class="title" data-editable data-name="title">
+            <h1><?php echo ($linked) ? '<a href="' . $page->links()[0]['url'] . '">' : '' ?><?php echo $title ?><?php echo ($linked) ? ' &rarr;</a>' : '' ?></h1>
+          </div>
+        <?php endif ?>
         
         <?php if($page->text() != ''): ?>
           <div class="text" data-editable data-name="text"><?php echo $page->text()->kirbytext() ?></div>

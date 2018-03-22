@@ -565,8 +565,25 @@ function isSubmissibleByUser($page) {
 }
 
 //==============================================================================
-// MISC FUNCTIONS
+// MISC HELPER FUNCTIONS
 //==============================================================================
+
+// Generate Excerpt
+// Used when saving pages to create the excerpt field again
+// Gets the first 300 characters, removes Markdown headings, converts the remainder to HTML, strips tags and encoded characters, and removes any (completed) kirbytags
+function generateExcerpt($page) {
+  $temp = preg_replace("!(?=[^\]])\([a-z0-9_-]+:.*?\)!is", "", html::decode(markdown(preg_replace("/(#+)(.*)/", "", $page->content()->text()->short(303)))));
+  $temp = preg_replace( "/\r|\n/", " ", $temp); // Remove line breaks
+  $temp = substr($temp, 0, -3); // Remove ... at the end
+  return $temp;
+}
+// Used for page saving with just the new text
+function stringToExcerpt($string) {
+  $temp = preg_replace("!(?=[^\]])\([a-z0-9_-]+:.*?\)!is", "", html::decode(markdown(preg_replace("/(#+)(.*)/", "", substr($string, 0, 303)))));
+  $temp = preg_replace( "/\r|\n/", " ", $temp); // Remove line breaks
+  $temp = substr($temp, 0, -3); // Remove ... at the end
+  return $temp;
+}
 
 // Acorn Slugify
 // my own take on Kirby's str::slug with a few opinionated tweaks
@@ -649,6 +666,30 @@ function isFeedRequest() {
   } else {
     return false;
   }
+}
+
+// Text Significant Difference detector
+// Used to determine whether a string was "updated" or just simply "modified"
+// depending on how different the two are. If the word "update" appears more or
+// less in the two, then that's also considered significantly different
+function textSigDiff($oldtext, $newtext) {
+  
+  similar_text($oldtext, $newtext, $percent);
+  
+  $changed = ($percent < 95) ? true : false;
+  
+  if (substr_count(strtolower($oldtext), 'update') != substr_count(strtolower($newtext), 'update')) {
+    $updateDiff = true;
+  } else {
+    $updateDiff = false;
+  }
+  
+  if ($changed == true or $updateDiff == true) {
+    return true;
+  } else {
+    return false;
+  }
+  
 }
 
 

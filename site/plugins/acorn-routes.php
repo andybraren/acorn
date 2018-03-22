@@ -469,25 +469,25 @@ $kirby->set('route', array(
   'method' => 'POST',
   'action'  => function() {
     
-    // Formatting
-    // ----------
-    // $_POST['page'] = /directory/slug
-    
+		// Formatting
+		// ----------
+		// $_POST['page'] = /directory/slug
+		
     if (isset($_POST['page'])) {
       $string = site()->homePage()->url();
       $blah = parse_url($string, PHP_URL_PATH);
       $tweakedpostpage = str_replace($blah,'', strtolower($_POST['page']));
     }
-    
-    $targetpage = site()->page($tweakedpostpage);
-    
-    // Account for custom routes
-    if (!$targetpage) $targetpage = page('posts' . $tweakedpostpage);
-    if (!$targetpage) $targetpage = page('users' . $tweakedpostpage);
-    
-    
-    $user = site()->user();
-    pageWizard($targetpage, $user, $_POST);
+		
+		$targetpage = site()->page($tweakedpostpage);
+		
+		// Account for custom routes
+		if (!$targetpage) $targetpage = page('posts' . $tweakedpostpage);
+		if (!$targetpage) $targetpage = page('users' . $tweakedpostpage);
+		
+		
+		$user = site()->user();
+		pageWizard($targetpage, $user, $_POST);
     
   }
 ));
@@ -544,26 +544,48 @@ function pageWizard($targetpageuri, $user, $data) {
   $newMeta = array();
   $newMeta = yaml($targetpage->meta());
   
-  function getAuthors($string) { // 'abraren, pbraren'
-    $authors = array();
-    foreach (array_unique(str::split(esc($_POST['authors']),',')) as $author) {
-      if (site()->user($author)) {
-        $new = array();
-        $user = site()->user($author);
-        $new['username'] = $user->username();
-        $new['description'] = "";
-        array_push($authors, $new);
+    function getAuthors($string) { // 'abraren, pbraren'
+      $authors = array();
+      foreach (array_unique(str::split(esc($_POST['authors']),',')) as $author) {
+        if (site()->user($author)) {
+          $new = array();
+          $user = site()->user($author);
+          $new['username'] = $user->username();
+          $new['description'] = "";
+          array_push($authors, $new);
+        }
       }
+      return $authors;
     }
-    return $authors;
-  }
   $newMeta['authors'] = (isset($_POST['authors'])) ? getAuthors($_POST['authors']) : $newMeta['authors'];
   
-  $newMeta['date']['created']     = (isset($_POST['created']))   ? (esc($_POST['created'])) : $newMeta['date']['created'];
+    if (isset($_POST['created'])) {
+      $created = esc($_POST['created']);
+    } elseif ($newMeta['date']['created'] == '') {
+      $created = date('Y-m-d H:i:s', time());
+    } else {
+      $created = $newMeta['date']['created'];
+    }
+  
+  $newMeta['date']['created']     = $created;
   $newMeta['date']['modified']    = date('Y-m-d H:i:s', time());
   $newMeta['date']['modifiedby']  = $user->username();
-  $newMeta['date']['published']   = (isset($_POST['published'])) ? (esc($_POST['published'])) : $newMeta['date']['published'];
-  $newMeta['date']['updated']     = (isset($_POST['updated']))   ? (esc($_POST['updated'])) : $newMeta['date']['updated'];
+  
+    if (isset($_POST['visibility']) and esc($_POST['visibility']) == 'public' and $newMeta['date']['published'] == '') {
+      $published = date('Y-m-d H:i:s', time());
+    } else {
+      $published = $newMeta['date']['published'];
+    }
+  
+  $newMeta['date']['published']   = (isset($_POST['published'])) ? (esc($_POST['published'])) : $published;
+  
+    if (isset($_POST['text']) and textSigDiff((strip_tags($_POST['text'])), $targetpage->content()->text())) {
+      $updated = date('Y-m-d H:i:s', time());
+    } else {
+      $updated = $newMeta['date']['updated'];
+    }
+  
+  $newMeta['date']['updated']     = $updated;
   $newMeta['date']['start']       = (isset($_POST['start']))     ? (esc($_POST['start'])) : $newMeta['date']['start'];
   $newMeta['date']['end']         = (isset($_POST['end']))       ? (esc($_POST['end'])) : $newMeta['date']['end'];
   
@@ -670,7 +692,7 @@ function pageWizard($targetpageuri, $user, $data) {
     }
     
   }
-  
+	
 }
 
 

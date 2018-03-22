@@ -782,12 +782,38 @@ function downloadedImageURL($filename, $pageuri, $remoteURL) {
     $extension = pathinfo($remoteURL, PATHINFO_EXTENSION);
     
     $imagepath = kirby()->roots()->content() . '/' . $page->diruri() . '/' . $filename . '.' . strtolower($extension);
-    copy($remoteURL, $imagepath);
+    
+    $response_code = get_http_response_code($remoteURL);
+    
+    if ($response_code == 200) {
+      copy($remoteURL, $imagepath);
+    } else {
+      $imageURL = 'null';
+    }
+    
+    /*
+    if (get_headers($remoteURL)[0] == 'HTTP/1.0 200 OK') {
+      copy($remoteURL, $imagepath);
+    } elseif (get_headers($remoteURL)[0] == 'HTTP/1.0 200 OK') {
+      copy($remoteURL, $imagepath);
+    } else {
+      $imageURL = 'null';
+    }
+    */
+    
   }
   
-  $imageURL = $page->contentURL() . '/' . $filename . '.jpg';
+  if (!isset($imageURL)) {
+    $imageURL = $page->contentURL() . '/' . $filename . '.jpg';
+  }
+  
   return $imageURL;
 };
+
+function get_http_response_code($url) {
+  $headers = get_headers($url);
+  return substr($headers[0], 9, 3);
+}
 
 function youtube_image($id) {
   $resolution = array (

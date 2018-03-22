@@ -21,27 +21,17 @@ kirbytext::$post[] = function($kirbytext, $value) {
 function newID($match) {
   
   list($all, $h, $headingtext) = $match;
+  
+  /* No obvious way to make headings link to the right anchor, dropping this for now
+  if (isFeedRequest()) {
+    return '<'.$h.'>' . '<a href="' . '#' . acornSlugify($headingtext) . '">' . $headingtext . '</a></'.$h.'>';
+  }
+  */
     
-  return '<' . $h . ' id="' . tocslugify($headingtext) . '">' . $headingtext . '</' . $h . '>';
+  return '<' . $h . ' id="' . acornSlugify($headingtext) . '">' . $headingtext . '</' . $h . '>';
 }
 
-function tocslugify($string) {
-  
-  $hyphenate = array(' ','~','@','*','+','=','>','<',' - ','/',' / ');
-  $delete = array('&quot;',':','(',')','?','.','!','$',',','%','^','&',';','[',']','{','}','|','`','#','--','---',"'",'"');
-  // Need to delete HTML entities first, like &quot;, and there are probably more that should be added
-  
-  //$string = htmlspecialchars($string);
-  $string = str_replace($hyphenate, '-', $string);
-  $string = str_replace($delete, '', $string);
-  $string = strtolower($string);
-  
-  // Remove leading and trailing separators
-  $string = trim($string, '-');
-  
-  return $string;
-  
-}
+
 
 // Amazon affiliate links
 // Adds affiliate parameter to all Amazon links (currently only one format, the one that it should be)

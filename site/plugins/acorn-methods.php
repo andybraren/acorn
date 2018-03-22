@@ -481,6 +481,26 @@ function isSubmissibleByUser($page) {
 // MISC FUNCTIONS
 //==============================================================================
 
+// Acorn Slugify
+// my own take on Kirby's str::slug with a few opinionated tweaks
+function acornSlugify($string) {
+  
+  $hyphenate = array(' ','~','@','*','+','=','>','<',' - ','/',' / ');
+  $delete = array('&quot;',':','(',')','?','.','!','$',',','%','^','&',';','[',']','{','}','|','`','#','--','---',"'",'"');
+  // Need to delete HTML entities first, like &quot;, and there are probably more that should be added
+  
+  //$string = htmlspecialchars($string);
+  $string = str_replace($hyphenate, '-', $string);
+  $string = str_replace($delete, '', $string);
+  $string = strtolower($string);
+  
+  // Remove leading and trailing separators
+  $string = trim($string, '-');
+  
+  return $string;
+  
+}
+
 function dir_contains_children($dir) {
   $result = false;
   if($dh = opendir($dir)) {

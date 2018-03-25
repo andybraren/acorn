@@ -222,7 +222,8 @@ kirbytext::$tags['image'] = array(
       $_image = function($class) use($tag, $datasrc, $alt, $title, $minithumb, $thumb) {
         //$url = "/maker/assets/images/blank.gif"; // Added for b-lazy
         $url = 'null';
-        $url = "/site/assets/images/blank.gif";
+        $url = "data:image/gif;base64,R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+        
         
         return html::img($url, array(
           'src'    => $url,

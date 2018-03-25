@@ -3971,6 +3971,7 @@ iframe.visible {
 
 #hero figure {
   margin-bottom: initial;
+  background-color: rgba(var(--theme-bgcolor), 1);
 }
 #hero.video figure {
   max-width: 1080px;
@@ -3979,6 +3980,21 @@ iframe.visible {
   background-color: black;
 }
 
+figure {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+figure img[src^="data"] {
+  opacity: 0;
+}
+
+figure img[src^="http"] {
+  opacity: 1;
+  transition: opacity .1s linear;
+}
+figure img[src^="http"]:before {
+  content: "";
+}
 #hero figure .video-container {
   margin: 0;
 }
@@ -4959,7 +4975,8 @@ figcaption {
   font-size: .9rem;
   text-align: center;
   line-height: initial;
-  margin: .2rem .5rem .5rem .5rem;
+  padding: .2rem .5rem .5rem .5rem; /* Use padding to visually overlap figure bg */
+  background-color: rgba(var(--theme-bgcolor), 1);
 }
 figcaption p {
   line-height: inherit;

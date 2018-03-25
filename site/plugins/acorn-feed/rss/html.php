@@ -26,15 +26,20 @@
         $hero = '';
       }
     ?>
-<item>
-  <title><?php echo xml($item->title()) ?></title>
-  <link><?php echo xml($item->url()) ?></link>
-  <guid><?php echo xml($item->id()) ?></guid>
-  <pubDate><?php echo date('r', $item->datePublished()) ?></pubDate>
-  <description>
-    <![CDATA[<?php echo $hero ?><?php echo $item->text()->kirbytext() ?>]]>
-  </description>
-</item>
+    <item>
+      <title><?php echo xml($item->content()->title()) ?></title>
+      <link><?php echo xml($item->url()) ?></link>
+      <guid><?php echo xml($item->id()) ?></guid>
+      <pubDate><?php echo date('r', $item->datePublished()) ?></pubDate>
+      <?php foreach ($item->authors() as $author): ?>
+        <author>
+          <name><?php echo $author->firstname() . ' ' . $author->lastname() ?></name>
+        </author>
+      <?php endforeach ?>
+      <description>
+        <![CDATA[<?php echo $hero ?><?php echo $item->text()->kirbytext() ?>]]>
+      </description>
+    </item>
   <?php endforeach ?>
   
 </channel>

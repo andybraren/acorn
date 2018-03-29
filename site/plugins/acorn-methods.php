@@ -393,7 +393,15 @@ page::$methods['heroImage'] = function($page) {
   } else {
     $hero = '';
   }
-
+  
+  // Use the video thumbnail for hero videos
+  if ($id = getVideoID($hero)) {
+    $hero = 'video-' . $id;
+    if ($blah = $page->images()->findBy('name', $hero)) {
+      $hero = $blah->filename();
+    }
+  }
+  
   if ($file = $page->file($hero)) {
     if ($file->type() == 'image') {
       return $file;
@@ -804,6 +812,26 @@ function acornSlugify($string) {
   $string = trim($string, '-');
   
   return $string;
+  
+}
+
+// Get Video ID
+// From either YouTube or Vimeo URLs
+function getVideoID($url) {
+  
+  if (str::contains($url, 'youtu')) {
+    if (preg_match("/^((https?:\/\/)?(w{0,3}\.)?youtu(\.be|(be|be-nocookie)\.\w{2,3}\/))((watch\?v=|v|embed)?[\/]?(?P<id>[a-zA-Z0-9-_]{11}))/si", $url, $matches)) {
+      return $matches['id'];
+    }
+  }
+  
+  elseif (str::contains($url, 'vimeo.com')) {
+    return substr(parse_url($url, PHP_URL_PATH), 1);
+  }
+  
+  else {
+    return null;
+  }
   
 }
 

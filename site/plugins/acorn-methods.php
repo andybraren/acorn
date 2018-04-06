@@ -799,6 +799,8 @@ function stringToExcerpt($string) {
 // my own take on Kirby's str::slug with a few opinionated tweaks
 function acornSlugify($string) {
   
+  $string = acornTextify($string);
+  
   $hyphenate = array(' ','~','@','*','+','=','>','<',' - ','/',' / ');
   $delete = array('&quot;',':','(',')','?','.','!','$',',','%','^','&',';','[',']','{','}','|','`','#','--','---',"'",'"');
   // Need to delete HTML entities first, like &quot;, and there are probably more that should be added
@@ -812,6 +814,22 @@ function acornSlugify($string) {
   $string = trim($string, '-');
   
   return $string;
+  
+}
+
+// Acorn Textify
+// get the raw text of a string containing anchor tags or Markdown links
+function acornTextify($string) {
+  
+  if (strpos($string, 'a href="')) {
+    $string = preg_replace('/<a.*?>(.*?)<\/a>/', '$1', $string);
+  }
+  
+  if (preg_match('/\[(.*)]\((.*)\)/', $string)) {
+    $string = preg_replace('/\[(.*)]\((.*)\)/', '$1', $string);
+  }
+  
+  return trim($string);
   
 }
 

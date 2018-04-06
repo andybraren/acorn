@@ -14,13 +14,13 @@
 // Uses the text of headings to create nice anchor IDs
 
 kirbytext::$post[] = function($kirbytext, $value) {
-  $value = preg_replace_callback('#<(h[1-3]).*>(.*?)<\/(h[1-3])>#', 'newID', $value);
+  $value = preg_replace_callback('#<(h[1-5]).*?>(.*?)<\/(h[1-5])>#', 'newID', $value);
   return $value;
 };
 
 function newID($match) {
   
-  list($all, $h, $headingtext) = $match;
+  list($all, $h, $headinginnards) = $match;
   
   /* No obvious way to make headings link to the right anchor, dropping this for now
   if (isFeedRequest()) {
@@ -28,8 +28,18 @@ function newID($match) {
   }
   */
     
-  return '<' . $h . ' id="' . acornSlugify($headingtext) . '">' . $headingtext . '</' . $h . '>';
+  return '<' . $h . ' id="' . acornSlugify($headinginnards) . '">' . $headinginnards . '</' . $h . '>';
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

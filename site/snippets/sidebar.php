@@ -307,8 +307,13 @@
 <?php endif ?>
 
 <?php // TABLE OF CONTENTS ?>
-<?php if($page->intendedTemplate() == 'page' or $page->intendedTemplate() == 'handbook' or $page->intendedTemplate() == 'article' or $page->intendedTemplate() == 'project' or $page->uid() == 'docs'): ?>
-  <?php if(preg_match_all('/(?<!#)#{2,4}([^#].*)\n/', $page->text(), $matches)): // Grabs H2's and H3's ?>
+<?php if($page->toc()): ?>
+  <?php /*
+    Based on:
+    https://stackoverflow.com/a/4912737
+    https://stackoverflow.com/a/22670370
+  */ ?>
+  <?php if(preg_match_all('/^(#{1,6})(.*)/m', $page->content()->text(), $matches)): ?>
     <div class="widget toc sticky">
       <div>
         <span class="heading">CONTENTS</span>
@@ -317,55 +322,28 @@
       <div class="toc-items">
         <?php
           $count = 0;
-          $sublist = 'none';
-          $sublist2 = 'none';
+          $last_level = 2; // The highest heading available is currently H2, so make that the base
+          $toc = '';
           foreach ($matches[0] as $rawmatch) {
             
-            $text = $matches[1][$count];
-            $lastmatch = end($matches[0]);
+            $level = strlen($matches[1][$count]); // count the number of # to determine the heading level
+            $text  = acornTextify($matches[2][$count]);
+            $slug  = acornSlugify($text);
             
-            if (preg_match('/(?<!#)#{2}([^#].*)\n/', $rawmatch)) { // H2
-              
-              if ($sublist == 'start') {
-                echo '</ul>';
-                $sublist = 'none';
-              }
-              
-              echo '<li><a href="#' . acornSlugify($text) . '">' . $text . '</a></li>';
-              
-            }
-            if (preg_match('/(?<!#)#{3}([^#].*)\n/', $rawmatch)) { // H3
-              
-              if ($sublist == 'none') {
-                $sublist = 'start';
-                echo '<ul>';
-              }
-              if ($sublist2 == 'start') {
-                echo '</ul>';
-                $sublist2 = 'none';
-              }
-              
-              echo '<li><a href="#' . acornSlugify($text) . '">' . $text . '</a></li>';
-              
-            }
-            if (preg_match('/(?<!#)#{4}([^#].*)\n/', $rawmatch)) { // H4
-              
-              if ($sublist2 == 'none') {
-                $sublist2 = 'start';
-                echo '<ul>';
-              }
-              
-              echo '<li><a href="#' . acornSlugify($text) . '">' . $text . '</a></li>';
-              
+            if ($level > $last_level) { // going up
+              //$toc .= '<ul>';
+              $toc .= str_repeat('<ul>', $level - $last_level);
+            } else { // going down
+              $toc .= str_repeat('</li></ul>', $last_level - $level);
             }
             
-            if ($rawmatch == $lastmatch) {
-              echo ($sublist == 'start') ? '</ul>' : '';
-              echo ($sublist2 == 'start') ? '</ul>' : '';
-            }
+            $toc .= '<li><a href="#' . $slug . '">' . $text . '</a></li>';
             
+            $last_level = $level;
             $count++;
           }
+          $toc .= str_repeat('</li></ul>', $last_level);
+          echo $toc;
         ?>
       </div>
 

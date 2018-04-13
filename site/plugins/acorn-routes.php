@@ -1509,55 +1509,52 @@ $kirby->set('route', array(
 //==============================================================================
 // FEEDS
 // RSS, JSON, etc.
-//
-// Eventually this should be customizable 
-//
 //==============================================================================
 
-// .com/feeds                displays all of the possible feeds available
-// .com/slug/feeds           displays all of the possible feeds for this article (discussion, updates, etc.)
-// .com/slug/feed?format=rss
-// .com/slug/feed?format=json
-// .com/slug/feed?format=json&tags=acorn
-// .com/slug/feed?format=json&type=discussion
-
-// This seems better than doing something like this, because eventually if
-// I want to allow tag-based feeds or string-based feeds then I'm going to have
-// to move to queries eventually, so may as well do the above and keep it more
-// consistent at the expense of a little bit of niceness for the main feed
-// .com/feeds/all/rss
-// .com/slug/feeds/rss
-// .com/slug/feeds/json
-// .com/slug/feeds/json?tags=acorn
-// .com/slug/feeds/updates/json
-
+// Redirect the main homepage /feed to /feed.rss
 $kirby->set('route', array(
-  'pattern' => array('feed', '(.+feed)'),
-  'method'  => 'GET',
+  'pattern' => 'feed',
+  'method' => 'GET',
+  'action'  => function() {
+    go(site()->url() . '/feed.rss', 301);
+  }
+));
+
+// Redirect /page/feed to /page/feed.rss
+$kirby->set('route', array(
+  'pattern' => '(:all)/feed',
+  'method' => 'GET',
+  'action'  => function($uid) {
+    go(site()->page(str_replace('/feed','',$uid))->url() . '.rss', 301);
+  }
+));
+
+// Display feed in various formats
+$kirby->set('route', array(
+  //'pattern' => array('feed', '(:all).rss', '(:all).xml', '(:all).atom', '(:all).json'),
+  'pattern' => array('feed.rss', '(:all)/feed.rss', '(:all)/feed.xml', '(:all)/feed.atom', '(:all)/feed.json'),
+  'method' => 'GET',
   'action'  => function() {
     
     // Get the page based on the request path
-    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    if ($path == '/feed') {
+    // We can't pass $uid into this function because it needs to work on the homepage
+    $path = explode('.', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))[0];
+    $path = str_replace('/feed','',$path);
+    
+    if ($path == '') {
       $page = site()->page('home');
     } else {
-      $page = site()->page(str_replace('/feed','',$path));
+      $page = site()->page($path);
     }
     
-    // Get the format
-    if (isset($_GET['format'])) {
-      $format = filter_var($_GET['format'], FILTER_SANITIZE_STRING);
-    } else {
-      //$html = "List of feed options here.";
-      //$format = null;
-      go(site()->url() . '/feed?format=rss', 301);
-    }
+    // Set the format
+    $format = pathinfo($_SERVER['REQUEST_URI'], PATHINFO_EXTENSION);
     
-    if ($format) {
+    if ($format and $page) {
       
       // Get the items
       if ($page->isHomePage()) {
-        $items = $page = site()->index();
+        $items = site()->index();
       } else {
         $items = $page->children();
       }
@@ -1586,11 +1583,6 @@ $kirby->set('route', array(
       
       // RSS feed
       if ($format == 'rss') {
-        //$html = 'rss feed';
-        
-        foreach ($items as $item) {
-          //echo $item->uid() . '<br>';
-        }
         
         $options = array(
           'page'  => $page,
@@ -1600,8 +1592,18 @@ $kirby->set('route', array(
         
         header::type('text/xml');
         //header('Content-Type: text/xml; charset=utf-8');  
-        $html .= tpl::load(kirby()->roots()->plugins() . DS . 'acorn-feed' . DS . 'rss' . DS . 'html.php', $options);
+        $html .= tpl::load(kirby()->roots()->plugins() . DS . 'acorn-formats' . DS . 'rss.php', $options);
         
+      }
+      
+      // XML feed
+      elseif ($format == 'xml') {
+        $html = 'An XML-formatted feed will be here in the future.';
+      }
+      
+      // Atom feed
+      elseif ($format == 'atom') {
+        $html = 'An Atom-formatted feed will be here in the future.';
       }
       
       // JSON feed

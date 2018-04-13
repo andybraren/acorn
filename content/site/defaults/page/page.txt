@@ -38,7 +38,7 @@ data:
 ----
 Settings: 
 
-visibility: public
+visibility: private
 title: visible
 sidebar-left: default
 sidebar-right: default

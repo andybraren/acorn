@@ -545,7 +545,7 @@ function pageWizard($targetpageuri, $user, $data) {
   $user = $user;
   
   if (!site()->find($targetpageuri)) {
-    $targetpage = site()->page('site/contentfile');
+    $targetpage = site()->page('site/defaults/page');
     $exists = false;
   } else {
     $targetpage = site()->page($targetpageuri);

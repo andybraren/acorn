@@ -778,22 +778,23 @@ function isSubmissibleByUser($page) {
 // MISC HELPER FUNCTIONS
 //==============================================================================
 
-// Generate Excerpt
+// String to Excerpt
 // Used when saving pages to create the excerpt field again
 // Gets the first 300 characters, removes Markdown headings, converts the remainder to HTML, strips tags and encoded characters, and removes any (completed) kirbytags
-function generateExcerpt($page) {
-  $temp = preg_replace("!(?=[^\]])\([a-z0-9_-]+:.*?\)!is", "", html::decode(markdown(preg_replace("/(#+)(.*)/", "", $page->content()->text()->short(303)))));
-  $temp = preg_replace( "/\r|\n/", " ", $temp); // Remove line breaks
-  $temp = substr($temp, 0, -3); // Remove ... at the end
-  return $temp;
-}
 // Used for page saving with just the new text
 function stringToExcerpt($string) {
-  $temp = preg_replace("!(?=[^\]])\([a-z0-9_-]+:.*?\)!is", "", html::decode(markdown(preg_replace("/(#+)(.*)/", "", substr($string, 0, 303)))));
+  $temp = $string;
+  
+  $temp = kirbytext($temp); // Turn into HTML
+  $temp = strip_tags($temp); // Remove all HTML tags
   $temp = preg_replace( "/\r|\n/", " ", $temp); // Remove line breaks
-  $temp = substr($temp, 0, -3); // Remove ... at the end
+  $temp = substr($temp, 0, 300); // Limit to 300 characters
+  $temp = preg_match('/(.*)\s/', $temp, $matches); // Remove anything after the last complete word
+  $temp = $matches[1];
+  
   return $temp;
 }
+
 
 // Acorn Slugify
 // my own take on Kirby's str::slug with a few opinionated tweaks

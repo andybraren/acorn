@@ -38,23 +38,28 @@ kirbytext::$tags['content'] = array(
     } elseif (stripos($content, ',')) {
       $items = new Pages();
       foreach(str::split($content, ',') as $item) {
-        $items->add(site()->page($item));
+        
+        if (site()->page($item)->hasChildren() != 0) {
+          foreach(site()->page($item)->children() as $item) {
+            $items->add($item);
+          }
+        } else {
+          $items->add(site()->page($item));
+        }
+        
       }
     } else {
       $items = new Pages();
       if (site()->page($content)) {
-        $items->add(site()->page('equipment/shopbot-desktop-cnc-router'));
+        if (site()->page($content)->hasChildren() != 0) {
+          foreach(site()->page($content)->children() as $item) {
+            $items->add($item);
+          }
+        } else {
+          $items->add($content);
+        }
       }
     }
-    
-    $all = $tag->attr();
-    $all['items'] = $items;
-    
-    //return snippet('content', $all);
-    // Originally this was passed to a snippet that would then echo the HTML, but
-    // echoing prevents the tag from being used inline and moves its output
-    // to the top of the page instead, so keeping everything within this tag
-    // is seemingly the best approach
     
     // Get items if not already set
     if (!isset($items)) {
@@ -69,7 +74,8 @@ kirbytext::$tags['content'] = array(
       $items = $items->sortBy('dateCreated','desc');
     }
     
-    // filter by specified tags
+    // FILTER BY TAGS
+    // (tags: tag1, tag2)
     if (isset($tags)) {
       
       // turn comma-separated strings of tags into an array if needed
@@ -84,8 +90,51 @@ kirbytext::$tags['content'] = array(
       
     }
     
-    // filter by specified type
+    // FILTER BY TAG URL PARAMETERS
+    // ?tags=tag1,tag2,tag3
+    if (isset($_GET['tags'])) {
+      
+      $urltags = filter_var($_GET['tags'], FILTER_SANITIZE_STRING);
+      $urltags = explode(',', $urltags);
+      
+      $items = $items->filter(function($item) use($urltags)  {
+        return array_intersect($item->tags(), $urltags);
+      });
+      
+    }
+    
+    // FILTER BY SEARCH QUERY URL PARAMETER
+    if (isset($_GET['q'])) {
+      
+      $query = filter_var($_GET['q'], FILTER_SANITIZE_STRING);
+      
+      $items = $items->filter(function($item) use($query)  {
+        if (stripos($item->content()->text(), $query)) {
+          return $item;
+        }
+      });
+      
+    }
+    
+    if (isset($_GET['types'])) {
+      $type = filter_var($_GET['types'], FILTER_SANITIZE_STRING);
+    } else {
+      $type = null;
+    }
+    
+    // FILTER BY TYPE
+    // (type: links)
     if (isset($type)) {
+      
+      if ($type == 'drafts') {
+        $temp = new Pages();
+        foreach ($items as $item) {
+          if (!$item->datePublished()) {
+            $temp->add(site()->page($item));
+          }
+        }
+        $items = $temp;
+      }
       
       if ($type == 'links') {
         
@@ -105,10 +154,10 @@ kirbytext::$tags['content'] = array(
         
         $temp = new Pages();
         foreach ($items as $item) {
-            $field = $item->text();
-            if (strpos($field, 'youtu') or strpos($field, 'vimeo') or strpos($field, 'mp4')) {
-              $temp->add(site()->page($item));
-            }
+          $field = $item->text();
+          if (strpos($field, 'youtu') or strpos($field, 'vimeo') or strpos($field, 'mp4')) {
+            $temp->add(site()->page($item));
+          }
         }
         $items = $temp;
         
@@ -116,73 +165,158 @@ kirbytext::$tags['content'] = array(
       
     }
     
-    // limit to only a certain number
+    // FILTER BY DATE URL PARAMETER
+    if (isset($_GET['date'])) {
+      
+      $parameter = filter_var($_GET['date'], FILTER_SANITIZE_STRING);
+      $start = '';
+      $end = '';
+      
+      // filter by date range
+      if (strpos($parameter, ',')) {
+        if (strpos($parameter, ',') >= 0) {
+          $daterange = explode(',', $parameter);
+          $start = strtotime($daterange[0]);
+          $end = strtotime($daterange[1]);
+        }
+      }
+      
+      // filter by date shorthand
+      else {
+        switch ($parameter) {
+          case 'pasthour':
+            $start = strtotime('-1 hour');
+            break;
+          case 'past24hours':
+            $start = strtotime('-24 hours');
+            break;
+          case 'pastweek':
+            $start = strtotime('-1 week');
+            break;
+          case 'pastmonth':
+            $start = strtotime('-1 month');
+            break;
+          case 'past3months':
+            $start = strtotime('-3 months');
+            break;
+          case 'past6months':
+            $start = strtotime('-6 months');
+            break;
+          case 'pastyear':
+            $start = strtotime('-1 year');
+            break;
+          default:
+            $start = '';
+        }
+      }
+      
+      // between these two dates
+      // ?date=2018-01-01,2018-01-15
+      if ($start and $end) {
+        $items = $items->filter(function($item) use($start, $end, $type) {
+          if (!$item->datePublished() && $type == 'drafts') {
+            return $item;
+          }
+          elseif ($start <= $item->datePublished() && $item->datePublished() <= $end) {
+            return $item;
+          }
+        });
+      }
+      
+      // after this date
+      // ?date=2018-01-01,
+      elseif ($start and !$end) {
+        $items = $items->filter(function($item) use($start, $type) {
+          if (!$item->datePublished() && $type == 'drafts') {
+            return $item;
+          }
+          elseif ($item->datePublished() >= $start) {
+            return $item;
+          }
+        });
+      }
+      
+      // before this date
+      // ?date=,2018-01-15
+      elseif (!$start and $end) {
+        $items = $items->filter(function($item) use($end, $type) {
+          if (!$item->datePublished() && $type == 'drafts') {
+            return $item;
+          }
+          elseif ($item->datePublished() <= $end) {
+            return $item;
+          }
+        });
+      }
+              
+    }
+    
+    // PAGE VISIBILITY
+    // Only include items that should be visible to the user
+    $items = $items->filter(function($item) use($type) {
+      if ($item->isShowableToUser()) {
+        return $item;
+      }
+    });
+    
+    // LIMIT
+    // (limit: 20)
     if (isset($number)) {
       $items = $items->limit($number);
     }
     
-    // paginate items, displaying only a certain amount per page
+    // PAGINATE
+    // (paginate: 25)
     if (isset($paginate)) {
       $items = $items->paginate($paginate);
       $pagination = true;
+    } else {
+      $pagination = false;
     }
+    
+    // OUTPUT HTML
+    // based on format
+    
+    $html = '';
     
     // card format
     if ($format == 'card') {
       
-      $html = '';
-      
-      $addnew = (page()->isEditableByUser()) ? '<a href="' . page()->url() . '/new' . '">Add New</a>' : '';
+      // Show the "Add new" link on non-search pages
+      if (page()->uid() != 'search') {
+        $addnew = (page()->isEditableByUser()) ? '<a href="' . page()->url() . '/new' . '">Add New</a>' : '';
+      } else {
+        $addnew = '';
+      }
       
       foreach ($items as $item) {
         
-        $color = ($item->color() != "") ? ' ' . $item->color() : "";
-        $url = $item->url();
-        $herourl = '';
+        $item_title = $item->content()->title() ?? '';
+        $item_text  = $item->excerpt();
+        $item_color = ($item->color()) ? ' ' . $item->color() : '';
+        $item_url   = $item->url();
         
         if ($hero = $item->heroImage()) {
-          $herourl = $hero->crop(300, 120)->url();
-        } elseif ($item->hasImages()) {
-          if ($hero = $item->images()->not('location.jpg')->sortBy('sort', 'asc')->first()) {
-            $herourl = $hero->crop(300, 120)->url();
-          }
+          $herourl = $item->heroImage()->crop(300, 120)->url();
+          $item_hero = '<div class="card-hero"><a href="' . $item_url . '"><img src="' . $herourl . '"></img></a></div>';
         } else {
-          $herourl = null;
+          $item_hero = '';
         }
         
-        if ($herourl) {
-          $hero = '<div class="card-hero"><a href="' . $url . '"><img src="' . $herourl . '"></img></a></div>';
-        } else {
-          $hero = '';
-        }
-        
-        if (preg_match("/[a-z]/i", $item->content()->title())){
-          $title = $item->content()->title();
-        } else {
-          $title = null;
-        }
-        
-        $text = $item->excerpt();
-        
-        $content = '<div class="card-content"><a href="' . $url . '"><h4>' . $title . '</h4></a><p>' . $text . '</p></div>';
+        $content = '<div class="card-content"><a href="' . $item_url . '"><h4>' . $item_title . '</h4></a><p>' . $item_text . '</p></div>';
         
         $date = '<span>' . date('M j Y', $item->dateCreated()) . '</span>';
+        $details = '<div class="card-details">' . $date . '<a href="' . $item_url . '">Read &rarr;</a></div>';
         
-        $details = '<div class="card-details">' . $date . '<a href="' . $url . '">Read &rarr;</a></div>';
-        
-        
-        $html .= '<div class="card' . $color . '">' . $hero . $content . $details . '</div>';
+        $html .= '<div class="card' . $item_color . '">' . $item_hero . $content . $details . '</div>';
         
       }
       
-      $blab = '<div class="grid">' . $addnew . $html . '</div>';
-      echo $blab;
+      echo '<div class="grid">' . $addnew . $html . '</div>';
     }
     
     // full format
     if ($format == 'full' OR $format == 'excerpt') {
-      
-      $html = '';
       
       foreach ($items as $item) {
         
@@ -201,7 +335,7 @@ kirbytext::$tags['content'] = array(
           $text = $item->text()->kirbytext();
         }
         
-        $meta = '<div class="meta"><a href="' . $url . '">' . date('M j Y', $item->dateCreated()) . '</a></div>';
+        $meta = '<div class="meta"><a href="' . $url . '">' . date('M j Y', $item->datePublished()) . '</a></div>';
         
         $hero = $item->hero();
         

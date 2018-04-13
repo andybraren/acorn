@@ -1483,6 +1483,29 @@ $kirby->set('route', array(
   }
 ));
 
+
+//==============================================================================
+// PAGE FORMATS
+// RSS, JSON, etc.
+//==============================================================================
+
+$kirby->set('route', array(
+  'pattern' => '(:all).lite',
+  'method' => 'GET',
+  'action'  => function($uid) {
+    
+    $page = site()->page($uid);
+        
+    $options = array(
+      'page'  => $page,
+      'description' => site()->description()
+    );
+    
+    $html = tpl::load(kirby()->roots()->plugins() . DS . 'acorn-formats' . DS . 'lite.php', $options);
+    echo $html;
+  }
+));
+
 //==============================================================================
 // FEEDS
 // RSS, JSON, etc.

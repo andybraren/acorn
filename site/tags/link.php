@@ -42,19 +42,28 @@ kirbytext::$tags['link'] = array(
     
     
     // Check if the url is internal
-    if ($_SERVER['SERVER_NAME'] == parse_url($url, PHP_URL_HOST)) {
-      $internal = true;
+    if (strpos($url, 'http') !== false) {
+      if ($_SERVER['SERVER_NAME'] == parse_url($url, PHP_URL_HOST)) {
+        $internal = true;
+      } else {
+        $internal = false;
+      }
     } else {
-      $internal = false;
+      $internal = true;
     }
+
     
     // If the URL is external and the title does not exist then the tag has
     // never been processed and should be
     
     if ($internal) {
       
-      $internalpage = site()->page(trim(parse_url($url, PHP_URL_PATH), '/'));
-      
+      if (strpos($url, 'http') !== false) {
+        $internalpage = site()->page(trim(parse_url($url, PHP_URL_PATH), '/'));
+      } else {
+        $internalpage = site()->page($url);
+      }
+            
       $title = $internalpage->title();
       $date = date('M j Y', $internalpage->datePublished());
       $excerpt = $internalpage->excerpt();
@@ -161,7 +170,7 @@ kirbytext::$tags['link'] = array(
       return '<a href="' . $url . '">' . 'Link: ' . $title . '</a>';
     }
     
-    $html = '<div class="' . $classes . '"><a href="' . $url . '">' . $image . '<div>' . '<div class="linkcontent">' . $title . $excerpt . '</div>'. $info . '</div></a>' . '</div>';
+    $html = '<div class="' . $classes . '"><a href="' . $url . '">' . '<div>' . '<div class="linkcontent">' . $title . $excerpt . '</div>'. $info . '</div>' . $image . '</a></div>';
     
     return $html;
     

@@ -30,17 +30,13 @@
           <?php $class = ($page->color() != '') ? "hasbeenclicked clicked" : "neverclicked"; ?>
           <select name="color" id="color" class="<?php echo $class ?>">
             <?php
-              if ($page->color() == 'default') {
-                $selected = 'selected ';
-              } else {
-                $selected = '';
+              $colors = site()->colors();
+              array_unshift($colors, 'default');
+              foreach ($colors as $color) {
+                $selected = ($color == $page->color()) ? "selected " : "";
+                echo '<option ' . $selected . 'value="' . $color . '">' . ucfirst($color) . '</option>';
               }
-              echo '<option ' . $selected . 'value="default">Default</option>';
             ?>
-            <?php foreach ($site->content()->coloroptions()->split(',') as $color): ?>
-              <?php $selected = ($color == $page->color()) ? "selected " : ""; ?>
-              <?php echo '<option ' . $selected . 'value="' . $color . '">' . ucfirst($color) . '</option>' ?>
-            <?php endforeach ?>
           </select>
           <label for="color">Color</label>
         </div>

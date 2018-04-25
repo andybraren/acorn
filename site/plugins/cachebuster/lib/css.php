@@ -41,6 +41,14 @@ class CSS extends \Kirby\Component\CSS {
       $replace = '--site-width: ' . site()->setting('style/width') . 'px;';
       $new = str_replace($search, $replace, $new);
       
+      // Add default color
+      if (site()->setting('style/default-color') != null) {
+        $default = site()->setting('style/default-color');
+        $search  = "\n" . '.' . $default;
+        $replace = "\n" . '.' . $default . ', .default';
+        $new = str_replace($search, $replace, $new);
+      }
+      
       // Add bg color
       $search  = '--theme-bgcolor: /**/;';
       if (site()->setting('style/bg-color-primary') != null) {
@@ -49,6 +57,18 @@ class CSS extends \Kirby\Component\CSS {
         $replace = '--theme-bgcolor: 255, 255, 255;';
       }
       $new = str_replace($search, $replace, $new);
+      
+      // Add boxed bg color
+      $search  = '--theme-boxed-bgcolor: /**/;';
+      if (site()->setting('style/bg-color-boxed') != null) {
+        $replace = '--theme-boxed-bgcolor: ' . site()->setting('style/bg-color-boxed') . ';';
+      } else {
+        $replace = '--theme-boxed-bgcolor: 255, 255, 255;';
+      }
+      $new = str_replace($search, $replace, $new);
+      
+      
+      
       
       // Minify
       if (site()->setting('advanced/debug') == false) {

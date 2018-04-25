@@ -99,7 +99,7 @@
 
 <?php $subnav = (hasSubMenu()) ? ' subnav' : ''; ?>
 
-<body class="<?php echo $page->color() . $subnav ?>">
+<body class="<?php echo $page->color() . $subnav ?>" data-color="<?php echo $page->color() ?>">
   
   
   <?php if ($shiv): ?>

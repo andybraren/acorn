@@ -68,6 +68,27 @@ page::$methods['info'] = function($page, $setting) {
   
 };
 
+//--------------------------------------------------
+// Site colors
+// site()->colors()
+// Returns array of available site colors
+//--------------------------------------------------
+
+page::$methods['colors'] = function($page) {
+  
+  if ($page == site()) {
+    
+    $colors = explode(', ', site()->setting('style/color-options'));
+    
+    if (isset($colors) and $colors != '') {
+      return $colors;
+    } else {
+      return 'Incorrect colors syntax';
+    }
+  }
+  
+};
+
 /* The below also does it I guess, adding a site method, never new this was possible, have to figure out where I found this from
 kirby()->set('site::method', 'setting', function($page, $setting) {
   if ($setting = 'ads') return yaml(site()->settings())['style']['default-color'];
@@ -599,11 +620,14 @@ page::$methods['color'] = function($page) {
   
   if (!empty(yaml($page->settings())['color'])) {
     $setting = yaml($page->settings())['color'];
+    return $setting;
+    /*
     if ($setting == 'default' OR $setting == '') {
       return site()->setting('style/default-color');
     } else {
       return $setting;
     }
+    */
   } else {
     return site()->setting('style/default-color');
   }

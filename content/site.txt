@@ -2,8 +2,6 @@ Title: Acorn
 ----
 Description: 
 ----
-Coloroptions: red, blue, green, purple, orange, silver, gold
-----
 Visibilityoptions: private, unlisted, groups, public
 ----
 Usertypes: user, admin
@@ -50,6 +48,7 @@ general:
   indexable: false
 style:
   theme: original
+  color-options: red, blue, green, purple, orange, silver, gold
   default-color: blue
   default-toc: true
   logo: logo.svg

@@ -392,7 +392,6 @@
   
   <div class="widget">
     <div id="disquswidget" data-url="https://tinkertry.disqus.com/combination_widget.js?num_items=8&hide_mods=1&default_tab=recent&excerpt_length=200">
-      <script type="text/javascript" src="https://tinkertry.disqus.com/combination_widget.js?num_items=8&hide_mods=1&default_tab=recent&excerpt_length=200"></script>
     </div>
   </div>
   

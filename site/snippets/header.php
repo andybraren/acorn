@@ -3,10 +3,10 @@
 <?php
   if ($site->setting('style/theme') == 'boxed') {
     $classes = ' class="boxed"';
-    $shiv = true;
+    $shim = true;
   } else {
     $classes = '';
-    $shiv = false;
+    $shim = false;
   }
 ?>
 
@@ -26,7 +26,7 @@
     
     <title><?php echo $title . ' | ' . $site->title()->html() ?></title>
   <?php endif ?>
-
+  
   <meta name="description" content="<?php echo $site->description() ?>">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
@@ -102,8 +102,8 @@
 <body class="<?php echo $page->color() . $subnav ?>" data-color="<?php echo $page->color() ?>">
   
   
-  <?php if ($shiv): ?>
-    <div id="shiv" class="container"></div>
+  <?php if ($shim): ?>
+    <div id="shim" class="container"></div>
   <?php endif ?>
   
   <header id="top" class="headroom">

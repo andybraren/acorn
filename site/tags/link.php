@@ -208,7 +208,7 @@ function get_opengraph($url) {
 
 function sanitizeText($text) {
   
-  $cleaned  = str_replace(array('(',')',': ',),array('[',']',''),$text);
+  $cleaned  = str_replace(array('(',')',),array('[',']'),$text);
   $nobreaks = str_replace("\n", ' ', $cleaned);
   $other = str_replace(array('…','...'),'',$nobreaks);
   $nomultispace = preg_replace('!\s+!', ' ', $other);

@@ -15,22 +15,11 @@ window.onload = function() {
   
   checkStripe();
   
-  /* Activate okayNav */
-  // var okaynav = new OkayNav('#navigation', '');
-  
   /* Activate bLazy */
   var bLazy = new Blazy({ 
       // selector: 'img', // all images
       offset: 500
   });
-  
-  /* Activate stickyfill */
-  /*
-  var stickyElements = document.getElementsByClassName('sticky');
-  for (var i = stickyElements.length - 1; i >= 0; i--) {
-      Stickyfill.add(stickyElements[i]);
-  }
-  */
   
   progressNav();
     
@@ -38,11 +27,6 @@ window.onload = function() {
   var myElement = document.querySelector("header"); // grab an element
   var headroom  = new Headroom(myElement); // construct an instance of Headroom, passing the element
   headroom.init(); // initialise
-  
-  /* Activate tooltips */
-  //var myTooltip = Frtooltip();
-  //myTooltip.init();
-
   
   var topbutton = document.getElementsByClassName('toc-top');
   if (topbutton != null) {
@@ -156,9 +140,6 @@ function toggleEdit() {
     replaceFigures(); // from editor.js, need to finish before ignition.edit
     editor.ignition().edit();
     addFileTool();
-    //toggleHero(clickcount, formupload);
-    //toggleAuthors(clickcount);
-    //toggleGroups(clickcount);
     toggleItems(clickcount);
     itemDeleteButtons();
     itemConfirmButtons();
@@ -168,9 +149,6 @@ function toggleEdit() {
   } else {
     checkEmptyWidgets()
     document.body.classList.toggle('editing');
-    //toggleHero(clickcount, formupload);
-    //toggleAuthors(clickcount);
-    //toggleGroups(clickcount);
     toggleItems(clickcount);
     editbutton.innerHTML = 'Edit';
     editor.ignition().confirm();
@@ -268,6 +246,11 @@ function heroUploaded(data) {
   Theme Setting
   - Adds a "night" class to the body and stores the night setting within localstorage
 --------------------------------------------------*/
+
+/*
+  Rewrite this. Store the theme name within a data attribute and have JS either
+  add that to storage and apply it to body or remove it. Simpler and more extensible.
+*/
 
 var nightMode = document.getElementsByClassName('theme-night');
 if (nightMode != null) {
@@ -725,112 +708,6 @@ function addFileTool() {
 }
 
 
-/*
-var response = '';
-
-function uploadHandler(type) {
-  
-  if (type == 'file') { var input = document.getElementById('fileToUpload') };
-  if (type == 'hero') { var input = document.getElementById('heroToUpload') };
-  
-  input.click();
-  
-  
-    return new Promise (function (resolve, reject) {
-      input.onchange = function(event) {
-        var data = new FormData();
-        var files = input.files;
-        for (var i = 0; i < files.length; i++) {
-          var file = files[i];
-          data.append('files', file, file.name);
-        }
-        data.append('page', window.location.pathname);
-        data.append('type', type);
-        
-        var request = new XMLHttpRequest();
-        request.open('POST', 'uploadnew', true);
-        request.onload = function () {
-          if (request.status === 200) { // File uploaded
-            response = JSON.parse(this.response);
-            console.log('blablah' + response);
-            return response;
-          } else {
-            //alert('An error occurred! Contact Andy Braren for help.');
-          }
-        };
-        request.send(data);
-      }
-    });
-  
-}
-
-
-function addFileTool() {
-  
-  // Forcefully insert the new tool
-  var prev = document.getElementsByClassName('ct-tool--video')[0];
-  html = '<div class="ct-tool ct-tool--file ct-tool--disabled tool-file" data-ct-tooltip="File"></div>';
-  prev.insertAdjacentHTML('afterend', html);
-  
-  var tool = document.getElementsByClassName('tool-file')[0];
-  var focus = document.getElementsByClassName('ce-element--focused')[0];
-  
-  response = uploadHandler('file')
-              .then(function (e) {
-                console.log("succes");
-                insertFile(response.filename, response.fileurl, response.extension);
-              }, function (e) {
-                console.log("errorrrrr");
-              });
-  
-  
-  tool.addEventListener('click', function(event) {
-    var promise = new Promise(function(resolve, reject) {
-      response = uploadHandler('file');
-      if (response !== undefined) {
-        resolve(response);
-      } else {
-        reject(Error("Broked"));
-      }
-    });
-    
-    promise.then(function(result) {
-      console.log(result);
-    }, function(err) {
-      console.log(err);
-    });
-  });
-  
-  console.log("hello" + response);
-  
-  if (response != undefined) {
-    insertFile(response.filename, response.fileurl, response.extension);
-  }
-    
-  function insertFile(filename, fileurl, extension) {
-    html = '<p class="ce-element ce-element--type-text"><a href="' + fileurl + '" class="file-' + extension + '" data-filename="' + filename + '">' + filename + '</a></p>';
-    
-    // For whenever ContentTools is replaced
-    // focus.insertAdjacentHTML('afterend', html);
-    // var newelement = focus.nextSibling;
-    // focus.parentNode.removeChild(focus);
-    
-    // ContentTools implementation
-    // This is necessary to make the file's block editable after insertion
-    // https://github.com/GetmeUK/ContentTools/issues/201
-    selectedElm = ContentEdit.Root.get().focused();
-    p = new ContentEdit.Text('p', {}, html)
-    selectedElm.parent().attach(p, selectedElm.parent().children.indexOf(selectedElm) + 1)
-    p.focus()
-    
-    // New paragraph below the newly-added file
-    selectedElm = ContentEdit.Root.get().focused();
-    n = new ContentEdit.Text('p', {}, '')
-    selectedElm.parent().attach(n, selectedElm.parent().children.indexOf(selectedElm) + 1)
-    n.focus()
-  }
-}
-*/
 
 
 
@@ -902,63 +779,6 @@ function addHeroTool() {
   
 }
 
-/*
-function toggleHero(clickcount, formupload) {
-  var heroDiv = document.getElementById('hero');
-  var heroAdd = document.getElementById('hero-add');
-  var formHero = document.getElementById('heroToUpload');
-  
-  if (heroDiv != null) {
-    if (clickcount == '0') {
-      heroDiv.addEventListener('click', formclick = function() {
-        formHero.click();
-      });
-      formHero.onchange = function() {
-        
-        var data = new FormData();
-        var files = formHero.files;
-        for (var i = 0; i < files.length; i++) {
-          var file = files[i];
-          data.append('files', file, file.name);
-        }
-        data.append('page', window.location.pathname);
-        
-        data.append('type', 'hero');
-        
-        var request = new XMLHttpRequest();
-        request.open('POST', 'upload', true);
-        request.onload = function () {
-          if (request.status === 200) { // File uploaded
-            response = JSON.parse(this.response);
-            insertHero(response.filename, response.fileurl, response.extension);
-          } else {
-            //alert('An error occurred! Contact Andy Braren for help.');
-          }
-        };
-        request.send(data);
-        
-        function insertHero(filename, fileurl, extension) {
-          var heroAdd = document.getElementById('hero-add');
-          if (heroAdd != undefined) {
-            html = '<figure><img src="' + fileurl + '"></img></figure>';
-            heroAdd.insertAdjacentHTML('afterend', html);
-            heroAdd.parentNode.removeChild(heroAdd);
-          } else {
-            image = heroDiv.getElementsByTagName('IMG')[0];
-            image.removeAttribute('class');
-            image.parentNode.removeAttribute('style');
-            image.src = fileurl;
-          }
-        }
-        
-      };
-    }
-    else {
-      heroDiv.removeEventListener('click', formclick);
-    }
-  }
-}
-*/
 
 
 /* Trigger when Save button is clicked */
@@ -2235,14 +2055,53 @@ function checkStripe() {
 
 
 
+var comments = document.getElementsByClassName('comments')[0];
+disqusLoaded = false;
 
+function loadDisqus() {
+  
+  var disqus_shortname = 'tinkertry';
+  
+  var disqus_config = function () {
+    
+    this.page.url = window.location.href.split('#')[0];
+    this.page.identifier = window.location.pathname.substring(1);
+  };
+  
+  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  disqusLoaded = true;
+}
 
+function findTop(obj) {
+  var curtop = 0;
+  if (obj.offsetParent) {
+    do {
+      curtop += obj.offsetTop;
+    } while (obj = obj.offsetParent);
+    return curtop;
+  }
+}
 
+if (window.location.hash.indexOf('#comment-1913694120') > 0) {
+  loadDisqus();
+}
 
+if (window.location.hash) {
+  if (window.location.hash.indexOf('#comment') != -1) {
+    loadDisqus();
+  }
+}
 
-
-
-
+if(comments) {
+  var commentsOffset = findTop(comments);
+  window.onscroll = function() {
+    if(!disqusLoaded && window.pageYOffset > commentsOffset - 1500) {
+      loadDisqus();
+    }
+  }
+}
 
 
 

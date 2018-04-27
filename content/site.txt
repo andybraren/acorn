@@ -1,8 +1,8 @@
 Title: Acorn
 ----
-Description: 
+Description: Websites built to grow
 ----
-Visibilityoptions: private, unlisted, groups, public
+Visibilityoptions: private, unlisted, public
 ----
 Usertypes: user, admin
 ----
@@ -21,8 +21,12 @@ Majoroptions:
 Menuprimary: 
 
 - 
-  title: Sample Page
-  uid: sample-page
+  title: About
+  uid: about
+  sub:
+    - 
+      title: Sample Page
+      uid: sample-page
 ----
 Menusecondary: 
 
@@ -58,6 +62,10 @@ style:
   width: 1240
   bg-color-primary: ''
   bg-color-secondary: ''
+  bg-color-boxed: '113, 124, 116'
+  bg-image-primary: acorn/grid-1
+  bg-image-secondary: 
+  bg-image-boxed: 
 layout:
   title: true
   sidebar-left: true

@@ -14,7 +14,7 @@
 // Uses the text of headings to create nice anchor IDs
 
 kirbytext::$post[] = function($kirbytext, $value) {
-  $value = preg_replace_callback('#<(h[1-5]).*?>(.*?)<\/(h[1-5])>#', 'newID', $value);
+  $value = preg_replace_callback('/<(h[1-5]).*?>(.*?)<\/(h[1-5])>/', 'newID', $value);
   return $value;
 };
 

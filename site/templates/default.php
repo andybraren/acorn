@@ -99,6 +99,9 @@
         
       </article>
       
+      <div id="disqus_thread" class="comments">
+      </div>
+      
       <?php if($page->uid() == 'settings'): ?>
         <?php snippet('settings') ?>
       <?php endif ?>

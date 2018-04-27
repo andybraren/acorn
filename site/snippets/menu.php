@@ -208,12 +208,14 @@
         
       </ul>
       
+      <?php /*
       <ul class="menu menu-secondary">
         
         <li>
           <a id="settings-reading" data-modal="reading"><?php echo (new Asset('/site/assets/images/menu-font.svg'))->content() ?></a>
         </li>
       </ul>
+      */ ?>
       
     </div>
   </nav>

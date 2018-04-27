@@ -1,14 +1,46 @@
 Title: Oops. Something's missing.
 ----
-Datedata: 2017-04-28 03:59:43, 2017-04-28 04:04:28, 2017-04-28 03:59:43
+Meta: 
+
+authors: [ ]
+date:
+  created: 2017-04-28 03:59:43
+  modified: 2018-02-11 21:46:20
+  modifiedby: acorn
+  published: 2017-04-28 03:59:43
+  updated: ""
+  start: ""
+  end: ""
+related:
+  tags: ""
+  internal: ""
+  external: ""
+info:
+  subtitle: ""
+  description: ""
+  excerpt: "If a page should be here but it's not, blame Andy. I bet it's his fault. If you have a moment, please send him a <a href"
+data:
+  likes: ""
+  dislikes: ""
+  requests: ""
+  subscribers: ""
+  registrants:
+  attendees:
+  address:
+  addressinfo: ""
+  hours: ""
+  hoursinfo: ""
 ----
-Userdata: 
-----
-Reldata: 
-----
-Settings: public, red, comments == off, submissions == off, price == off
-----
-Hero: 
+Settings: 
+
+visibility: public
+theme: default
+toc: default
+discussion: default
+submissions: 'off'
+price: ""
+audio: ""
+hero: ""
 ----
 Text: 
 

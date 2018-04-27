@@ -84,17 +84,9 @@
   <div id="hero" class="hero fullwidth video">
     <?php echo $page->hero(); ?>
   </div>
-<?php endif ?>
-
-<?php if ($page->heroType() == 'image'): ?>
-  <div id="hero" class="hero fullwidth">
-    <?php echo $page->hero(); ?>
-  </div>
-<?php endif ?>
-
 
 <?php // Local Files ?>
-<?php if ($file = $page->heroImage()): ?>
+<?php elseif ($file = $page->heroImage()): ?>
 
   <?php // Image File ?>
   <?php if ($file->type() == 'image'): ?>
@@ -102,12 +94,6 @@
       <div class="container">
         <?php echo kirbytag(array('image' => $file->filename(), 'type' => 'hero')) ?>
       </div>
-    </div>
-
-  <?php // Video file ?>
-  <?php elseif ($file->type() == 'video'): ?>
-    <div id="hero" class="hero fullwidth video">
-      <?php echo kirbytag(array('video' => $file->filename())) ?>
     </div>
   <?php endif ?>
   
@@ -117,6 +103,7 @@
 
   <?php if ($type == "fullwidth"): ?>
     <div id="hero" class="hero fullwidth carousel">
+      <div class="container">
       <?php foreach($images as $image): ?>
         <figure>
           <img class="hero-image" src="<?php echo thumb($image, array('width' => 1200, 'height' => 300, 'crop' => true))->url() ?>">
@@ -125,10 +112,12 @@
           <?php endif ?>
         </figure>
       <?php endforeach ?>
+      </div>
     </div>
     
   <?php else: ?>
     <div id="hero" class="hero carousel">
+      <div class="container">
       <?php foreach($images as $image): ?>
         <figure><?php echo $images->url() ?>
           <img class="hero-image" src="<?php echo thumb($image, array('width' => 1200, 'height' => 300, 'crop' => true))->url() ?>">
@@ -137,6 +126,7 @@
           <?php endif ?>
         </figure>
       <?php endforeach ?>
+      </div>
     </div>
   
   <?php endif ?>

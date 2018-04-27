@@ -69,7 +69,7 @@ $setting['hero'] = getPageHero($page);
 $newSettings = $setting;
 
 // TEXT FIELD
-$newText = $page->content()->text();
+$newText = cleanupText($page->content()->text());
 
 // UPDATE THE PAGE
 
@@ -93,6 +93,46 @@ $page->update(array(
 // Change the filename if it's anything other than page.txt
 if ($page->name() != 'page') {
   rename($page->textfile(), $page->root() . DS . 'page.txt');
+}
+
+function cleanupText($string) {
+  $text = convert_smart_quotes_and_dashes_and_spaces($string);
+  $text = convert_dots($text);
+  $text = convert_spans($text);
+  $text = remove_bad_headings($text);
+  return $text;
+}
+
+function convert_smart_quotes_and_dashes_and_spaces($string) {
+  // http://shiflett.org/blog/2005/convert-smart-quotes-with-php
+  // https://www.danshort.com/ASCIImap/
+  // http://www.theasciicode.com.ar/extended-ascii-code/non-breaking-space-no-break-space-ascii-code-255.html
+  // https://www.ascii.cl/htmlcodes.htm
+  $search = array(chr(145),chr(146),chr(147),chr(148),chr(150),chr(151),'-',chr(8211),chr(255),chr(32),chr(020),chr(160));
+  $replace = array("'","'",'"','"','-','-','-','-',' ',' ',' ',' ');
+  
+  $temp = str_replace($search, $replace, $string);
+  
+  $temp = str_replace('â€"', '–', $temp); // en dash
+  
+  return $temp;
+}
+
+function convert_dots($string) {
+  $search = array(chr(133));
+  $replace = array('...');
+  return str_replace($search, $replace, $string);
+}
+
+function convert_spans($string) {
+  $temp = str_replace('<span style="color:red">', '<mark class="red">', $string);
+  $temp = str_replace('<span style="color:green">', '<mark class="green">', $temp);
+  $temp = str_replace('</span>', '</mark>', $temp);
+  return $temp;
+}
+
+function remove_bad_headings($string) {
+  return preg_replace( "/(#+)\n/", "", $string); // Remove random broken headings
 }
 
 function getPageVisibility($page) {
@@ -128,17 +168,19 @@ function pageHoursInfo($page) {
 
 function getTags($page) {
   
+  $tags = '';
   if ($page->tags() == '') {
-    return '';
+    $tags = '';
   }
   
   if ($page->tags() != '') {
-    return implode(', ', $page->tags());
+    $tags = implode(', ', $page->tags());
   }
   
   if ($page->content()->categories() != '') {
-    return $page->content()->categories();
+    $tags = $page->content()->categories();
   }
+  return $tags;
 }
 
 function getInternalLinks($page) {
@@ -238,6 +280,8 @@ function getTheme($page) {
 function getPageHero($page) {
   if ($page->content()->hero() != null and $page->content()->hero() != '') {
     return $page->content()->hero();
+  } elseif ($hero = $page->images()->findBy('name', 'featured')) {
+    return $hero->filename();
   } else {
     return '';
   }

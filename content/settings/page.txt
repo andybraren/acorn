@@ -1,13 +1,49 @@
 Title: Settings
 ----
-Datedata: 2016-11-03 12:00:00, 2017-04-18 00:07:38, 2016-11-03 12:00:00
+Meta: 
+
+authors: [ ]
+date:
+  created: 2016-11-03 12:00:00
+  modified: 2018-03-10 18:53:21
+  modifiedby: acorn
+  published: 2016-11-03 12:00:00
+  updated: ""
+  start: ""
+  end: ""
+related:
+  tags: ""
+  internal: ""
+  external: ""
+info:
+  subtitle: ""
+  description: ""
+  excerpt: false
+data:
+  likes: ""
+  dislikes: ""
+  requests: ""
+  subscribers: ""
+  registrants: ""
+  attendees: ""
+  address: ""
+  addressinfo: ""
+  hours: ""
+  hoursinfo: ""
+  rating: ""
+  hero: ""
+  icon: ""
+  price: ""
+  audio: ""
 ----
-Userdata: 
+Settings: 
+
+visibility: public
+color: green
+hero-color: ""
+hero-style: ""
+toc: default
+discussion: default
+submissions: 'off'
 ----
-Reldata: 
-----
-Settings: public, red
-----
-Hero: 
-----
-Text:
+Text: 

@@ -152,7 +152,7 @@ kirbytext::$tags['link'] = array(
       $image = '<img src="' . $manual_image_url . '">';
     } elseif ($image) {
       if ($tag->page()->image($image)) {
-        $image = '<img src="' . $tag->page()->image($image)->url() . '">';
+        $image = '<img src="' . $tag->page()->image($image)->resize(300,300)->url() . '">';
       }
     } else {
       $image = '';

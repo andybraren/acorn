@@ -732,6 +732,31 @@ page::$methods['isVisibleToUser'] = function($page) {
   }
 };
 
+page::$methods['isShowableToUser'] = function($page) {
+  
+  $showable = false;
+  
+  if (site()->user()) {
+    
+    // Show it to admins
+    if (site()->user()->usertype() and site()->user()->usertype() == 'admin') {
+      $showable = true;
+    }
+    
+    // Show it to authors
+    if (in_array(site()->user()->username(), $page->authors()->toArray())) {
+      $showable = true;
+    }
+    
+  }
+  
+  if (in_array($page->visibility(), array('public'))) {
+    $showable = true;
+  }
+  
+  return $showable;
+};
+
 pages::$methods['visibleToUser'] = function($pages) {  
   $collection = new Pages();
   foreach($pages as $page) {
@@ -743,18 +768,23 @@ pages::$methods['visibleToUser'] = function($pages) {
 };
 
 function isVisibleToUser($page) {
-  $isvisible = true;
+  
+  $isvisible = false;
+  
   if ($page->visibility() != null) { // the page has a visibility setting
     
+    if (in_array($page->visibility(), array('public'))) {
+      $isvisible = true;
+    }
+    
+    /*
     if (!site()->user() and in_array($page->visibility(), array('unlisted','groups','private'))) { // hide pages with these settings from the public
       $isvisible = false;
     }
+    */
     
     if (site()->user()) { // hide these pages from logged-in users who don't have the right permissions
-      if (in_array($page->visibility(), array('public'))) {
-        $isvisible = true;
-      }
-      elseif (!in_array(site()->user(), $page->authors()->toArray())) {
+      if (!in_array(site()->user(), $page->authors()->toArray())) {
         if (!empty($page->relatedGroups())) {
           /*
           if (!array_intersect(str::split(site()->user()->groups()), $page->relatedGroups()->toArray())) {
@@ -764,10 +794,10 @@ function isVisibleToUser($page) {
         }
       }
     }
-    
-    if (site()->user() and site()->user()->usertype() and site()->user()->usertype() == 'admin') { // show every page to admins
-      $isvisible = true;
-    }
+  }
+  
+  if (site()->user() and site()->user()->usertype() and site()->user()->usertype() == 'admin') { // show every page to admins
+    $isvisible = true;
   }
   
   if (site()->setting('advanced/lockdown') == true AND !site()->user()) {
@@ -790,7 +820,12 @@ function isEditableByUser($page) {
   if (site()->user() and site()->user()->usertype() and site()->user()->usertype() == 'admin') { // if user is an admin
     $isEditable = true;
   }
+  
   if ($page->uid() == 'error') {
+    $isEditable = false;
+  }
+  
+  if ($page->uid() == 'search') {
     $isEditable = false;
   }
   
@@ -832,6 +867,11 @@ function isSubmissibleByUser($page) {
 // MISC HELPER FUNCTIONS
 //==============================================================================
 
+function acornSanitize($string) {
+  $temp = esc($string);
+  return $temp;
+}
+
 // String to Excerpt
 // Used when saving pages to create the excerpt field again
 // Gets the first 300 characters, removes Markdown headings, converts the remainder to HTML, strips tags and encoded characters, and removes any (completed) kirbytags
@@ -844,7 +884,12 @@ function stringToExcerpt($string) {
   $temp = preg_replace( "/\r|\n/", " ", $temp); // Remove line breaks
   $temp = substr($temp, 0, 300); // Limit to 300 characters
   $temp = preg_match('/(.*)\s/', $temp, $matches); // Remove anything after the last complete word
-  $temp = $matches[1];
+  
+  if (isset($matches[1])) {
+    $temp = $matches[1];
+  } else {
+    $temp = "";
+  }
   
   return $temp;
 }
@@ -854,15 +899,66 @@ function stringToExcerpt($string) {
 // my own take on Kirby's str::slug with a few opinionated tweaks
 function acornSlugify($string) {
   
-  $string = acornTextify($string);
+  $delete = array(
+    '&quot;', // "
+    '&#039;', // '‘
+    '&lt;',   // <
+    '&gt;',   // >
+  );
+  $string = str_replace($delete, '', $string);
   
-  $hyphenate = array(' ','~','@','*','+','=','>','<',' - ','/',' / ');
-  $delete = array('&quot;',':','(',')','?','.','!','$',',','%','^','&',';','[',']','{','}','|','`','#','--','---',"'",'"');
+  $hyphenate = array(
+    ' ',
+    '&amp;',  // &
+    '~',
+    '@',
+    '*',
+    '&',
+    '+',
+    '=',
+    '>',
+    '<',
+    ' - ',
+    '/',
+    ' / ',
+  );
+  $string = str_replace($hyphenate, '-', $string);
+  
+  $delete = array(
+    '&quot;', // "
+    '&#039;', // '
+    '&lt;',   // <
+    '&gt;',   // >
+    '‘',      // apostrophe 1
+    '’',      // apostrophe 2
+    ':',
+    '(',
+    ')',
+    '?',
+    '.',
+    '!',
+    '$',
+    ',',
+    '%',
+    '^',
+    ';',
+    '[',
+    ']',
+    '{',
+    '}',
+    '|',
+    '`',
+    '#',
+    '--',
+    '---',
+    '"',
+    "'",
+  );
+  $string = str_replace($delete, '', $string);
+  
   // Need to delete HTML entities first, like &quot;, and there are probably more that should be added
   
   //$string = htmlspecialchars($string);
-  $string = str_replace($hyphenate, '-', $string);
-  $string = str_replace($delete, '', $string);
   $string = strtolower($string);
   
   // Remove leading and trailing separators
@@ -960,17 +1056,6 @@ page::$methods['comments'] = function($page) {
   
 };
 
-// Is Feed Request
-// Returns whether or not the request is coming from a JSON or RSS Feed, allowing
-// tags like (image:) or (video:) to react accordingly
-function isFeedRequest() {
-  if (strpos($_SERVER['REQUEST_URI'], 'feed?')) { // this isn't the most reliable but good enough for now
-    return true;
-  } else {
-    return false;
-  }
-}
-
 // Text Significant Difference detector
 // Used to determine whether a string was "updated" or just simply "modified"
 // depending on how different the two are. If the word "update" appears more or
@@ -995,9 +1080,20 @@ function textSigDiff($oldtext, $newtext) {
   
 }
 
-
-
-
+// Is Feed Request
+// Returns whether or not the request is coming from a JSON or RSS Feed, allowing
+// tags like (image:) or (video:) to react accordingly
+function isFeedRequest() {
+  
+  $format = pathinfo($_SERVER['REQUEST_URI'], PATHINFO_EXTENSION);
+  
+  if (in_array($format, array('rss','xml','atom','json'))) {
+    return true;
+  } else {
+    return false;
+  }
+  
+}
 
 //==================================================
 // USER PREFERENCES

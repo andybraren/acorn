@@ -55,7 +55,7 @@
 	<link rel="apple-touch-icon" href="<?php echo $appletouch->url() ?>">
 	<?php endif ?>
 	
-  <?php echo css('site/assets/css/main.css') ?>
+  <?php echo css('acorn/assets/css/main.css') ?>
   
   <?php // Load page-specific css ?>
   <?php foreach($page->files()->filterBy('extension', 'css') as $css): ?>

@@ -13,10 +13,10 @@
   
   <?php // Load all of the editing-related resources if they're a logged-in maker with the right permissions ?>
   <?php if($page->isEditableByUser()): ?>
-    <?php echo js('site/assets/js/editing/to-markdown.js') ?>
-    <?php echo css('site/assets/js/contenttools/content-tools.min.css') ?>
-    <?php echo js('site/assets/js/contenttools/content-tools.js') ?>
-    <?php echo js('site/assets/js/editing/editor.js') ?>
+    <?php echo js('acorn/assets/js/editing/to-markdown.js') ?>
+    <?php echo css('acorn/assets/js/contenttools/content-tools.min.css') ?>
+    <?php echo js('acorn/assets/js/contenttools/content-tools.js') ?>
+    <?php echo js('acorn/assets/js/editing/editor.js') ?>
   <?php endif ?>
   
 </footer>
@@ -26,15 +26,15 @@
 <?php endif ?>
 
 <?php // if (is_dir('site/assets/js/photoswipe') and kirby()->get('option', 'photoswipe') == 'on' and page()->hasImages()): ?>
-<?php if (is_dir('site/assets/js/photoswipe') and strpos($page->content()->text(), 'image:') or strpos($page->content()->text(), 'format: full')): ?>
+<?php if (is_dir('acorn/assets/js/photoswipe') and strpos($page->content()->text(), 'image:') or strpos($page->content()->text(), 'format: full')): ?>
   <?php // Load image scrapers for photoswipe, eventually these should be combined ?>
-  <?php echo js('site/assets/js/photoswipe/photoswipe-scraper.js', true) ?>
-  <?php echo js('site/assets/js/photoswipe/photoswipe-gallery-scraper.js', true) ?>
+  <?php echo js('acorn/assets/js/photoswipe/photoswipe-scraper.js', true) ?>
+  <?php echo js('acorn/assets/js/photoswipe/photoswipe-gallery-scraper.js', true) ?>
   
-  <?php echo css('site/assets/js/photoswipe/photoswipe.css') ?>
-  <?php echo css('site/assets/js/photoswipe/default-skin/default-skin.css') ?>
-  <?php echo js('site/assets/js/photoswipe/photoswipe.js', true) ?>
-  <?php echo js('site/assets/js/photoswipe/photoswipe-ui-default.js', true) ?>
+  <?php echo css('acorn/assets/js/photoswipe/photoswipe.css') ?>
+  <?php echo css('acorn/assets/js/photoswipe/default-skin/default-skin.css') ?>
+  <?php echo js('acorn/assets/js/photoswipe/photoswipe.js', true) ?>
+  <?php echo js('acorn/assets/js/photoswipe/photoswipe-ui-default.js', true) ?>
 <?php endif ?>
 
 <?php // photoswipe DOM element http://photoswipe.com/documentation/getting-started.html#init-add-pswp-to-dom ?>

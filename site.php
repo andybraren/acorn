@@ -12,8 +12,10 @@ $kirby->roots->accounts = $kirby->roots()->index() . DS . 'acorn' . DS . 'users'
 $kirby->roots->avatars  = $kirby->roots()->index() . DS . 'acorn' . DS . 'users' . DS . 'avatars';
 $kirby->urls->avatars   = $kirby->urls()->index() . DS . 'acorn' . DS . 'users' . DS . 'avatars';
 
-$kirby->roots->assets  = $kirby->roots()->index() . DS . 'site' . DS . 'assets';
-$kirby->urls->assets   = $kirby->urls()->index() . '/site/assets';
+//$kirby->roots->assets  = $kirby->roots()->index() . DS . 'site' . DS . 'assets';
+//$kirby->urls->assets   = $kirby->urls()->index() . '/site/assets';
+$kirby->roots->assets  = $kirby->roots()->index() . DS . 'acorn' . DS . 'assets';
+$kirby->urls->assets   = $kirby->urls()->index() . '/acorn/assets';
 
 $kirby->roots->cache    = $kirby->roots()->index() . DS . 'cache' . DS . 'content';     // cache moved to /cache/content
 

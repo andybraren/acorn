@@ -144,7 +144,7 @@
       <?php if (site()->setting('menu/search/enabled')): ?>
         <li class="search">
           <form class="search-container" action="<?php echo $site->url() . '/search'?>">
-            <?php echo (new Asset('/site/assets/images/menu-search.svg'))->content() ?>
+            <?php echo (new Asset('/acorn/assets/images/menu-search.svg'))->content() ?>
             <input id="search-box" type="text" class="search-box" name="q">
             <input type="submit" id="search-submit">
           </form>
@@ -153,7 +153,7 @@
       
       <?php /*
       <li>
-        <a id="settings-reading" data-modal="reading"><?php echo (new Asset('/site/assets/images/menu-font.svg'))->content() ?></a>
+        <a id="settings-reading" data-modal="reading"><?php echo (new Asset('/acorn/assets/images/menu-font.svg'))->content() ?></a>
       </li>
       */ ?>
       
@@ -181,7 +181,7 @@
         
         <?php if(preg_match_all('/(?<!#)#{2,3}([^#].*)\n/', $page->text(), $matches)): // Grabs H2's and H3's ?>
           <li id="toggle-toc">
-            <a data-modal="toc"><?php echo (new Asset('/site/assets/images/menu-toc.svg'))->content() ?></a>
+            <a data-modal="toc"><?php echo (new Asset('/acorn/assets/images/menu-toc.svg'))->content() ?></a>
           </li>
         <?php endif ?>
         
@@ -212,7 +212,7 @@
       <ul class="menu menu-secondary">
         
         <li>
-          <a id="settings-reading" data-modal="reading"><?php echo (new Asset('/site/assets/images/menu-font.svg'))->content() ?></a>
+          <a id="settings-reading" data-modal="reading"><?php echo (new Asset('/acorn/assets/images/menu-font.svg'))->content() ?></a>
         </li>
       </ul>
       */ ?>

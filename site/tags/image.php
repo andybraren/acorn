@@ -190,6 +190,13 @@ kirbytext::$tags['image'] = array(
         
         //if(empty($link)) return $image;    // tweaked by Andy to force links
         
+
+        
+        // Convert URLs
+        $href = str_replace('/content', '', $href);
+        $href = str_replace('/posts', '', $href);
+        $href = str_replace('/users', '', $href);
+        
         //$datasize = $file->width() . "x" . $file->height();
         if ($type == 'hero' and $output == 'url') {
           return $url;
@@ -197,6 +204,8 @@ kirbytext::$tags['image'] = array(
         else if ($type == 'hero') {
           return $image;
         }
+        
+        
         else if ($datasize != "null") {
           return html::a(url($href), $image, array(
             'rel'    => $tag->attr('rel'),
@@ -214,16 +223,17 @@ kirbytext::$tags['image'] = array(
         }
         
       };
-  
+      
       $datasrc = $url;
-  
+      //$datasrc = acornPath($url);
+      $url = acornPath($url);
+      
       // image builder
       //$_image = function($class) use($tag, $url, $alt, $title) {
       $_image = function($class) use($tag, $datasrc, $alt, $title, $minithumb, $thumb) {
         //$url = "/maker/assets/images/blank.gif"; // Added for b-lazy
         $url = 'null';
         $url = "data:image/gif;base64,R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
-        
         
         return html::img($url, array(
           'src'    => $url,

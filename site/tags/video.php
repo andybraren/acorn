@@ -70,6 +70,8 @@ kirbytext::$tags['video'] = array(
       $url = $file ? $file->url() : url($url);
     endif;
     
+    $url = acornPath($url);
+    
     if (page()->id() != "feed") {
       
       // YouTube Videos
@@ -112,10 +114,12 @@ kirbytext::$tags['video'] = array(
           $thepage = $page;
           if ($page == $thepage) {
             $imageurl = downloadedImageURL('video-' . $youtubeid, $thepage->uri(), 'youtube');
+            $imageurl = acornPath($imageurl);
           }
           
           $blahurl = "/maker/assets/images/blank.gif"; // Added for b-lazy
           $blahurl = "/site/assets/images/blank.gif";
+          $blahurl = 'data:image/gif;base64,R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
           
           // Return a simple iframe for RSS and JSON Feed pages
           if (isFeedRequest()) {
@@ -137,9 +141,10 @@ kirbytext::$tags['video'] = array(
         $thepage = $page;
         if ($page == $thepage) {
           $imageurl = downloadedImageURL('video-' . $vimeoid, $thepage->uri(), 'vimeo');
+          $imageurl = acornPath($imageurl);
         }
         
-        $htmlimage = '<img class="b-lazy" src="/site/assets/images/blank.gif" data-src="' . $imageurl . '">';
+        $htmlimage = '<img class="b-lazy" src="data:image/gif;base64,R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="' . $imageurl . '">';
         
         // Return a simple iframe for RSS and JSON Feed pages
         if (isFeedRequest()) {

@@ -682,6 +682,36 @@ page::$methods['submissions'] = function($page) {
   }
 };
 
+//==================================================
+// FILE METHODS
+//==================================================
+
+file::$methods['acornURL'] = function($file) {
+  
+  $url = $file->url();
+  
+  $url = acornPath($url);
+  
+  return $url;
+  
+};
+
+function acornPath($string) {
+  
+  // Strip /content
+  $path = str_replace('/content', '', $string);
+  $path = str_replace('content/', '', $string);
+  
+  // Strip hidden directories (eventually specifiable)
+  $path = str_replace('/posts', '', $path);
+  $path = str_replace('posts/', '', $path);
+  $path = str_replace('/users', '', $path);
+  $path = str_replace('users/', '', $path);
+  
+  return $path;
+  
+}
+
 //==============================================================================
 // PERMISSIONS
 //==============================================================================

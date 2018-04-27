@@ -43,7 +43,7 @@ kirbytext::$tags['file'] = array(
     ));
     */
     
-    return '<a href="' . $file->url() . '" class="file-' . $id . '" data-filename="' . $file->filename() . '">' . html($text) . '</a>';
+    return '<a href="' . $file->acornURL() . '" class="file-' . $id . '" data-filename="' . $file->filename() . '">' . html($text) . '</a>';
 
   }
 );

@@ -42,18 +42,19 @@
   <meta property="og:type" content="article">
   <meta property="og:url" content="<?php echo $page->url() ?>">
   <?php if ($page->heroImage() != null): ?>
-    <meta property="og:image" content="<?php echo $page->heroImage()->url() ?>">
+  <meta property="og:image" content="<?php echo $page->heroImage()->acornURL() ?>">
   <?php endif ?>
 	
-	<?php $favicon = site()->images()->findBy('name', 'logo-favicon') ?>
-	<?php if ($favicon): ?>
-	<link rel="shortcut icon" type="image/png" href="<?php echo $favicon->url() ?>">
+	<?php if ($favicon = site()->images()->findBy('name', 'logo-favicon')): ?>
+	<link rel="shortcut icon" type="image/png" href="<?php echo $favicon->acornURL() ?>">
 	<?php endif ?>
 	
 	<?php $appletouch = site()->images()->findBy('name', 'logo-apple-touch') ?>
 	<?php if ($appletouch): ?>
-	<link rel="apple-touch-icon" href="<?php echo $appletouch->url() ?>">
+	<link rel="apple-touch-icon" href="<?php echo $appletouch->acornURL() ?>">
 	<?php endif ?>
+	
+	<link rel="alternate" type="application/rss+xml" title="<?php echo $site->title() ?>" href="/feed.rss" />
 	
   <?php echo css('acorn/assets/css/main.css') ?>
   
@@ -67,7 +68,7 @@
   <?php echo js($js->url(), true) ?>
   <?php endforeach ?>
   
-  <?php echo js('site/assets/js/main.js', true) ?>
+  <?php echo js('acorn/assets/js/main.js', true) ?>
       
   <?php // Hotjar Tracking Code ?>
   <?php if ($hotjarid = array_search($_SERVER['SERVER_NAME'], array('286199' => 'tuftsmake.com', '232998' => 'maker.tufts.edu'))): ?>

@@ -723,7 +723,6 @@ function pageWizard($targetpageuri, $user, $data) {
 
 
 // Save comments
-/*
 $kirby->set('route', array(
   'pattern' => array('saveblah', '(.+saveblah)'),
   'method' => 'POST',
@@ -764,7 +763,6 @@ $kirby->set('route', array(
       
   }
 ));
-*/
 
 
 
@@ -1533,7 +1531,10 @@ $kirby->set('route', array(
   'pattern' => '(:all)/feed',
   'method' => 'GET',
   'action'  => function($uid) {
-    go(site()->page(str_replace('/feed','',$uid))->url() . '.rss', 301);
+    //echo kirby()->request()->path();
+    //go(site()->page(str_replace('/feed','',$uid))->url() . '.rss', 301);
+    //go(site()->request()->url() . '/feed.rss', 301);
+    go(kirby()->request()->path() . '.rss', 301);
   }
 ));
 
@@ -1633,7 +1634,8 @@ $kirby->set('route', array(
 
 // Change URLs of post pages
 $kirby->set('route', array(
-  'pattern' => 'posts/(:any)',
+  //'pattern' => 'posts/(:any)',
+  'pattern' => 'posts/(^(?!feed).*)',
   'method' => 'GET',
   'action'  => function($uid) {
     go(site()->url() . '/' . $uid);
@@ -1702,7 +1704,8 @@ $kirby->set('route', array(
 
 $kirby->set('route', array(
   //'pattern' => array('(:all)\.(:any)'), // Match any URL with a file extension
-  'pattern' => array('(^(?!cache).*)(:any)\.(:any)'),
+  //'pattern' => array('(^(?!cache).*)(:any)\.(:any)'),
+  'pattern' => array('(^(?!cache).*)(:any)\.(^(?!rss).*)'),
   'method'  => 'GET',
   'action'  => function() {
     

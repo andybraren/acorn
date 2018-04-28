@@ -46,6 +46,7 @@
   <?php endif ?>
 	
 	<?php if ($favicon = site()->images()->findBy('name', 'logo-favicon')): ?>
+	<link rel="icon" type="image/png" href="<?php echo $favicon->acornURL() ?>">
 	<link rel="shortcut icon" type="image/png" href="<?php echo $favicon->acornURL() ?>">
 	<?php endif ?>
 	

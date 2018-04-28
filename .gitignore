@@ -53,9 +53,9 @@ Icon
 # Unlicensed components
 # ---------------
 
-/site/plugins/guggenheim/*
-/site/plugins/imagekit/*
-/site/plugins/phpmailer/*
+/acorn/plugins/guggenheim/*
+/acorn/plugins/imagekit/*
+/acorn/plugins/phpmailer/*
 
 /assets/guggenheim/*
 /assets/js/photoswipe/*
@@ -70,12 +70,12 @@ Icon
 # Kirby accounts
 # ---------------
 
-/site/accounts/*
-/assets/avatars/*
+/acorn/users/accounts/*
+/assets/users/avatars/*
 
 # Config (private)
 # ---------------
 
 /subdomains/*
 /content/site-dev.txt
-/site/config/private.php
+/acorn/config/private.php

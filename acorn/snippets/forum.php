@@ -32,7 +32,7 @@
     <div>
       <?php if ($user and $user->usertype() == 'admin'): ?>
         <div class="user-badge">
-          <div><?php echo (new Asset('/site/assets/images/icon-mod.svg'))->content() ?></div>
+          <div><?php echo (new Asset('/acorn/assets/images/icon-mod.svg'))->content() ?></div>
           <span class="tooltip">Moderator</span>
         </div>
       <?php endif ?>

@@ -57,11 +57,11 @@ Icon
 /acorn/plugins/imagekit/*
 /acorn/plugins/phpmailer/*
 
-/assets/guggenheim/*
-/assets/js/photoswipe/*
-/assets/js/stickyfill/*
+/acorn/assets/guggenheim/*
+/acorn/assets/js/photoswipe/*
+/acorn/assets/js/stickyfill/*
 
-/assets/fonts/*
+/acorn//assets/fonts/*
 
 # -------------SECURITY-------------
 # NEVER publish these files via Git!
@@ -71,7 +71,7 @@ Icon
 # ---------------
 
 /acorn/users/accounts/*
-/assets/users/avatars/*
+/acorn/users/avatars/*
 
 # Config (private)
 # ---------------

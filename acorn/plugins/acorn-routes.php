@@ -152,8 +152,8 @@ $kirby->set('route', array(
   'pattern' => array('cleanuptime', '(.+cleanuptime)'),
   'method' => 'GET',
   'action'  => function() {
-    /*
-    foreach (site()->page('thinkerbitlinks')->children() as $item) {
+    
+    foreach (site()->page('tinkertryarticles')->children() as $item) {
       
       $oldpath = kirby()->roots()->content() . DS . $item->diruri();
       $newpath = kirby()->roots()->content() . DS . $item->parent()->diruri() . DS . $item->uid();
@@ -161,7 +161,7 @@ $kirby->set('route', array(
       rename($oldpath, $newpath);
       
     }
-    */
+    
   }
 ));
 
@@ -175,12 +175,12 @@ $kirby->set('route', array(
   'action'  => function() {
     
     try {
-      
-      $name = get('desiredname');
-      
-      dir::copy('subdomains/link/versions/v0.6/', 'demo/' . $name . '/');
-      f::copy('subdomains/link/versions/v0.6/.htaccess', 'demo/' . $name . '/.htaccess');
-            
+  		
+  		$name = get('desiredname');
+  		
+  		dir::copy('subdomains/link/versions/v0.6/', 'demo/' . $name . '/');
+  		f::copy('subdomains/link/versions/v0.6/.htaccess', 'demo/' . $name . '/.htaccess');
+  		  		
       $response = array('redirecturl' => 'https://tufts.makernetwork.org/demo/' . $name);
       echo json_encode($response);
       
@@ -292,39 +292,39 @@ $kirby->set('route', array(
         $usertype = (page('users')->hasChildren()) ? 'user' : 'admin';
         
         // create the new user.php file
-        try {
-          $user = $site->users()->create(array(
-            'username'    => get('username'),
-            'firstname'   => get('firstname'),
-            'lastname'    => get('lastname'),
-            'email'       => strtolower(get('email')),
-            'password'    => get('password'),
-            'datedata'    => date('Y-m-d H:i:s'),
-            'language'    => 'en',
-            'usertype'    => $usertype,
-            'color'       => strtolower(get('color')),
-          ));
-        } catch(Exception $e) {
-          $e->getMessage();
-        }
-        
-        // create the new maker profile page
-        try {
-          $firstandlast = get('firstname') . " " . get('lastname');
-          $newPage = page('users')->children()->create(get('username'), 'user', array(
-            'title' => $firstandlast,
-            'datedata' => date('Y-m-d H:i:s') . ', ' . date('Y-m-d H:i:s'),
+      	try {
+  			  $user = $site->users()->create(array(
+  			    'username'    => get('username'),
+  				  'firstname'   => get('firstname'),
+  			    'lastname'    => get('lastname'),
+  			    'email'       => strtolower(get('email')),
+  			    'password'    => get('password'),
+  			    'datedata'    => date('Y-m-d H:i:s'),
+  			    'language'    => 'en',
+  			    'usertype'    => $usertype,
+  			    'color'       => strtolower(get('color')),
+  			  ));
+  			} catch(Exception $e) {
+  			  $e->getMessage();
+  			}
+  			
+  			// create the new maker profile page
+  			try {
+  				$firstandlast = get('firstname') . " " . get('lastname');
+  			  $newPage = page('users')->children()->create(get('username'), 'user', array(
+  			    'title' => $firstandlast,
+  			    'datedata' => date('Y-m-d H:i:s') . ', ' . date('Y-m-d H:i:s'),
             'userdata' => get('username'),
             'reldata' => '',
             'settings' => 'public, ' . strtolower(get('color')),
             'hero' => '',
-            'text'  => '',
-          ));
-        } catch(Exception $e) {
-          echo $e->getMessage();
-        }
-        
-        // log the user in and redirect them to their new profile page
+  			    'text'  => '',
+  			  ));
+  			} catch(Exception $e) {
+  			  echo $e->getMessage();
+  			}
+  			
+  			// log the user in and redirect them to their new profile page
         try {
           $user->login(get('password'));
           go('/users/' . get('username'));
@@ -332,7 +332,7 @@ $kirby->set('route', array(
           $error = true;
         }
   
-      } else {
+  		} else {
         $error = true;
         echo "Username is taken";
       }
@@ -402,7 +402,7 @@ $kirby->set('route', array(
           //return go($currentpath . '/forgot:failed');
           return go('/forgot:failed');
         }
-        
+      	
       } catch(Exception $e) {
         echo $e->getMessage();
       }
@@ -429,28 +429,28 @@ $kirby->set('route', array(
     $newpassword = get('newpassword');
     
     if($user = site()->users()->findBy('username', $username)) {
-      if($user->resetkey() == $key) {                                      // If the keys match...
-        if(strtotime($user->resetdate()) > (time() - 86400)) {               // And if the time period is right
-          site()->user($user->username())->update(array(                   // Then reset the password and wipe the key
-            'resetkey' => null,
-            'resetdate' => null,
-            'password' => $newpassword,
-          ));
+    	if($user->resetkey() == $key) {                                      // If the keys match...
+    		if(strtotime($user->resetdate()) > (time() - 86400)) {               // And if the time period is right
+	        site()->user($user->username())->update(array(                   // Then reset the password and wipe the key
+	        	'resetkey' => null,
+	        	'resetdate' => null,
+	          'password' => $newpassword,
+	        ));
           if($user = site()->user($username) and $user->login(get('newpassword'))) { // And log them in for convenience
             return go(site()->url().'/reset:success');
           } else {
             return go(site()->url().'/reset:failed');
           }
-        }
-        else {
-          $error = true;
-          echo "Sorry, this link seems to have expired. Submit a new password reset request. Error 1";
-        }
-      }
-      else {
-        $error = true;
-        echo "Sorry, this link seems to have expired. Submit a new password reset request. Error 2";
-      }
+    		}
+    		else {
+		      $error = true;
+		      echo "Sorry, this link seems to have expired. Submit a new password reset request. Error 1";
+    		}
+    	}
+    	else {
+	      $error = true;
+	      echo "Sorry, this link seems to have expired. Submit a new password reset request. Error 2";
+    	}
     }
     else {
       $error = true;
@@ -494,25 +494,25 @@ $kirby->set('route', array(
   'method' => 'POST',
   'action'  => function() {
     
-    // Formatting
-    // ----------
-    // $_POST['page'] = /directory/slug
-    
+		// Formatting
+		// ----------
+		// $_POST['page'] = /directory/slug
+		
     if (isset($_POST['page'])) {
       $string = site()->homePage()->url();
       $blah = parse_url($string, PHP_URL_PATH);
       $tweakedpostpage = str_replace($blah,'', strtolower($_POST['page']));
     }
-    
-    $targetpage = site()->page($tweakedpostpage);
-    
-    // Account for custom routes
-    if (!$targetpage) $targetpage = page('posts' . $tweakedpostpage);
-    if (!$targetpage) $targetpage = page('users' . $tweakedpostpage);
-    
-    
-    $user = site()->user();
-    pageWizard($targetpage, $user, $_POST);
+		
+		$targetpage = site()->page($tweakedpostpage);
+		
+		// Account for custom routes
+		if (!$targetpage) $targetpage = page('posts' . $tweakedpostpage);
+		if (!$targetpage) $targetpage = page('users' . $tweakedpostpage);
+		
+		
+		$user = site()->user();
+		pageWizard($targetpage, $user, $_POST);
     
   }
 ));
@@ -555,7 +555,7 @@ function pageWizard($targetpageuri, $user, $data) {
   // TITLE FIELD
   $originaltitle = $targetpage->content()->title();
   //$newTitle = esc($_POST['title']) ? $targetpage->content()->title() : '';
-  $newTitle = (isset($_POST['title'])) ? ($_POST['title']) : yaml($targetpage->title());
+  $newTitle = (isset($_POST['title'])) ? (acornSanitize($_POST['title'])) : yaml($targetpage->title());
   /*
   if (isset($_POST['title'])) {
     $originaltitle = $targetpage->content()->title();
@@ -651,7 +651,7 @@ function pageWizard($targetpageuri, $user, $data) {
   $newSettings['submissions'] = (isset($_POST['submissions'])) ? (esc($_POST['submissions'])) : $newSettings['submissions'];
   
   // TEXT FIELD
-  $newText = (isset($_POST['text'])) ? (strip_tags($_POST['text'])) : $targetpage->content()->text();
+  $newText = (isset($_POST['text'])) ? (acornSanitize($_POST['text'])) : $targetpage->content()->text();
   
   // Set the new fields
   $newTitle = $newTitle;
@@ -717,7 +717,7 @@ function pageWizard($targetpageuri, $user, $data) {
     }
     
   }
-  
+	
 }
 
 
@@ -735,7 +735,7 @@ $kirby->set('route', array(
       $tweakedpostpage = str_replace($blah,'', strtolower($_POST['page']));
     }
     
-    $targetpage = site()->page($tweakedpostpage);
+		$targetpage = site()->page($tweakedpostpage);
           
     $slug = date('YmdHis') . milliseconds();
     
@@ -776,21 +776,21 @@ $kirby->set('route', array(
   'method' => 'POST',
   'action'  => function() {
     
-    
-    //$redirecturl = site()->url() . '/' . $targetpage->parent()->diruri();
-    
+		
+		//$redirecturl = site()->url() . '/' . $targetpage->parent()->diruri();
+		
     if (isset($_POST['page'])) {
       $string = site()->homePage()->url();
       $blah = parse_url($string, PHP_URL_PATH);
       $tweakedpostpage = str_replace($blah,'', strtolower($_POST['page']));
     }
-    
-    if (site()->page($tweakedpostpage)) {
-      $targetpage = site()->page($tweakedpostpage);
-    } elseif (site()->page('posts' . $tweakedpostpage)) {
-      $targetpage = site()->page('posts' . $tweakedpostpage);
-    }
-    
+		
+		if (site()->page($tweakedpostpage)) {
+  		$targetpage = site()->page($tweakedpostpage);
+		} elseif (site()->page('posts' . $tweakedpostpage)) {
+  		$targetpage = site()->page('posts' . $tweakedpostpage);
+		}
+		
     try {
       
       $targetpage->delete(true); // Force page to be deleted, even if it has subpages
@@ -812,8 +812,8 @@ $kirby->set('route', array(
   'pattern' => array('purgeCache', '(.+purgeCache)'),
   'method' => 'POST',
   'action'  => function() {
-    kirby()->cache()->flush();
-    return true;
+		kirby()->cache()->flush();
+		return true;
   }
 ));
 */
@@ -840,17 +840,17 @@ $kirby->set('route', array(
       }
       echo 'The entire site\'s cache was successfully regenerated.';
     } else {
-      if (file_exists($cache_file)) {
-        if (unlink($cache_file)) { // delete the singular cache file
+    	if (file_exists($cache_file)) {
+      	if (unlink($cache_file)) { // delete the singular cache file
           if (ping($url)) {
             echo 'The page\'s cache file was successfully regenerated.';
           } else {
             echo 'The page\'s cache file was deleted, but a connection error to the page is preventing a new one from being generated.';
           }
-        } else {
-          echo 'The page\'s cache file exists, but could not be deleted.';
-        }
-      } else {
+      	} else {
+        	echo 'The page\'s cache file exists, but could not be deleted.';
+      	}
+    	} else {
         if(!in_array($uri, c::get('cache.ignore'))) {
           if (ping($url)) {
             echo 'The page\'s cache file did not already exist, so a new one was successfully generated.';
@@ -860,7 +860,7 @@ $kirby->set('route', array(
         } else {
           echo 'This page is being ignored, so a cache file was not generated.';
         }
-      }
+    	}
     }
   }
 ));
@@ -963,59 +963,59 @@ $kirby->set('route', array(
   'method' => 'POST',
   'action'  => function() {
     
-    //var_dump($_FILES);
-    
+		//var_dump($_FILES);
+		
     if (isset($_POST['type'])) {
-      $type = $_POST['type']; // e.g. 'avatar'
-    } else {
-      $type = '';
-    }
-    
+  		$type = $_POST['type']; // e.g. 'avatar'
+		} else {
+  		$type = '';
+		}
+		
     if (isset($_POST['page'])) {
       $string = site()->homePage()->url();
       $blah = parse_url($string, PHP_URL_PATH);
       $tweakedpostpage = str_replace($blah,'', strtolower($_POST['page']));
     }
+		
+		$targetpage = page($tweakedpostpage); // Account for custom routes
+		if (!$targetpage) $targetpage = page('posts' . $tweakedpostpage);
+		if (!$targetpage) $targetpage = page('users' . $tweakedpostpage);
+		
     
-    $targetpage = page($tweakedpostpage); // Account for custom routes
-    if (!$targetpage) $targetpage = page('posts' . $tweakedpostpage);
-    if (!$targetpage) $targetpage = page('users' . $tweakedpostpage);
     
-    
-    
-    if ($type == 'avatar') {
+		if ($type == 'avatar') {
       $target_dir = kirby()->roots()->avatars() . '/';
     } else {
       $target_dir = kirby()->roots()->content() . '/' . $targetpage->uri() . '/';
     }
     
-    $name = key($_FILES); // The name attribute of the input that was uploaded
+		$name = key($_FILES); // The name attribute of the input that was uploaded
 
-    if ($type == 'avatar') {
+		if ($type == 'avatar') {
       $file_name = str_replace('/','', strtolower($tweakedpostpage));
-    } else {
-      $file_name = pathinfo($_FILES[$name]['name'], PATHINFO_FILENAME);
-    }
+		} else {
+  		$file_name = pathinfo($_FILES[$name]['name'], PATHINFO_FILENAME);
+		}
+		
+		$file_extension = str_replace('jpeg','jpg',strtolower(pathinfo($_FILES[$name]['name'], PATHINFO_EXTENSION)));
+		$file = $file_name . '.' . $file_extension;
     
-    $file_extension = str_replace('jpeg','jpg',strtolower(pathinfo($_FILES[$name]['name'], PATHINFO_EXTENSION)));
-    $file = $file_name . '.' . $file_extension;
-    
-    $file_type = $_FILES[$name]['type'];
-    $file_size = $_FILES[$name]['size'];
-    
-    if ($type == 'avatar') {
+		$file_type = $_FILES[$name]['type'];
+		$file_size = $_FILES[$name]['size'];
+		
+		if ($type == 'avatar') {
       $file_url = str_replace(' ', '%20', kirby()->roots()->avatars() . '/' . $file);
-    } else {
-      $file_url = str_replace(' ', '%20', site()->contentURL() . '/' . $targetpage->uri() . '/' . $file);
-    }
-    
-    
-    //$file_extension = end(explode('.', $file));
-    //$file_extension = substr(strrchr($file,'.'),1);
-    
-    // Lowercase extension
-    $target_file = $target_dir . $file;
-    
+		} else {
+  		$file_url = str_replace(' ', '%20', site()->contentURL() . '/' . $targetpage->uri() . '/' . $file);
+		}
+		
+		
+		//$file_extension = end(explode('.', $file));
+		//$file_extension = substr(strrchr($file,'.'),1);
+		
+		// Lowercase extension
+		$target_file = $target_dir . $file;
+		
     
     if ($file_type == 'image/jpg' or $file_type == 'image/jpeg' or $file_type == 'image/png') {
       $file_type = 'image';
@@ -1032,21 +1032,21 @@ $kirby->set('route', array(
     }
     
     // Replace old files with the same name, of any extension
-    $oldfile = $target_dir . $file;
-    if (file_exists($oldfile)) {
-      unlink($oldfile);
-    }
-    
-    if ($type == 'avatar') {
-      $oldfile = $target_dir . $file_name;
-      $todelete = glob($target_dir . $file_name . '*');
-      foreach ($todelete as $delete) {
-        unlink($delete);
-      }
-    }
-    
-    $type = (isset($_POST['type'])) ? $_POST['type'] : null;
-    
+  	$oldfile = $target_dir . $file;
+  	if (file_exists($oldfile)) {
+    	unlink($oldfile);
+  	}
+  	
+  	if ($type == 'avatar') {
+    	$oldfile = $target_dir . $file_name;
+    	$todelete = glob($target_dir . $file_name . '*');
+    	foreach ($todelete as $delete) {
+      	unlink($delete);
+    	}
+  	}
+  	
+  	$type = (isset($_POST['type'])) ? $_POST['type'] : null;
+  	
     // Save the file in the right place
     if ($uploadOk = 1) {
       try {
@@ -1066,11 +1066,11 @@ $kirby->set('route', array(
               echo "Error rotating image";
             }
             
-            if ($type == 'avatar') {
+        		if ($type == 'avatar') {
               $file_url = (string)site()->user($file_name)->avatar()->crop(300, 300)->url();
-            } else {
-              $file_url = (string)kirbytag(array('image' => $file, 'targetpage' => $targetpage, 'output' => 'url'));
-            }
+        		} else {
+          		$file_url = (string)kirbytag(array('image' => $file, 'targetpage' => $targetpage, 'output' => 'url'));
+        		}
             
           }
           
@@ -1102,6 +1102,8 @@ $kirby->set('route', array(
   'method' => 'POST',
   'action'  => function() {
     try {
+      
+      /*
       $items = list($width, $height) = getimagesize($_POST['url']);
       
       if ($items[0] > $_POST['width']) {
@@ -1111,6 +1113,11 @@ $kirby->set('route', array(
         $newwidth = $items[0];
         $newheight = $items[1];
       }
+      */
+      
+      preg_match('/(\d+)x(\d+)./', $_POST['url'], $matches);
+      $newwidth = $matches[1];
+      $newheight = $matches[2];
   
       $arr = array('url' => $_POST['url'], 'width' => $_POST['width'], 'crop' => $_POST['crop'],
        'alt'=> "Image", 'size' => array($newwidth, $newheight)); // size piece tweaked based on GitHub comments
@@ -1119,6 +1126,7 @@ $kirby->set('route', array(
     } catch(Exception $e) {
       $error = true;
       echo "Dang, image not inserted. Blame Andy.";
+      echo $e;
     }
   }
 ));
@@ -1487,7 +1495,6 @@ $kirby->set('route', array(
 
 //==============================================================================
 // PAGE FORMATS
-// RSS, JSON, etc.
 //==============================================================================
 
 $kirby->set('route', array(
@@ -1758,7 +1765,7 @@ $kirby->set('route', array(
   'pattern' => array('(:any)', '(:any)/(:any)'),
   'method'  => 'GET',
   'action'  => function($uid) {
-
+    
     $path = kirby()->request()->path();
     $page = page($path);
     
@@ -1778,4 +1785,4 @@ $kirby->set('route', array(
     
   }
 ));
- No newline at end of file
+

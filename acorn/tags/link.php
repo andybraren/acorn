@@ -97,9 +97,14 @@ kirbytext::$tags['link'] = array(
         
         // Download the og:image
         if ($image_url and strpos($image_url, 'http') !== false) {
-          $image_filename = 'link-' . str_replace('.','-',$host) . '-' . str_replace('.','-', pathinfo($image_url, PATHINFO_FILENAME));
-          downloadedImageURL($image_filename, $tag->page(), $image_url);
-          $new_image = $image_filename . '.' . strtolower(pathinfo($image_url, PATHINFO_EXTENSION));
+          //$image_filename = 'link-' . str_replace('.','-',$host) . '-' . str_replace('.','-', pathinfo($image_url, PATHINFO_FILENAME));
+          $image_filename = 'link-' . str_replace('.','-',$host) . '-' . uniqid();
+          
+          $downloadedURL = downloadedImageURL($image_filename, $tag->page(), $image_url);
+          
+          //$new_image = $image_filename . '.' . strtolower(pathinfo($image_url, PATHINFO_EXTENSION));
+          $new_image = basename($downloadedURL);
+          
           //$image = '<img src="' . downloadedImageURL($image_filename, $tag->page(), $image_url) . '">';
           $manual_image_url = $tag->page()->url() . '/' . $new_image;
           //$manual_image_url = 'https://dev.acorn.blog/cache/thumbs/articles/update-2017/hero-170x110.jpg';
@@ -152,7 +157,7 @@ kirbytext::$tags['link'] = array(
       $image = '<img src="' . $manual_image_url . '">';
     } elseif ($image) {
       if ($tag->page()->image($image)) {
-        $image = '<img src="' . $tag->page()->image($image)->resize(300,300)->url() . '">';
+        $image = '<img src="' . $tag->page()->image($image)->resize(340)->url() . '">';
       }
     } else {
       $image = '';

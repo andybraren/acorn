@@ -652,18 +652,39 @@ page::$methods['toc'] = function($page) {
 
 // Discussion setting
 // returns the page's discussion setting
-// on off (date)
+// default on off (date) none
+//   Default falls back to the parent page or site-wide setting if it's also default
+//   On will always accept new comments unless overriden by the site-wide setting
+//   Off will not accept new comments, but any existing comments will be visible
+//   Date will stop accepting new comments after that date
+//   None will not accept or display any comments whatsoever, hiding any that exist
 page::$methods['discussion'] = function($page) {
   
   $setting = yaml($page->settings())['discussion'];
   
-  // DEADLINE LOGIC NEEDED HERE
+  // Check the site-wide override
+  // These options need to be figured out and documented
+  if (site()->setting('discussion/acorn/enabled') == false or site()->setting('discussion/acorn/enabled') == 'lockdown') {
+    $enable = false;
+  }
+  
+  if ($setting == 'default') {
+    $enable = site()->setting('discussion/acorn/defaults/enabled');
+  }
   
   if ($setting == 'on') {
-    return true;
-  } else {
-    return false;
+    $enable = true;
   }
+  
+  if ($page->parent()->uri() != '') {
+    $parentsetting = yaml($page->parent()->settings())['discussion'];
+    if ($parentsetting == 'on-children') {
+      $enable = true;
+    }
+  }
+  
+  return $enable;
+  
 };
 
 // Submissions setting
@@ -924,6 +945,7 @@ function acornSlugify($string) {
   );
   $string = str_replace($hyphenate, '-', $string);
   
+  // I should probably switch to a whitelist rather than trying to blacklist every possible character
   $delete = array(
     '&quot;', // "
     '&#039;', // '
@@ -931,7 +953,15 @@ function acornSlugify($string) {
     '&gt;',   // >
     '‘',      // apostrophe 1
     '’',      // apostrophe 2
+    '“',      // curly quote 1
+    '”',      // curly quote 2
     ':',
+    '•',
+    '¥',
+    '£',
+    '€',
+    '_',
+    '\\',
     '(',
     ')',
     '?',
@@ -1019,39 +1049,22 @@ function dir_contains_children($dir) {
 // returns the page's comments
 page::$methods['comments'] = function($page) {
   
-  if ($page->content()->settings() != '') {
+  if ($page->discussion()) {
+    // If the comments folder doesn't exist, create it
+    $target_dir = kirby()->roots()->content() . '/' . $page->uri() . '/comments';
     
-    $array = $page->content()->settings()->split(',');
-    if (isset($array[2])) { // if comment setting exists
-      $parts = explode('==', $array[2]);
-      if (isset($parts[1])) {
-        
-        //return ($parts[1] == 'on') ? true : false; // return just the setting on/off
-        //return trim($parts[1], ' ');
-        $blah = str_replace(' ', '', $parts[1]);
-        
-        if ($blah == 'on') {
-          
-          // If the comments folder doesn't exist, create it
-          $target_dir = kirby()->roots()->content() . '/' . $page->uri() . '/comments';
-          
-          if (!is_dir($target_dir)) {
-            mkdir($target_dir, 0775, true);
-            $collection = new Pages();
-            return $collection;
-          }
-          
-          if (dir_contains_children($target_dir)) {
-            return $page->find('comments')->children();
-          } else {
-            $collection = new Pages();
-            return $collection;
-          }
-          
-        }
-      }
+    if (!is_dir($target_dir)) {
+      mkdir($target_dir, 0775, true);
+      $collection = new Pages();
+      return $collection;
     }
     
+    if (dir_contains_children($target_dir)) {
+      return $page->find('comments')->children();
+    } else {
+      $collection = new Pages();
+      return $collection;
+    }
   }
   
 };
@@ -1112,7 +1125,7 @@ function userAvatar($username, $size = 256) {
     elseif (strlen(site()->user($username)->firstname()) <= 4) { $number = 2; }
     elseif (strlen(site()->user($username)->firstname()) <= 6) { $number = 3; }
     elseif (strlen(site()->user($username)->firstname()) >= 7) { $number = 4; }
-    $defaultavatar = new Asset('site/assets/images/avatar-' . $number . '.svg');
+    $defaultavatar = new Asset('acorn/assets/images/avatar-' . $number . '.svg');
     return $defaultavatar->url();
   }
   
@@ -1129,7 +1142,7 @@ function groupLogo($groupname, $size = 256) {
       elseif (strlen(site()->page('groups/' . $groupname)->title()) <= 6) { $number = 3; }
       elseif (strlen(site()->page('groups/' . $groupname)->title()) >= 7) { $number = 4; }
       
-      $defaultlogo = new Asset('site/assets/images/avatar-' . $number . '.svg');
+      $defaultlogo = new Asset('acorn/assets/images/avatar-' . $number . '.svg');
       return $defaultlogo->url();
     }
   }
@@ -1144,7 +1157,7 @@ function groupLogo($groupname, $size = 256) {
       elseif (strlen(site()->page('courses/' . $groupname)->title()) <= 6) { $number = 3; }
       elseif (strlen(site()->page('courses/' . $groupname)->title()) >= 7) { $number = 4; }
       
-      $defaultlogo = new Asset('site/assets/images/avatar-' . $number . '.svg');
+      $defaultlogo = new Asset('acorn/assets/images/avatar-' . $number . '.svg');
       return $defaultlogo->url();
     }
   }
@@ -1205,7 +1218,8 @@ function downloadedImageURL($filename, $pageuri, $remoteURL) {
   $page = site()->page($pageuri);
   
   // If the image doesn't already exist, then it must be downloaded
-  if (!$page->image($filename . '.jpg')) {
+  //if (!$page->image($filename . '.jpg')) {
+  if (!$page->images()->findBy('name', $filename)) {
     if ($remoteURL == 'youtube') {
       $youtubeid = substr(strstr($filename, '-'), 1);
       $remoteURL = youtube_image($youtubeid);
@@ -1221,7 +1235,12 @@ function downloadedImageURL($filename, $pageuri, $remoteURL) {
     
     $extension = pathinfo($remoteURL, PATHINFO_EXTENSION);
     
-    $imagepath = kirby()->roots()->content() . '/' . $page->diruri() . '/' . $filename . '.' . strtolower($extension);
+    // strip any query parameters and lowercase
+    $extension = strtolower(strtok($extension, '?'));
+    
+    // lowercase
+    
+    $imagepath = kirby()->roots()->content() . '/' . $page->diruri() . '/' . $filename . '.' . $extension;
     
     $response_code = get_http_response_code($remoteURL);
     
@@ -1241,10 +1260,12 @@ function downloadedImageURL($filename, $pageuri, $remoteURL) {
     }
     */
     
+  } else {
+    $extension = $page->images()->findBy('name', $filename)->extension();
   }
   
   if (!isset($imageURL)) {
-    $imageURL = $page->contentURL() . '/' . $filename . '.jpg';
+    $imageURL = $page->contentURL() . '/' . $filename . '.' . $extension;
   }
   
   return $imageURL;

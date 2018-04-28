@@ -651,7 +651,8 @@ function pageWizard($targetpageuri, $user, $data) {
   $newSettings['submissions'] = (isset($_POST['submissions'])) ? (esc($_POST['submissions'])) : $newSettings['submissions'];
   
   // TEXT FIELD
-  $newText = (isset($_POST['text'])) ? (acornSanitize($_POST['text'])) : $targetpage->content()->text();
+  //$newText = (isset($_POST['text'])) ? (acornSanitize($_POST['text'])) : $targetpage->content()->text();
+  $newText = (isset($_POST['text'])) ? ($_POST['text']) : $targetpage->content()->text();
   
   // Set the new fields
   $newTitle = $newTitle;

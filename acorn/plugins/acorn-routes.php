@@ -1649,6 +1649,105 @@ $kirby->set('route', array(
 // REDIRECTS
 //==============================================================================
 
+// 301 old pre-Acorn image URLs to new ones
+//   .com/content/articles/123-slug-name/image.jpg
+//   to
+//   .com/content/articles/slug-name/image.jpg
+$kirby->set('route', array(
+  //'pattern' => array('content/articles/(:any)/(:any)'),
+  'pattern' => array('content/articles/([0-9]+)-(:any)/(:any)\.(:any)'),
+  'method'  => 'GET',
+  'action'  => function() {
+    
+    $path = kirby()->request()->path();
+    $newpath = preg_replace('/(\d+)-/', '', $path);
+    go($newpath, 301);
+    
+  }
+));
+
+
+// 301 redirect content directory requests to Acorn URL
+//   .com/content/posts/slug-name/file.pdf
+//   to
+//   .com/slug-name/file.pdf
+/*
+$kirby->set('route', array(
+  'pattern' => array('content/(:all)'),
+  'method'  => 'GET',
+  'action'  => function() {
+    
+    go(acornPath(kirby()->request()->path()), 301);
+    
+  }
+));
+*/
+
+
+// Virtual files
+// Creates virtual files to turn
+//  .com/content/posts/slug-name/image.jpg
+//  into
+//  .com/posts/slug-name/image.jpg
+//  and
+//  .com/slug-name/image.jpg
+// Does not interfere with anything in the /cache directory
+
+$kirby->set('route', array(
+  //'pattern' => array('(:all)\.(:any)'), // Match any URL with a file extension
+  'pattern' => array('(^(?!cache).*)(:any)\.(:any)'),
+  'method'  => 'GET',
+  'action'  => function() {
+    
+    // 301 redirect for non-Acorn paths
+    // like with /content or /users in the path
+    if (kirby()->request()->path() != acornPath(kirby()->request()->path())) {
+      go(acornPath(kirby()->request()->path()), 301);
+    }
+    
+    $path_parts = pathinfo(kirby()->request()->path());
+    $path = $path_parts['dirname'];
+    $filename = $path_parts['basename'];
+    
+    // Decode any URL-encode characters in the URL's filename
+    $filename = urldecode($filename);
+    
+    $page = page($path);
+        
+    if ($path == '.') {
+      if ($file = site()->file($filename)) {
+        $file->show();
+      } else {
+        die('Not found.');
+      }
+    }
+    
+    // Check "hidden" directories
+    if (!$page) $page = page('users/' . $path);
+    if (!$page) $page = page('posts/' . $path);
+    
+    if ($page) {
+      if ($file = $page->file($filename)) {
+        $file->show();
+      } else {
+        
+      }
+    } else {
+      die('Not found.');
+    }
+    
+  }
+));
+/*
+$kirby->set('route', array(
+  'pattern' => array('cache/(:all)'),
+  'method'  => 'GET',
+  'action'  => function() {
+    go(kirby()->request()->path());
+  }
+));
+*/
+
 //==============================================================================
 // CATCHALL
 // Always keep this route at the bottom

@@ -17,6 +17,9 @@ $kirby->urls->avatars   = $kirby->urls()->index() . DS . 'acorn' . DS . 'users' 
 $kirby->roots->assets  = $kirby->roots()->index() . DS . 'acorn' . DS . 'assets';
 $kirby->urls->assets   = $kirby->urls()->index() . '/acorn/assets';
 
+$kirby->roots->plugins  = $kirby->roots()->index() . DS . 'acorn' . DS . 'plugins';
+$kirby->urls->plugins   = $kirby->urls()->index() . '/acorn/plugins';
+
 $kirby->roots->cache    = $kirby->roots()->index() . DS . 'cache' . DS . 'content';     // cache moved to /cache/content
 
 //$kirby->roots->site = __DIR__ . DS . 'acorn';

@@ -1,23 +1,12 @@
 [submodule "kirby"]
 	path = kirby
 	url = https://github.com/getkirby/kirby.git
-[submodule "stripe-php"]
-	path = acorn/plugins/acorn-commerce/vendor
-	url = https://github.com/stripe/stripe-php.git
-[submodule "site/plugins/cachebuster/vendor/minify"]
-	path = site/plugins/cachebuster/vendor/minify
-	url = https://github.com/matthiasmullie/minify.git
-[submodule "site/plugins/cachebuster/vendor/path-converter"]
-	path = site/plugins/cachebuster/vendor/path-converter
-	url = https://github.com/matthiasmullie/path-converter.git
-[submodule "acorn/plugins/acorn-commerce/vendor/stripe-php"]
-	path = acorn/plugins/acorn-commerce/vendor/stripe-php
-	url = https://github.com/stripe/stripe-php.git
-[submodule "site/plugins/acorn-commerce/vendor/stripe-php"]
-	path = site/plugins/acorn-commerce/vendor/stripe-php
 [submodule "acorn/plugins/cachebuster/vendor/minify"]
 	path = acorn/plugins/cachebuster/vendor/minify
 	url = https://github.com/matthiasmullie/minify.git
 [submodule "acorn/plugins/cachebuster/vendor/path-converter"]
 	path = acorn/plugins/cachebuster/vendor/path-converter
 	url = https://github.com/matthiasmullie/path-converter.git
+[submodule "acorn/plugins/acorn-commerce/vendor/stripe-php"]
+	path = acorn/plugins/acorn-commerce/vendor/stripe-php
+	url = https://github.com/stripe/stripe-php.git

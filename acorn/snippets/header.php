@@ -45,12 +45,12 @@
   <meta property="og:image" content="<?php echo $page->heroImage()->acornURL() ?>">
   <?php endif ?>
 	
-	<?php if ($favicon = site()->images()->findBy('name', 'logo-favicon')): ?>
+	<?php if ($favicon = site()->page('site/assets')->images()->findBy('name', 'logo-favicon')): ?>
 	<link rel="icon" type="image/png" href="<?php echo $favicon->acornURL() ?>">
 	<link rel="shortcut icon" type="image/png" href="<?php echo $favicon->acornURL() ?>">
 	<?php endif ?>
 	
-	<?php $appletouch = site()->images()->findBy('name', 'logo-apple-touch') ?>
+	<?php $appletouch = site()->page('site/assets')->images()->findBy('name', 'logo-apple-touch') ?>
 	<?php if ($appletouch): ?>
 	<link rel="apple-touch-icon" href="<?php echo $appletouch->acornURL() ?>">
 	<?php endif ?>

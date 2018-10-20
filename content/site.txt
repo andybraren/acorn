@@ -81,6 +81,10 @@ users:
   login-twitter: false
   login-google: false
 discussion:
+  defaults:
+    enabled: true
+    anonymous: false
+    date: ''
   acorn:
     enabled: false
     anonymous: false
@@ -96,7 +100,7 @@ discussion:
       mediaMinPost: ''
   disqus:
     enabled: false
-    code: ''
+    shortname: ''
     anonymous: false
 connections:
   mailgun:

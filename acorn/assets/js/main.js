@@ -3,6 +3,7 @@
 
 // console.log('Acorn debug mode is turned on');
 // VAR_GoogleAnalytics
+// VAR_DISQUS
 
 window.onload = function() {
   checkTheme();

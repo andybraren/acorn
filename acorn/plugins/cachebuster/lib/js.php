@@ -43,6 +43,22 @@ class JS extends \Kirby\Component\JS {
         $new = str_replace($search, $replace, $new);
       }
       
+      // Enable Disqus
+      if (site()->setting('discussion/disqus/enabled')) {
+        if (site()->setting('discussion/disqus/shortname') != '') {
+          $search = '// VAR_DISQUS';
+          $replace = 'const disqus_shortname = "' . site()->setting('discussion/disqus/shortname') . '";';
+          $new = str_replace($search, $replace, $new);
+        }
+      }
+      
+      // Enable BuySellAds
+      if (site()->setting('monetization/ads-bsa/enabled')) {
+        $search = '// VAR_BSA';
+        $replace = "(function(){var bsa = document.createElement('script');bsa.type = 'text/javascript';bsa.async = true;bsa.src = '//s3.buysellads.com/ac/bsa.js';(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);})();";
+        $new = str_replace($search, $replace, $new);
+      }
+      
       // Enable console logging
       if (site()->setting('advanced/debug')) {
         $search = '// console.log';

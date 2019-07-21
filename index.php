@@ -1,16 +1,24 @@
 <?php
 
-define('DS', DIRECTORY_SEPARATOR);
+require __DIR__ . '/kirby/bootstrap.php';
 
-// load kirby
-require(__DIR__ . DS . 'kirby' . DS . 'bootstrap.php');
+// Acorn custom folders
+// Tags and users left to figure out
+$kirby = new Kirby([
+  'roots' => [
+    'index'   => __DIR__,
+    'cache'    => __DIR__ . '/cache/content',
+    'media' => __DIR__ . '/cache/media',
+    'assets' => __DIR__ . '/acorn/assets',
+    'plugins' => __DIR__ . '/acorn/plugins',
+    'snippets' => __DIR__ . '/acorn/snippets',
+    'templates' => __DIR__ . '/acorn/templates',
+    'site' => __DIR__ . '/acorn/site',
+    'config' => __DIR__ . '/acorn/config'
+  ],
+  'urls' => [
+    'media' => site()->url() . '/cache/media',
+  ],
+]);
 
-// check for a custom site.php
-if(file_exists(__DIR__ . DS . 'site.php')) {
-  require(__DIR__ . DS . 'site.php');
-} else {
-  $kirby = kirby();
-}
-
-// render
-echo $kirby->launch();
+echo $kirby->render();

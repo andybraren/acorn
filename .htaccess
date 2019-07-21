@@ -26,6 +26,9 @@ RewriteEngine on
 # block text files in the content folder from being accessed directly
 RewriteRule ^content/(.*)\.(txt|md|mdown)$ index.php [L]
 
+# file firewall
+RewriteRule ^content/(.*)$ index.php [L]
+
 # block direct access to everything within site folder, except for assets
 # http://stackoverflow.com/questions/6942652/all-except-one-directory-in-mod-rewrite
 # RewriteRule ^site/(.*) index.php [L]
@@ -53,17 +56,17 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*) index.php [L]
 
 # redirect www to non-www https
-RewriteCond %{HTTPS} on
-RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
-RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+# RewriteCond %{HTTPS} on
+# RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+# RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
 
 # force https
-RewriteCond %{HTTPS} !on
-RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+# RewriteCond %{HTTPS} !on
+# RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 
 <IfModule mod_headers.c>
 
-  Header set Content-Security-Policy: "default-src 'none'; style-src 'self' 'unsafe-inline' checkout.stripe.com; font-src 'self' themes.googleusercontent.com; img-src * data:; media-src *; object-src 'self'; script-src 'self' www.google-analytics.com ajax.googleapis.com checkout.stripe.com js.stripe.com disqus.com *.disqus.com *.disquscdn.com data:; child-src https://player.vimeo.com https://www.youtube.com https://acorn.blog checkout.stripe.com js.stripe.com; connect-src 'self' checkout.stripe.com; frame-src https://disqus.com *.youtube.com *.vimeo.com"
+  Header set Content-Security-Policy: "default-src 'none'; style-src 'self' 'unsafe-inline' checkout.stripe.com; font-src 'self' themes.googleusercontent.com; img-src * data:; media-src *; object-src 'self'; script-src 'self' www.google-analytics.com ajax.googleapis.com checkout.stripe.com js.stripe.com disqus.com *.disqus.com *.disquscdn.com *.buysellads.com data:; child-src https://player.vimeo.com https://www.youtube.com https://acorn.blog checkout.stripe.com js.stripe.com; connect-src 'self' checkout.stripe.com; frame-src https://disqus.com *.youtube.com *.vimeo.com"
   
   Header always set Strict-Transport-Security "max-age=15768000; includeSubDomains"
   

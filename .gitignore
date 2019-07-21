@@ -5,6 +5,7 @@ Icon
 .DS_Store
 .dropbox
 .git
+*.code-workspace
 
 # Temporary cache files
 # ---------------
